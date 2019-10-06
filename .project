@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
+
 	<name>APP</name>
+
 	<comment></comment>
 	<projects>
 	</projects>
@@ -10,6 +12,8 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+
+	</buildSpec>
 		<buildCommand>
 			<name>org.eclipse.wst.common.project.facet.core.builder</name>
 			<arguments>
