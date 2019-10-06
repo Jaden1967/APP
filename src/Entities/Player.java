@@ -1,14 +1,17 @@
 package Entities;
 
+import java.awt.Color;
 import java.util.Vector;;
 
 public class Player {
 	String playerID;
 	private int totalCountryNum;
 	Vector <Continent> ownedContinent;
+	private String color;
 	
-	public Player(String id) {
+	public Player(String id, String color) {
 		this.playerID = id;
+		this.color = color;
 		this.ownedContinent = new Vector<>();
 	}
 	
@@ -43,6 +46,20 @@ public class Player {
 		return value;
 	}
 	
+	private Color getColor(String color) {
+        switch (color) {
+            case "red": return Color.red;
+            case "yellow": return Color.yellow;
+            case "blue": return Color.blue;
+            case "green": return Color.green;
+            case "black": return Color.black;
+            case "grey": return Color.gray;
+            case "purple": return Color.magenta;
+            case "orange": return Color.orange;
+            default: return Color.white;
+        }
+    }
+	
 	/**
 	 * Verifies if the player has won the game by owning all continents available in the game
 	 * @param totalContinents
@@ -54,6 +71,10 @@ public class Player {
 	
 	public String getID() {
 		return this.playerID;
+	}
+	
+	public String getColorStr() {
+		return this.color;
 	}
 	
 	public void addContinent (Continent con) {
