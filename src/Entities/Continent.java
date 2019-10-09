@@ -1,5 +1,6 @@
 package Entities;
 
+import java.awt.Color;
 import java.util.Vector;
 
 public class Continent {
@@ -7,6 +8,21 @@ public class Continent {
 	Vector<Country> countries;
 	boolean isConquered;
 	private int value;
+	private Color color;
+	
+	
+	/**
+	 * Constructor for Continent
+	 * @param name of continent
+	 * @param value of continent to be rewarded to complete owner
+	 * @param color of continent
+	 */
+	public Continent(String name, int value, Color color) {
+		this.name = name;
+		this.value = value;
+		this.color = color;
+	}
+	
 	
 	/**
 	 * If one player fully occupied the continent, function will add its name in the player occupied list
