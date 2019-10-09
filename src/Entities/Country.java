@@ -6,7 +6,7 @@ public class Country {
 		private String countryName;
 		private Player owner;
 		private int countryId;
-		private Vector <Country> linkCountries;
+		private Vector <Country> linkCountries = new Vector<Country>();
 		private int armyNum = 0;
 		private Continent belongTo;
 		private int x;
@@ -28,7 +28,6 @@ public class Country {
 			this.countryName = name;
 			this.x = horizontal;
 			this.y = vertical;
-			this.linkCountries = new Vector<>();
 		}
 		
 		public void AssignOwner (Player p) {
@@ -105,11 +104,25 @@ public class Country {
 			return this.countryId;
 		}
 		
+		public String getName() {
+			return this.countryName;
+		}
+		
 		/**
 		 * Getter of the Continent this Country belongs to
 		 * @return Continent object
 		 */
 		public Continent getContinent() {
 			return this.belongTo;
+		}
+		
+		public void printLinkedCountries() {
+			for(Country c:linkCountries) {
+				System.out.println(c.getName());
+			}
+		}
+		
+		public void printLinkedCountriesNum() {
+			System.out.println(linkCountries.size());
 		}
 }

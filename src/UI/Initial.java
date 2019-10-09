@@ -45,7 +45,7 @@ public class Initial extends JFrame {
 		colorList.add("green");
 		colorList.add("black");
 		colorList.add("gray");
-		colorList.add("purple");
+		colorList.add("magenta");
 		colorList.add("orange");
 	}
 	
