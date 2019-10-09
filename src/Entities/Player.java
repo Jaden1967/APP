@@ -4,9 +4,9 @@ import java.awt.Color;
 import java.util.Vector;;
 
 public class Player {
-	String playerID;
+	private String playerID;
 	private int totalCountryNum;
-	Vector <Continent> ownedContinent;
+	private Vector <Continent> ownedContinent = new Vector<Continent>();
 	private String color;
 	
 	public Player(String id, String color) {
@@ -54,7 +54,7 @@ public class Player {
             case "green": return Color.green;
             case "black": return Color.black;
             case "grey": return Color.gray;
-            case "purple": return Color.magenta;
+            case "magenta": return Color.magenta;
             case "orange": return Color.orange;
             default: return Color.white;
         }
