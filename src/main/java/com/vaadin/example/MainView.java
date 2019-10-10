@@ -76,11 +76,16 @@ public class MainView extends VerticalLayout {
 
         commandLine.setPlaceholder("Command Line");
         commandLine.setWidth("600px");
+        commandLine.setClearButtonVisible(true);
+        commandLine.setErrorMessage("invalid");
     }
 
     public MainView() {
         init();
-
+        commandLine.addKeyDownListener(event -> {
+			commandLine.setInvalid(false);
+        });
+        
         // TODO:
         Button runButton = new Button("Run", event -> {
             String temp = commandLine.getValue();
@@ -96,7 +101,8 @@ public class MainView extends VerticalLayout {
                     else {
                         // TODO closed
                         // invalid input alert
-                        invalidInputAlert();
+                        // invalidInputAlert();
+                        commandLine.setInvalid(true);
                     }
                 } 
                 // editcountry
@@ -182,6 +188,7 @@ public class MainView extends VerticalLayout {
                 dialog.open();
             }
 
+            commandLine.setValue("");
         });
         runButton.addClickShortcut(Key.ENTER);
 
