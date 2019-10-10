@@ -1,5 +1,6 @@
 package com.vaadin.example;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -11,7 +12,9 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.UploadI18N;
+import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.router.Route;
 
 import java.awt.*;
@@ -45,8 +48,11 @@ public class MainView extends VerticalLayout {
     private TextArea countries = new TextArea(); // (2)
     private TextArea outputLog = new TextArea(); // (2)
     private TextField commandLine = new TextField(); // (2)
+    // private MemoryBuffer buffer = new MemoryBuffer();
+    // private Upload upload = new Upload(buffer);
 
     private void init() {
+
         continents.setValue("continents shows here\n");
         continents.setLabel("Continents");
         continents.setReadOnly(true);
@@ -182,6 +188,13 @@ public class MainView extends VerticalLayout {
         // TODO:
         // a save map button
 
+
+        // upload map
+        // upload.addSucceededListener(event -> {
+        //     Component component = createComponent(event.getMIMEType(),
+        //             event.getFileName(), buffer.getInputStream());
+        //     showOutput(event.getFileName(), component, output);
+        // });
         
 
         add( // (5)
