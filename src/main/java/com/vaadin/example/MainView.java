@@ -188,7 +188,7 @@ public class MainView extends VerticalLayout {
                 dialog.open();
             }
 
-            commandLine.setValue("");
+            
         });
         runButton.addClickShortcut(Key.ENTER);
 
