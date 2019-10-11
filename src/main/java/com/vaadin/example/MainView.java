@@ -12,6 +12,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.Input;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.UploadI18N;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
@@ -51,6 +52,9 @@ public class MainView extends VerticalLayout {
     // private MemoryBuffer buffer = new MemoryBuffer();
     // private Upload upload = new Upload(buffer);
 
+    private String x_coor = "";
+    private String y_coor = "";
+
     private void init() {
 
         continents.setValue("continents shows here\n");
@@ -67,7 +71,13 @@ public class MainView extends VerticalLayout {
         countries.getStyle().set("maxHeight", "300px");
         countries.getStyle().set("minHeight", "200px");
 
-        outputLog.setValue("output shows here");
+        String defaultOutput =  "editcontinent -add Asia 10\n"
+                            +   "editcontinent -remove Asia\n"
+                            +   "editcountry -add China Asia\n"
+                            +   "editcountry -remove China\n"
+                            +   "editneighbour -add China India\n"
+                            +   "editneighbour -remove China India\n";
+        outputLog.setValue("output shows here\n" + defaultOutput);
         outputLog.setLabel("Output Log");
         outputLog.setReadOnly(true);
         outputLog.setWidth("600px");
@@ -78,6 +88,32 @@ public class MainView extends VerticalLayout {
         commandLine.setWidth("600px");
         commandLine.setClearButtonVisible(true);
         commandLine.setErrorMessage("invalid");
+    }
+
+    public void coordinatesDialog(String countryname, String continentname) {
+        Dialog dialog = new Dialog();
+        dialog.setCloseOnEsc(false);
+        dialog.setCloseOnOutsideClick(false);
+        
+        TextField coordinatesText = new TextField(); // (2)
+        coordinatesText.setPlaceholder("input coordinates seperate with space");
+        coordinatesText.setWidth("300px");
+        coordinatesText.setClearButtonVisible(true);
+
+        
+        Button confirmButton = new Button("Confirm", event -> {
+            x_coor = coordinatesText.getValue().split(" ")[0];
+            y_coor = coordinatesText.getValue().split(" ")[1];
+            dialog.close();
+            addCountry(countryname, continentname, Integer.valueOf(x_coor), Integer.valueOf(y_coor));
+        });   
+        confirmButton.addClickShortcut(Key.ENTER);
+        // TODO:
+        // invalid coordinates
+
+        dialog.add(coordinatesText, confirmButton);
+        dialog.open();
+        coordinatesText.focus();
     }
 
     public MainView() {
@@ -109,8 +145,11 @@ public class MainView extends VerticalLayout {
                 else if (tempArr[0].equals("editcountry")) {
                     // TODO closed
                     if (tempArr[1].equals("-add")) {
+                        // open dialog for the input of coordinates
+                        coordinatesDialog(tempArr[2], tempArr[3]);
+
                         // TODO closed
-                        addCountry(tempArr[2], tempArr[3]);
+                        // addCountry(tempArr[2], tempArr[3], Integer.valueOf(x_coor), Integer.valueOf(y_coor));
                     }
                     else {
                         // TODO closed
@@ -278,12 +317,13 @@ public class MainView extends VerticalLayout {
         }
     }
 
-    private void addCountry(String countryname, String continentname) {
+    private void addCountry(String countryname, String continentname, int x_coordinates, int y_coordinates) {
         if (!countriesMap.containsKey(countryname)){
             ArrayList<String> tempAL = new ArrayList<>();
             tempAL.add(countryname);
             tempAL.add(continentname);
-            tempAL.add("coordinates");
+            tempAL.add(x_coordinates + "");
+            tempAL.add(y_coordinates + "");
             countriesData.add(tempAL);
             countriesMap.put(countryname, continentname);
         }
@@ -346,10 +386,15 @@ public class MainView extends VerticalLayout {
             // encoding
             StringBuilder strBuilder = new StringBuilder();
 
-            strBuilder.append("[map_info]\n");
+            strBuilder.append("; Yilun Sun and his dev groupmates\n");
+            strBuilder.append("; Risk Map\n\n");
 
-            strBuilder.append("This is a Risk Game Map\n");
-            strBuilder.append("made by Yilun Sun and his dev groupmates\n");
+            strBuilder.append("; Risk Game Map\n");
+            // TODO:
+            strBuilder.append("; Dimensions: 677 x 425 Pixels\n");
+            strBuilder.append("; name Risk Map\n");
+
+            strBuilder.append("\n[files]\n");
 
             strBuilder.append("\n[continents]\n");
             
@@ -371,6 +416,11 @@ public class MainView extends VerticalLayout {
                 }
                 strBuilder.append(counutryStr + "\n");
             }
+
+            // TODO:
+            strBuilder.append("\n[borders]\n");
+            
+
 
             String content = strBuilder.toString();
 
