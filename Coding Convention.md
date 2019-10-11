@@ -158,7 +158,9 @@ List<String> split(String s);
 
 **@param <name> <description>**
 
-Used for methods and constructorsDescribes the usage of a passed parameter
+Used for methods and constructors
+
+Describes the usage of a passed parameter
 
 Declare what happens with extreme values (null etc.)
 
@@ -176,7 +178,9 @@ Indicate the potential use(s) of the return value
 
 Used for methods and constructors
 
-Describes the exceptions that may be thrownUse one tag per exception 
+Describes the exceptions that may be thrown
+
+Use one tag per exception 
 
 **{@inheritDoc}**
 
