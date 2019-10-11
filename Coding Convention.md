@@ -4,7 +4,7 @@
 
 + **[Indentation](#indentation)**
 
-+ **[Comments](#comments)**
++ **[Java Doc](#Java_Doc)**
 
 + **[Declarations](#declarations)**
 
@@ -135,5 +135,84 @@ if (list && list.length) {
     }
 }
 ```
+## <span id = "Java_Doc">Java Doc</span>
+
+Documentation for a class may range from a single sentence to paragraphs with code examples. Documentation should serve to disambiguate any conceptual blanks in the API, and make it easier to quickly and *correctly* use your API. A thorough class doc usually has a one sentence summary and, if necessary, a more detailed explanation.
+
+```java
+/**
+ * A volatile storage for objects based on a key, which may be invalidated and discarded.
+ */
+class Cache {
+  ...
+}
+
+/**
+ * Splits a string on whitespace.
+ *
+ * @param s The string to split.  An {@code null} string is treated as an empty string.
+ * @return A list of the whitespace-delimited parts of the input.
+ */
+List<String> split(String s);
+```
+
+**@param <name> <description>**
+
+Used for methods and constructorsDescribes the usage of a passed parameter
+
+Declare what happens with extreme values (null etc.)
+
+Use one tag per parameter
+
+ **@return <description>**
+
+Used for methods
+
+Describes the return value, if any, of a method
+
+Indicate the potential use(s) of the return value
+
+**@throws <name> <description>**
+
+Used for methods and constructors
+
+Describes the exceptions that may be thrownUse one tag per exception 
+
+**{@inheritDoc}**
+
+Used for methods 
+
+Copies documentation from super class or interface 
+
+**@author <name>**
+
+Used for interfaces and classes
+
+Indicates the author(s) of the code
+
+Use one tag per author
+
+**@version <text>**
+
+Used for interfaces and classes
+
+Indicates the version information for a given piece of code
+
+Avoid when using modern code versioning/revision systems
+
+**{@link <ClassName#MethodName>}**
+
+Used for any javadoc comment
+
+Generates a hypertext link in the documentation to the specified class or method
+
+**{@code <text>}**
+
+Used for any javadoc comment 
+
+Text is displayed verbatim in a fixed-width font 
+
+Indicates that the text refers to source code 
+
 ## <span id = "declarations">Declarations</span>
 what particular syntax to use to declare variables, data structures, classes, etc. in order to maximize code readability. 
