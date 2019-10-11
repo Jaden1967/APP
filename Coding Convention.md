@@ -12,6 +12,11 @@
 
 
 
+## <span id = "file_organization">File Organization</span>
+
+how code is distributed between files, and organized within each file. 
+
+
 ## <span id = "indentation">Indentation</span>
 
 #### Use line breaks wisely
@@ -220,3 +225,6 @@ Indicates that the text refers to source code
 
 ## <span id = "declarations">Declarations</span>
 what particular syntax to use to declare variables, data structures, classes, etc. in order to maximize code readability. 
+
+
+## <span id = "naming">Naming</span>
