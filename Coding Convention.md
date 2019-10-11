@@ -135,3 +135,5 @@ if (list && list.length) {
     }
 }
 ```
+## <span id = "declarations">Declarations</span>
+what particular syntax to use to declare variables, data structures, classes, etc. in order to maximize code readability. 
