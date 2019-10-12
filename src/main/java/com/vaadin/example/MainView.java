@@ -55,6 +55,9 @@ public class MainView extends VerticalLayout {
     private String x_coor = "";
     private String y_coor = "";
 
+    private int map_width = 0;
+    private int map_height = 0;
+
     private void init() {
 
         continents.setValue("continents shows here\n");
@@ -116,8 +119,32 @@ public class MainView extends VerticalLayout {
         coordinatesText.focus();
     }
 
+    public void setMapSize() {
+        Dialog dialog = new Dialog();
+        dialog.setCloseOnEsc(false);
+        dialog.setCloseOnOutsideClick(false);
+        
+        TextField mapSizeText = new TextField(); // (2)
+        mapSizeText.setPlaceholder("input map width and height seperate with space");
+        mapSizeText.setWidth("400px");
+        mapSizeText.setClearButtonVisible(true);
+
+        
+        Button confirmButton = new Button("Confirm", event -> {
+            map_width = Integer.valueOf(mapSizeText.getValue().split(" ")[0]);
+            map_height = Integer.valueOf(mapSizeText.getValue().split(" ")[1]);
+            dialog.close();
+        });   
+        confirmButton.addClickShortcut(Key.ENTER);
+
+        dialog.add(mapSizeText, confirmButton);
+        dialog.open();
+        mapSizeText.focus();
+    }
+
     public MainView() {
         init();
+        setMapSize();
         commandLine.addKeyDownListener(event -> {
 			commandLine.setInvalid(false);
         });
@@ -212,8 +239,21 @@ public class MainView extends VerticalLayout {
             } 
             else if (tempArr.length == 1) {
                 // TODO:
-                
-                
+                // map operations
+                // show map
+                if (tempArr[0].equals("showmap")) {
+                    // TODO closed
+                    // showmap();
+                } 
+                // validate map
+                else if (tempArr[0].equals("validatemap")) {
+                    // TODO:                 
+                }
+                else {
+                    // TODO closed
+                    // invalid input alert
+                    invalidInputAlert();
+                }
             }
             else {
                 // TODO:
