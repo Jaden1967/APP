@@ -40,10 +40,12 @@ public class MainView extends VerticalLayout {
     // 存储大陆和国家的数据
     private ArrayList<ArrayList<String>> continentsData = new ArrayList<>();
     private ArrayList<ArrayList<String>> countriesData = new ArrayList<>();
+    private ArrayList<ArrayList<String>> neighborsData = new ArrayList<>();
 
     // 存储是否包含这个大陆或者国家
     private HashMap<String, Integer> continentsMap = new HashMap<>();
     private HashMap<String, String> countriesMap = new HashMap<>();
+    // private HashMap<String, String> neighborsMap = new HashMap<>();
 
     private TextArea continents = new TextArea(); // (2)
     private TextArea countries = new TextArea(); // (2)
@@ -86,8 +88,8 @@ public class MainView extends VerticalLayout {
                             +   "editcontinent -remove Asia\n"
                             +   "editcountry -add China Asia\n"
                             +   "editcountry -remove China\n"
-                            +   "editneighbour -add China India\n"
-                            +   "editneighbour -remove China India\n";
+                            +   "editneighbor -add China India\n"
+                            +   "editneighbor -remove China India\n";
         outputLog.setValue("output shows here\n" + defaultOutput);
         outputLog.setLabel("Output Log");
         outputLog.setReadOnly(true);
@@ -155,8 +157,21 @@ public class MainView extends VerticalLayout {
         mapSizeText.focus();
     }
 
+    public void testCases() {
+        countriesMap.put("China", "Asia");
+        countriesMap.put("India", "Asia");
+        // ArrayList<String> tempAL = new ArrayList<>();
+        // tempAL.add("China");
+        // tempAL.add("India");
+        // countriesMap.add(tempAL);
+        // countriesMap.put(continentname, Integer.valueOf(continentvalue));
+    }
+
     public MainView() {
         init();
+
+        testCases();
+
         setMapSize();
         commandLine.addKeyDownListener(event -> {
 			commandLine.setInvalid(false);
@@ -187,12 +202,26 @@ public class MainView extends VerticalLayout {
                     if (tempArr[1].equals("-add")) {
                         // open dialog for the input of coordinates
                         coordinatesDialog(tempArr[2], tempArr[3]);
-
+                        
                         // TODO closed
                         // addCountry(tempArr[2], tempArr[3], Integer.valueOf(x_coor), Integer.valueOf(y_coor));
                     }
                     else {
                         // TODO closed
+                        // invalid input alert
+                        invalidInputAlert();
+                    }
+                }
+                // editneighbor
+                else if (tempArr[0].equals("editneighbor")) {
+                    // TODO:
+                    if (tempArr[1].equals("-add")) {
+                        addNeighbor(tempArr[2], tempArr[3]);
+                    }
+                    else if (tempArr[1].equals("-remove")) {
+                        removeNeighbor(tempArr[2], tempArr[3]);
+                    }
+                    else {
                         // invalid input alert
                         invalidInputAlert();
                     }
@@ -430,6 +459,97 @@ public class MainView extends VerticalLayout {
         }
         else {
             countries.setValue("countries shows here\n");
+        }
+    }
+
+    private void addNeighbor(String countryname, String neighborCountryname) {
+        if (countriesMap.containsKey(countryname) && countriesMap.containsKey(neighborCountryname)){
+            boolean hasCountry = false;
+            boolean hasNeighborCountry = false;
+            for (ArrayList<String> arrList : neighborsData) {
+                if (arrList.get(0).equals(countryname)) {
+                    arrList.add(neighborCountryname);
+                    hasCountry = true;
+                }
+                if (arrList.get(0).equals(neighborCountryname)) {
+                    arrList.add(countryname);
+                    hasNeighborCountry = true;
+                }
+            }
+            if (!hasCountry) {
+                ArrayList<String> tempAL = new ArrayList<>();
+                tempAL.add(countryname);
+                tempAL.add(neighborCountryname);
+                neighborsData.add(tempAL);
+            }
+            if (!hasNeighborCountry) {
+                ArrayList<String> tempAL = new ArrayList<>();
+                tempAL.add(neighborCountryname);
+                tempAL.add(countryname);
+                neighborsData.add(tempAL);
+            }
+        }
+        else {
+            Dialog dialog = new Dialog();
+            dialog.add(new Label("No such countries exist, please add it first. \nClose me with the esc-key or an outside click"));
+            dialog.setWidth("400px");
+            dialog.setHeight("150px");
+            dialog.open();
+        }
+
+        updateNeighbors();
+    }
+
+    private void removeNeighbor(String countryname, String neighborCountryname) {
+        boolean hasCountry = false;
+        boolean hasNeighborCountry = false;
+        for (ArrayList<String> arrList : neighborsData) {
+            if (arrList.get(0).equals(countryname)) {
+                for (String neighbor_name : arrList.subList(1, arrList.size())) {
+                    if (neighbor_name.equals(neighborCountryname)) {
+                        arrList.remove(neighborCountryname);
+                        if (arrList.size() == 1) {
+                            neighborsData.remove(arrList);
+                        }
+                        
+                        updateNeighbors();
+                    }
+                    if (neighbor_name.equals(countryname)) {
+                        arrList.remove(countryname);
+                        if (arrList.size() == 1) {
+                            neighborsData.remove(arrList);
+                        }
+                        
+                        updateNeighbors();
+                    }
+                }
+            }
+        }
+
+        if (!hasCountry || !hasNeighborCountry) {
+            // invalid
+            Dialog dialog = new Dialog();
+            dialog.add(new Label("No such country, please create it first. \nClose me with the esc-key or an outside click"));
+            dialog.setWidth("400px");
+            dialog.setHeight("150px");
+            dialog.open();
+        }
+    }
+
+    private void updateNeighbors(){
+        if (neighborsData.size() > 0) {
+            StringBuilder strBuilder = new StringBuilder();
+            for (ArrayList<String> arrList : neighborsData) {
+                String neighborStr = "";
+                for (String strList : arrList) {
+                    neighborStr += (strList + " ");
+                }
+                strBuilder.append(neighborStr + "\n");
+            }
+            neighbors.setValue(strBuilder.toString());
+        }
+        else {
+            neighbors.setValue("neighbors shows here\n");
         }
     }
 
