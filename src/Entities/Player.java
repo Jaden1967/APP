@@ -8,11 +8,25 @@ public class Player {
 	private int totalCountryNum;
 	private Vector <Continent> ownedContinent = new Vector<Continent>();
 	private String color;
+	private int armyToPlace;
 	
 	public Player(String id, String color) {
 		this.playerID = id;
 		this.color = color;
 		this.ownedContinent = new Vector<>();
+		this.armyToPlace = 0;
+	}
+	
+	public void rewardArmy(int i) {
+		this.armyToPlace += i;
+	}
+	
+	public int getArmyToPlace() {
+		return (this.armyToPlace + extraArmyToAdd());
+	}
+	
+	public void deployArmy(int i) {
+		this.armyToPlace -= i;
 	}
 	
 	/**
@@ -44,6 +58,11 @@ public class Player {
 			value += con.getValue();
 		}
 		return value;
+	}
+	
+
+	public Color getColor() {
+		return this.getColor(getColorStr());
 	}
 	
 	public Color getColor(String color) {

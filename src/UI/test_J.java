@@ -10,7 +10,9 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
-import UI.Game.mapPanel;
+
+import UI.MapUI.mapPanel;
+
 
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;

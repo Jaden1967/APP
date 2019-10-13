@@ -34,13 +34,6 @@ public class Menu {
 	 * Create the application.
 	 */
 	public Menu() {
-		initialize();
-	}
-
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
 		frmRisk = new JFrame();
 		frmRisk.setTitle("Risk");
 		frmRisk.setBounds(100, 100, 800, 600);
@@ -78,6 +71,7 @@ public class Menu {
 		});
 		btnExit.setFont(new Font("SimSun", Font.BOLD, 30));
 		btnExit.setBounds(250, 415, 250, 45);
-		frmRisk.getContentPane().add(btnExit);
+		frmRisk.getContentPane().add(btnExit);	
 	}
+
 }

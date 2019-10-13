@@ -22,10 +22,10 @@ public class Card {
 					this.image = ImageIO.read (new File ("Infantry.jpg"));
 					return true;
 				case "Cavalry":
-					this.image = ImageIO.read (new File ("Infantry.jpg"));
+					this.image = ImageIO.read (new File ("Cavalry.jpg"));
 					return true;
 				case "Artillery":
-					this.image = ImageIO.read (new File ("Infantry.jpg"));
+					this.image = ImageIO.read (new File ("Artilery.jpg"));
 					return true;
 			}
 		} catch (IOException e) {
