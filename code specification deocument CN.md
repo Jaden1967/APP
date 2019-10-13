@@ -151,3 +151,30 @@ function theName () {
 }
 
 ```
+
+-----------------------
+
+Update
+
+Method names start with a lower case letter and use upper case letters to separate words.
+
+Examples: getScore(), isLunchTime(). 
+
+Some use this notation for both methods and attributes. In the code, you can usually distinguish methods and attributes because method names are followed by parentheses. This is commonly called “CamelCase”.
+
+Attribute names start with a lower case letter and use underscores to separate words.
+
+Examples: start_time, current_task.
+
+Constants use upper case letters with underscores between words.
+
+Examples: MAXIMUM_TEMPERATURE, MAIN_WINDOW_WIDTH.
+
+Global names are prefixed with the project name.
+
+Example: MMTstandardDeviation. This may avoid name clashes when the code is combined/reused elsewhere which may have the same global variable names.
+
+Function/method’s local variables are written entirely in lower case without underscore.
+
+Examples: index, nextitem.
+

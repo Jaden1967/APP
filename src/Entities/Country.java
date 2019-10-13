@@ -1,8 +1,18 @@
 package Entities;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.util.Observable;
 import java.util.Vector;
 
-public class Country {
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import javax.swing.border.Border;
+
+import UI.labels.CountryObsLabel;
+
+public class Country extends Observable{
 		private String countryName;
 		private Player owner;
 		private int countryId;
@@ -11,31 +21,52 @@ public class Country {
 		private Continent belongTo;
 		private int x;
 		private int y;
-		
+		private CountryObsLabel l;
+		private Border b; //Continent's border, constant throughout the game
 		
 		public Country() {}
 		
 		
 		/**
-		 * Constructor for Country
-		 * @param id serialized String for country
-		 * @param name proper name for Country
-		 * @param horizontal location on x axis on map
-		 * @param vertical location on y axis on map
+		 * 
+		 * @param id
+		 * @param name
+		 * @param horizontal
+		 * @param vertical
+		 * @param imageX
+		 * @param imageY
+		 * @param plotX
+		 * @param plotY
 		 */
-		public Country(int id, String name, int horizontal, int vertical) {
+		public Country(int id, String name, int horizontal, int vertical,int imageX, int imageY, int plotX, int plotY) {
 			this.countryId = id;
 			this.countryName = name;
 			this.x = horizontal;
 			this.y = vertical;
+			l = new CountryObsLabel(String.valueOf(armyNum));
+			l.setBounds((int)((float)plotX/imageX*x-10), (int)((float)plotY/imageY*y-10), 20, 20);
+			l.setFont(new Font("SimSun", Font.BOLD, 15));
+			l.setHorizontalAlignment(SwingConstants.CENTER);
+		}
+		
+		public void modifyLabel() {
+			
 		}
 		
 		public void AssignOwner (Player p) {
 			this.owner = p;
 		}
 		
+		
 		public Player getOwner() {
 			return this.owner;
+		}
+		
+		public void setOwner(Player p) {
+			owner = p;
+			if (armyNum==0) armyNum++;
+			l.setBackground(owner.getColor());
+			alertObservers();
 		}
 		
 		/**
@@ -51,12 +82,18 @@ public class Country {
 			this.linkCountries.add(nbour);
 		}
 		
+		public void alertObservers() {
+			setChanged();
+			notifyObservers(this);
+		}
+		
 		/**
 		 * Only used in phase 1 and phase 3
 		 * @param playerID
 		 */
 		public void addArmy(int amount) {
 			armyNum += amount;
+			alertObservers();
 		}
 		
 		/**
@@ -65,6 +102,7 @@ public class Country {
 		 */
 		public void removeArmy(int amount) {
 			armyNum -= amount;
+			alertObservers();
 		}
 		
 		/**
@@ -104,6 +142,10 @@ public class Country {
 			return this.countryId;
 		}
 		
+		public int getArmyNum() {
+			return this.armyNum;
+		}
+		
 		public String getName() {
 			return this.countryName;
 		}
@@ -114,6 +156,16 @@ public class Country {
 		 */
 		public Continent getContinent() {
 			return this.belongTo;
+		}
+		
+		public void setContinent(Continent c) {
+			belongTo = c;
+			b = BorderFactory.createLineBorder(c.getColor(), 3);
+			l.setBorder(b);
+		}
+		
+		public CountryObsLabel getLabel() {
+			return l;
 		}
 		
 		public void printLinkedCountries() {

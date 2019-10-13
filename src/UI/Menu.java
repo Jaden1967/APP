@@ -10,7 +10,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class RiskGame {
+public class Menu {
 
 	private JFrame frmRisk;
 
@@ -21,7 +21,7 @@ public class RiskGame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					RiskGame window = new RiskGame();
+					Menu window = new Menu();
 					window.frmRisk.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -33,14 +33,7 @@ public class RiskGame {
 	/**
 	 * Create the application.
 	 */
-	public RiskGame() {
-		initialize();
-	}
-
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
+	public Menu() {
 		frmRisk = new JFrame();
 		frmRisk.setTitle("Risk");
 		frmRisk.setBounds(100, 100, 800, 600);
@@ -78,6 +71,7 @@ public class RiskGame {
 		});
 		btnExit.setFont(new Font("SimSun", Font.BOLD, 30));
 		btnExit.setBounds(250, 415, 250, 45);
-		frmRisk.getContentPane().add(btnExit);
+		frmRisk.getContentPane().add(btnExit);	
 	}
+
 }

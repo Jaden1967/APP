@@ -67,6 +67,10 @@ public class Continent {
 		
 	}
 	
+	public Color getColor() {
+		return color;
+	}
+	
 	public void printSelfCountries() {
 		for(Country c:countries) {
 			System.out.println(c.getName());
