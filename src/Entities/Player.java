@@ -60,6 +60,7 @@ public class Player {
 		return value;
 	}
 	
+
 	public Color getColor() {
 		return this.getColor(getColorStr());
 	}

@@ -2,6 +2,7 @@ package Entities;
 
 import java.awt.Color;
 import java.awt.Font;
+
 import java.util.Observable;
 import java.util.Vector;
 
@@ -21,12 +22,12 @@ public class Country extends Observable{
 		private Continent belongTo;
 		private int x;
 		private int y;
+
 		private CountryObsLabel l;
 		private Border b; //Continent's border, constant throughout the game
-		
+
 		public Country() {}
-		
-		
+	
 		/**
 		 * 
 		 * @param id
@@ -43,7 +44,10 @@ public class Country extends Observable{
 			this.countryName = name;
 			this.x = horizontal;
 			this.y = vertical;
+
 			l = new CountryObsLabel(String.valueOf(armyNum));
+
+
 			l.setBounds((int)((float)plotX/imageX*x-10), (int)((float)plotY/imageY*y-10), 20, 20);
 			l.setFont(new Font("SimSun", Font.BOLD, 15));
 			l.setHorizontalAlignment(SwingConstants.CENTER);
@@ -53,20 +57,17 @@ public class Country extends Observable{
 			
 		}
 		
-		public void AssignOwner (Player p) {
-			this.owner = p;
-		}
-		
-		
 		public Player getOwner() {
 			return this.owner;
 		}
 		
 		public void setOwner(Player p) {
 			owner = p;
+
 			if (armyNum==0) armyNum++;
 			l.setBackground(owner.getColor());
 			alertObservers();
+
 		}
 		
 		/**
@@ -142,10 +143,12 @@ public class Country extends Observable{
 			return this.countryId;
 		}
 		
+
 		public int getArmyNum() {
 			return this.armyNum;
 		}
 		
+
 		public String getName() {
 			return this.countryName;
 		}
@@ -164,6 +167,7 @@ public class Country extends Observable{
 			l.setBorder(b);
 		}
 		
+
 		public CountryObsLabel getLabel() {
 			return l;
 		}

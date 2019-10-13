@@ -235,6 +235,7 @@ public class Initial extends JFrame {
 							JOptionPane.showMessageDialog(null, "Game start!", "Good luck!", JOptionPane.ERROR_MESSAGE);
 							setVisible(false);
 							MapUI g = new MapUI(continentsList, countriesList, playerList, filesLoad, x, y);
+
 							g.setVisible(true);
 						}
 					}
@@ -286,9 +287,18 @@ public class Initial extends JFrame {
 										JOptionPane.showMessageDialog(null, "No such username!", "Warning", JOptionPane.ERROR_MESSAGE);
 										textArea_1.append("Fail to remove player "+name+"\n");
 									}
+
 								}
 							}
+							else {
+								textArea_1.append("Loading map "+name+" fail!\n");
+							}
 						}
+						textArea.setText("");
+						for(Player p:playerList) {
+							textArea.append("Name: "+p.getID()+"    Color: "+p.getColorStr()+"\n");
+						}
+
 						else if(type.equals("loadmap")) {
 							countriesList.clear();
 							continentsList.clear();
@@ -311,6 +321,7 @@ public class Initial extends JFrame {
 						for(Player p:playerList) {
 							textArea.append("Name: "+p.getID()+"    Color: "+p.getColorStr()+"\n");
 						}
+
 					}
 				}
 				else {
