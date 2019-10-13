@@ -290,15 +290,8 @@ public class Initial extends JFrame {
 
 								}
 							}
-							else {
-								textArea_1.append("Loading map "+name+" fail!\n");
-							}
+							
 						}
-						textArea.setText("");
-						for(Player p:playerList) {
-							textArea.append("Name: "+p.getID()+"    Color: "+p.getColorStr()+"\n");
-						}
-
 						else if(type.equals("loadmap")) {
 							countriesList.clear();
 							continentsList.clear();
