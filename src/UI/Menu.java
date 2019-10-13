@@ -10,7 +10,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class RiskGame {
+public class Menu {
 
 	private JFrame frmRisk;
 
@@ -21,7 +21,7 @@ public class RiskGame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					RiskGame window = new RiskGame();
+					Menu window = new Menu();
 					window.frmRisk.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -33,7 +33,7 @@ public class RiskGame {
 	/**
 	 * Create the application.
 	 */
-	public RiskGame() {
+	public Menu() {
 		initialize();
 	}
 

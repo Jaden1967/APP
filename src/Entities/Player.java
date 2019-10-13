@@ -46,7 +46,7 @@ public class Player {
 		return value;
 	}
 	
-	private Color getColor(String color) {
+	public Color getColor(String color) {
         switch (color) {
             case "red": return Color.red;
             case "yellow": return Color.yellow;
