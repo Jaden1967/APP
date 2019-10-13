@@ -47,6 +47,7 @@ public class MainView extends VerticalLayout {
 
     private TextArea continents = new TextArea(); // (2)
     private TextArea countries = new TextArea(); // (2)
+    private TextArea neighbors = new TextArea();
     private TextArea outputLog = new TextArea(); // (2)
     private TextField commandLine = new TextField(); // (2)
     // private MemoryBuffer buffer = new MemoryBuffer();
@@ -74,6 +75,13 @@ public class MainView extends VerticalLayout {
         countries.getStyle().set("maxHeight", "300px");
         countries.getStyle().set("minHeight", "200px");
 
+        neighbors.setValue("neighbors shows here\n");
+        neighbors.setLabel("Neighbors");
+        neighbors.setReadOnly(true);
+        neighbors.setWidth("350px");
+        neighbors.getStyle().set("maxHeight", "300px");
+        neighbors.getStyle().set("minHeight", "200px");
+
         String defaultOutput =  "editcontinent -add Asia 10\n"
                             +   "editcontinent -remove Asia\n"
                             +   "editcountry -add China Asia\n"
@@ -91,6 +99,10 @@ public class MainView extends VerticalLayout {
         commandLine.setWidth("600px");
         commandLine.setClearButtonVisible(true);
         commandLine.setErrorMessage("invalid");
+    }
+
+    public void addOutputLog(String addtext){
+        outputLog.setValue(outputLog.getValue() + addtext + "\n");
     }
 
     public void coordinatesDialog(String countryname, String continentname) {
@@ -134,6 +146,7 @@ public class MainView extends VerticalLayout {
             map_width = Integer.valueOf(mapSizeText.getValue().split(" ")[0]);
             map_height = Integer.valueOf(mapSizeText.getValue().split(" ")[1]);
             dialog.close();
+            addOutputLog("set map width to: " + map_width + "; set map height to: " + map_height);
         });   
         confirmButton.addClickShortcut(Key.ENTER);
 
@@ -287,7 +300,8 @@ public class MainView extends VerticalLayout {
                 new H1("Map Editor"), 
                 new HorizontalLayout(
                     continents, 
-                    countries
+                    countries,
+                    neighbors
                     ),
                 new HorizontalLayout(
                     commandLine, 
@@ -421,7 +435,7 @@ public class MainView extends VerticalLayout {
 
     public void saveMap(String fileName) {
         try {
-            String path = "maps/" + fileName + ".txt";
+            String path = "map/" + fileName + ".txt";
             // TODO:
             // encoding
             StringBuilder strBuilder = new StringBuilder();
@@ -449,25 +463,25 @@ public class MainView extends VerticalLayout {
 
             strBuilder.append("\n[countries]\n");
 
+            int countryIndex = 1;
             for (ArrayList<String> arrList : countriesData) {
-                String counutryStr = "";
+                String counutryStr = countryIndex + " ";
                 for (String strList : arrList) {
                     counutryStr += (strList + " ");
                 }
                 strBuilder.append(counutryStr + "\n");
+                countryIndex++;
             }
 
             // TODO:
             strBuilder.append("\n[borders]\n");
-            
-
 
             String content = strBuilder.toString();
 
             // Java 11 , default StandardCharsets.UTF_8
             Files.writeString(Paths.get(path), content);
 
-            outputLog.setValue(outputLog.getValue() + "\n" + "Map saved to " + path);
+            addOutputLog("Map saved to " + path);
         } 
         catch (IOException e) {
             e.printStackTrace();
