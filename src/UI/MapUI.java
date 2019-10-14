@@ -75,19 +75,19 @@ public class MapUI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	/*public Game() {
+	public MapUI() {
 		setTitle("Risk");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1000, 750);
+		setBounds(100, 100, 1000, 760);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(null);
 		setContentPane(contentPane);
 		
-		JPanel map = new JPanel();
+		mapPanel map = new mapPanel(null);
 		map.setBounds(20, 20, 940, 585);
 		map.setLayout(null);
-		map = visualized(map);
+		
 		contentPane.add(map);
 		
 		textField = new JTextField();
@@ -95,15 +95,21 @@ public class MapUI extends JFrame {
 		contentPane.add(textField);
 		textField.setColumns(10);
 		
-		JButton btnNewButton = new JButton("Run");
-		btnNewButton.setBounds(847, 638, 115, 27);
-		contentPane.add(btnNewButton);
-	}*/
+		
+		InfoObsLabel infoLabel = new InfoObsLabel ("Phase");
+		infoLabel.setBounds(24, 670, 800, 35);
+		contentPane.add(infoLabel);
+		
+		JButton runBtn = new JButton("Run");
+		runBtn.setBounds(847, 638, 115, 27);
+		contentPane.add(runBtn);
+	}
+
 	
 	public MapUI(Vector<Continent> continentsList, Vector<Country> countriesList, Vector<Player> playerList, Vector <String> filesLoad, int x, int y) {
 		setTitle("Risk");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1000, 750);
+		setBounds(100, 100, 1000, 760);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(null);
@@ -122,7 +128,7 @@ public class MapUI extends JFrame {
 		
 		
 		InfoObsLabel infoLabel = new InfoObsLabel ("Phase");
-		infoLabel.setBounds(24, 680, 800, 35);
+		infoLabel.setBounds(24, 670, 800, 35);
 		contentPane.add(infoLabel);
 		
 		map = visualizeAndPair(map,countriesList);

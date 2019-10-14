@@ -218,14 +218,19 @@ public class Initial extends JFrame {
 			}while(!line.trim().equals("[countries]"));
 			line = br.readLine();
 			while(!line.trim().isEmpty()) {
+				int flag = 0;
 				String[] tmp = line.split("\\s+");
 				Country c = new Country(Integer.parseInt(tmp[0]), tmp[1], Integer.parseInt(tmp[3]), Integer.parseInt(tmp[4]), x, y, 940, 585);
 				for(Continent con:continentsList) {
 					if(con.getID()==Integer.parseInt(tmp[2])) {
 						con.addToCountriesList(c);
 						c.setContinent(con);
+						flag = 1;
 						break;
 					}
+				}
+				if(flag == 0) {
+					return false;
 				}
 				countriesList.add(c);
 				line = br.readLine();
@@ -236,8 +241,10 @@ public class Initial extends JFrame {
 			line = br.readLine();
 			while(line!=null) {
 				String[] tmp = line.split("\\s+");
+				int flag = 0;
 				for(Country c:countriesList) {
 					if(c.getID()==Integer.parseInt(tmp[0])) {
+						flag = 1;
 						for(int i = 1;i<tmp.length;i++) {
 							Country tc = new Country();
 							for(int j = 0;j<countriesList.size();j++) {
@@ -246,9 +253,15 @@ public class Initial extends JFrame {
 									break;
 								}
 							}
+							if(tc.getLabel().equals("")) {
+								return false;
+							}
 							c.addNeighbour(tc);
 						}
 					}
+				}
+				if(flag==0) {
+					return false;
 				}
 				line = br.readLine();
 			}
