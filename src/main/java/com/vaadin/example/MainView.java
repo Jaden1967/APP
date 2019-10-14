@@ -289,7 +289,8 @@ public class MainView extends VerticalLayout {
                 } 
                 // validate map
                 else if (tempArr[0].equals("validatemap")) {
-                    // TODO:                 
+                    // TODO:
+                    validateMap();               
                 }
                 else {
                     // TODO closed
@@ -622,6 +623,20 @@ public class MainView extends VerticalLayout {
         catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    // TODO:
+    // public void editMap(Path file_path) {
+    //     Files.readAllLines(file_path);
+    // }
+
+    public void validateMap() {
+        // TODO:
+        Dialog dialog = new Dialog();
+        dialog.add(new Label("Map Validated!"));
+        dialog.setWidth("300px");
+        dialog.setHeight("150px");
+        dialog.open();
     }
 
     private void invalidInputAlert(){
