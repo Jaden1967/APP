@@ -641,14 +641,83 @@ public class MainView extends VerticalLayout {
         // Java 11 , default StandardCharsets.UTF_8
         FileReader fileReader = null;
         BufferedReader bufferedReader = null;
+
+        // reset all data
+        continentsData.clear();
+        countriesData.clear();
+        neighborsData.clear();
+
+        continentsMap.clear();
+        countriesMap.clear();
+
         try {
             fileReader = new FileReader(file);
             bufferedReader = new BufferedReader(fileReader);
     
             String line = "";
+
+            boolean continentPhase = false;
+            boolean countryPhase = false;
+            boolean borderPhase = false;
             while ((line = bufferedReader.readLine()) != null) {
+                if (line.equals("")) {
+                    continentPhase = false;
+                    countryPhase = false;
+                    borderPhase = false;
+                }
+
             // TODO:
             // System.out.println(line);
+                if (continentPhase){
+                    String[] tempStr = line.split(" ");
+                    ArrayList<String> tempAL = new ArrayList<>();
+                    tempAL.add(tempStr[0]);
+                    tempAL.add(tempStr[1]);
+                    tempAL.add(tempStr[2]);
+                    continentsData.add(tempAL);
+                    continentsMap.put(tempStr[0], Integer.valueOf(tempStr[1]));
+                    updateContinents();
+                }
+                else if (countryPhase) {
+                    String[] tempStr = line.split(" ");
+                    ArrayList<String> tempAL = new ArrayList<>();
+                    tempAL.add(tempStr[1]);
+                    String continent_name = continentsData.get(Integer.valueOf(tempStr[2]) - 1).get(0);
+                    tempAL.add(continent_name);
+                    tempAL.add(tempStr[3]);
+                    tempAL.add(tempStr[4]);
+                    countriesData.add(tempAL);
+                    countriesMap.put(tempStr[1], continent_name);
+                    updateCountries();
+                }
+                else if (borderPhase) {
+                    String[] tempStr = line.split(" ");
+                    ArrayList<String> tempAL = new ArrayList<>();
+
+                    String country_name = countriesData.get(Integer.valueOf(tempStr[0]) - 1).get(0);
+                    tempAL.add(country_name);
+
+                    for (int i = 1; i < tempStr.length; i++) {
+                        String tempName = countriesData.get(Integer.valueOf(tempStr[i]) - 1).get(0);
+                        tempAL.add(tempName);
+                    }
+                    neighborsData.add(tempAL);
+
+                    updateNeighbors();
+                }
+
+
+                if (line.equals("[continents]")){
+                    continentPhase = true;
+                }
+                else if (line.equals("[countries]")){
+                    countryPhase = true;
+                }
+                else if (line.equals("[borders]")){
+                    borderPhase = true;
+                }
+                
+
                 addOutputLog(line);
             }
         } catch (FileNotFoundException e) {
