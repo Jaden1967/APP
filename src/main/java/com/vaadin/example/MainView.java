@@ -19,12 +19,15 @@ import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.router.Route;
 
 import java.awt.*;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.lang.reflect.Array;
 import java.nio.file.Files;
@@ -269,9 +272,10 @@ public class MainView extends VerticalLayout {
                     // TODO closed
                     saveMap(tempArr[1]);
                 } 
-                // editmap
+                // edit map
                 else if (tempArr[0].equals("editmap")) {
-                    // TODO:                 
+                    // TODO:
+                    editMap(tempArr[1]);               
                 }
                 else {
                     // TODO closed
@@ -626,9 +630,52 @@ public class MainView extends VerticalLayout {
     }
 
     // TODO:
-    // public void editMap(Path file_path) {
-    //     Files.readAllLines(file_path);
-    // }
+    public void editMap(String fileName) {
+        String path = "map/" + fileName + ".txt";
+        File file = new File(path);
+
+        if (!file.exists()) {
+            invalidInputAlert();
+        }
+
+        // Java 11 , default StandardCharsets.UTF_8
+        FileReader fileReader = null;
+        BufferedReader bufferedReader = null;
+        try {
+            fileReader = new FileReader(file);
+            bufferedReader = new BufferedReader(fileReader);
+    
+            String line = "";
+            while ((line = bufferedReader.readLine()) != null) {
+            // TODO:
+            // System.out.println(line);
+                addOutputLog(line);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (fileReader != null) {
+            try {
+                fileReader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            }
+    
+            if (bufferedReader != null) {
+            try {
+                bufferedReader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            }
+        }
+        // Files.read(Paths.get(path), content);
+
+        addOutputLog("Map loaded from: " + path);
+    }
 
     public void validateMap() {
         // TODO:
