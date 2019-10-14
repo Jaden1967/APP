@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import UI.labels.InfoObsLabel;
 import UI.labels.OutcomeObsLabel;
+import UI.labels.PlayerTurnObsLabel;
 
 import java.util.HashSet;
 import java.util.Observable;
@@ -25,30 +26,34 @@ public class GamePlay extends Observable{
 	String armyToPlace;
 	String outcome;
 	int type;
+	int placeFlag;
 	
 	/**
 	 * Contructor for a game instance
 	 * Sets all instances of continents, countries and players to allow interaction
-	 * Initiates Recruitment Phase at the end of function
+	 * Initiates Startup Phase at the end of function
 	 * @param continentsList
 	 * @param countriesList
 	 * @param playerList
 	 * @param iol
 	 * @param ocol
 	 */
-	public GamePlay (Vector<Continent> continentsList, Vector<Country> countriesList, Vector<Player> playerList,InfoObsLabel iol,OutcomeObsLabel ocol) {
+	public GamePlay (Vector<Continent> continentsList, Vector<Country> countriesList, Vector<Player> playerList,InfoObsLabel iol,OutcomeObsLabel ocol,
+			PlayerTurnObsLabel ptol) {
 		this.continentsList = continentsList;
 		this.countriesList = countriesList;
 		this.playerList = playerList;
 		populateRandomly();
 		this.playerIndex = 0;
 		this.type = 0;
+		this.placeFlag = 0;
 		this.player = playerList.get(playerIndex);
-		this.player.rewardInitialArmy();
+		for(Player p: playerList) p.rewardInitialArmy();
 		this.armyToPlace = String.valueOf(player.getArmyToPlace());
 		this.addObserver(iol);
 		this.addObserver(ocol);
-		phaseOne();
+		this.addObserver(ptol);
+		phaseZero();
 	}
 	
 	/**
@@ -93,14 +98,22 @@ public class GamePlay extends Observable{
 	 * From player command: placearmy countryname
 	 */
 	public void placeArmy(Country c) {
-		c.setOwner(player);
 		c.addArmy(1);
 		player.deployArmy(1);
+		nextPlayerToPlace();
+		alertObservers(1);
+	}
+	
+	private void phaseZero() {
+		phase = "Startup Phase";
 		armyToPlace = String.valueOf(player.getArmyToPlace());
+		System.out.println("Currently in "+phase);
+		
 		alertObservers(1);
 	}
 	
 	private void phaseOne() {
+		placeFlag = 1;
 		phase = "Reinforcement Phase";
 		armyToPlace = String.valueOf(player.getArmyToPlace());
 		System.out.println("Currently in "+phase);
@@ -142,6 +155,9 @@ public class GamePlay extends Observable{
 		phaseOne();
 	}
 	
+	/**
+	 * For next player to place army during Startup Phase
+	 */
 	public void nextPlayerToPlace() {
 		playerIndex++;
 		if(playerIndex % playerList.size()==0) {
@@ -152,7 +168,10 @@ public class GamePlay extends Observable{
 		outcome = "Next player's turn";
 		alertObservers(1);
 		alertObservers(2);
-		
+		if(armyToPlace.equals("0")) {
+			player.rewardInitialArmy();
+			phaseOne();
+		}
 	}
 	
 	/**
@@ -258,6 +277,9 @@ public class GamePlay extends Observable{
 		return this.outcome;
 	}
 	
+	public boolean inStartUpPhase() {
+		return placeFlag == 0;
+	}
 	
 	
 	
