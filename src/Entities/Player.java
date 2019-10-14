@@ -10,6 +10,10 @@ public class Player {
 	private String color;
 	private int armyToPlace;
 	
+	public Player () {
+		this.playerID = "DNE";
+	}
+	
 	public Player(String id, String color) {
 		this.playerID = id;
 		this.color = color;
@@ -65,7 +69,7 @@ public class Player {
 		return this.getColor(getColorStr());
 	}
 	
-	public Color getColor(String color) {
+	private Color getColor(String color) {
         switch (color) {
             case "red": return Color.red;
             case "yellow": return Color.yellow;

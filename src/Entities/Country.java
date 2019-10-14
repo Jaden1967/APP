@@ -26,7 +26,10 @@ public class Country extends Observable{
 		private CountryObsLabel l;
 		private Border b; //Continent's border, constant throughout the game
 
-		public Country() {}
+		public Country() {
+			this.countryName = "DNE";
+			this.owner = new Player();
+		}
 	
 		/**
 		 * 

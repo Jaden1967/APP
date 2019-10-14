@@ -20,6 +20,7 @@ import javax.swing.border.EmptyBorder;
 import Entities.*;
 import UI.labels.CountryObsLabel;
 import UI.labels.InfoObsLabel;
+import UI.labels.OutcomeObsLabel;
 
 import javax.swing.JTextField;
 import javax.swing.ImageIcon;
@@ -130,18 +131,46 @@ public class MapUI extends JFrame {
 		InfoObsLabel infoLabel = new InfoObsLabel ("Phase");
 		infoLabel.setBounds(24, 670, 800, 35);
 		contentPane.add(infoLabel);
+		OutcomeObsLabel outcomeLabel = new OutcomeObsLabel();
+		outcomeLabel.setBounds(24,690,500, 35);
+		contentPane.add(outcomeLabel);
 		
 		map = visualizeAndPair(map,countriesList);
 		
-		GamePlay game = new GamePlay(continentsList, countriesList, playerList,infoLabel);
+		GamePlay game = new GamePlay(continentsList, countriesList, playerList,infoLabel,outcomeLabel);
 		
 		JButton runBtn = new JButton("Run");
 		runBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if(Pattern.matches(isCommandPattern, textField.getText())) {
+					String [] splitted = textField.getText().split("\\s+");
 					if(textField.getText().equals("placeall")) {
 						//place all armies randomly for current player
 						game.randomAssignArmy();
+					}else if(splitted[0].equals("placearmy")) {
+						String countryId = splitted[1];
+						boolean c_exists = false;
+						Country temp = new Country();
+						for (Country c: countriesList) {
+							if (c.getName().equals(countryId)) {
+								c_exists = true;
+								temp = c;
+								break;
+							}
+						}
+						if(c_exists) {
+							if(temp.getOwner().getID().equals(game.getPlayerID())) {
+								game.assignArmy(countryId);
+							}else {
+								JOptionPane.showMessageDialog(null, "Country not owned by Player!", "Warning", JOptionPane.ERROR_MESSAGE);
+							}
+						}else {
+							JOptionPane.showMessageDialog(null, "Country Does not Exist!", "Warning", JOptionPane.ERROR_MESSAGE);
+						}
+					}else if(splitted[0].equals("fortify")) {
+						if(splitted[1].equals("none")){
+							game.nextPlayer();
+						}
 					}
 					
 				}else {
