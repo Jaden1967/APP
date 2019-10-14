@@ -92,7 +92,10 @@ public class MainView extends VerticalLayout {
                             +   "editcountry -add China Asia\n"
                             +   "editcountry -remove China\n"
                             +   "editneighbor -add China India\n"
-                            +   "editneighbor -remove China India\n";
+                            +   "editneighbor -remove China India\n"
+                            +   "editmap risk\n"
+                            +   "savemap map_1\n"
+                            +   "validatemap\n";
         outputLog.setValue("output shows here\n" + defaultOutput);
         outputLog.setLabel("Output Log");
         outputLog.setReadOnly(true);
@@ -666,8 +669,8 @@ public class MainView extends VerticalLayout {
                     borderPhase = false;
                 }
 
-            // TODO:
-            // System.out.println(line);
+                // TODO:
+                // System.out.println(line);
                 if (continentPhase){
                     String[] tempStr = line.split(" ");
                     ArrayList<String> tempAL = new ArrayList<>();
@@ -716,9 +719,16 @@ public class MainView extends VerticalLayout {
                 else if (line.equals("[borders]")){
                     borderPhase = true;
                 }
-                
+                else if (line.length() > 20) {
+                    if (line.substring(0, 13).equals("; Dimensions:")) {
+                        String[] temp = line.split(" ");
+                        map_width = Integer.valueOf(temp[2]);
+                        map_height = Integer.valueOf(temp[4]);
+                        addOutputLog("Load game map width: " + map_width + "\nLoad game map height: " + map_height);
+                    }
+                }
 
-                addOutputLog(line);
+                // addOutputLog(line);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -747,12 +757,40 @@ public class MainView extends VerticalLayout {
     }
 
     public void validateMap() {
-        // TODO:
-        Dialog dialog = new Dialog();
-        dialog.add(new Label("Map Validated!"));
-        dialog.setWidth("300px");
-        dialog.setHeight("150px");
-        dialog.open();
+        boolean isValidated = true;
+
+        for (ArrayList<String> arrList : countriesData) {
+            if (!continentsMap.containsKey(arrList.get(1))) {
+                addOutputLog("Continent " + arrList.get(1) + " in country data is not exist!");
+                isValidated = false;
+            }
+        }
+
+        for (ArrayList<String> arrList : neighborsData) {
+            for (String country_name : arrList) {
+                if (!countriesMap.containsKey(country_name)) {
+                    addOutputLog("Country " + country_name + " in neighbor data is not exist!");
+                    isValidated = false;
+                }
+            }
+        }
+
+        if (isValidated) {
+            // TODO:
+            Dialog dialog = new Dialog();
+            dialog.add(new Label("Map successful Validated!"));
+            dialog.setWidth("300px");
+            dialog.setHeight("150px");
+            dialog.open();
+        }
+        else {
+            // TODO:
+            Dialog dialog = new Dialog();
+            dialog.add(new Label("Map Validation Failed!"));
+            dialog.setWidth("300px");
+            dialog.setHeight("150px");
+            dialog.open();
+        }
     }
 
     private void invalidInputAlert(){
