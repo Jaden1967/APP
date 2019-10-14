@@ -10,6 +10,10 @@ public class Player {
 	private String color;
 	private int armyToPlace;
 	
+	public Player () {
+		this.playerID = "DNE";
+	}
+	
 	public Player(String id, String color) {
 		this.playerID = id;
 		this.color = color;
@@ -65,16 +69,22 @@ public class Player {
 		return this.getColor(getColorStr());
 	}
 	
-	public Color getColor(String color) {
+	private Color getColor(String color) {
         switch (color) {
             case "red": return Color.red;
             case "yellow": return Color.yellow;
             case "blue": return Color.blue;
             case "green": return Color.green;
-            case "black": return Color.black;
+            case "lightyellow": return new Color(255,255,224);
             case "grey": return Color.gray;
             case "magenta": return Color.magenta;
             case "orange": return Color.orange;
+            case "pink": return Color.pink;
+            case "cyan": return Color.cyan;
+            case "OliveDrab": return new Color(85, 107, 47);
+            case "skyblue": return new Color(135,206,250);
+            case "white": return Color.white;
+            case "purple": return new Color(128, 0, 128);
             default: return Color.white;
         }
     }
