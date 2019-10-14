@@ -3,6 +3,7 @@ package Entities;
 import java.util.Vector;
 
 import UI.labels.InfoObsLabel;
+import UI.labels.OutcomeObsLabel;
 
 import java.util.HashSet;
 import java.util.Observable;
@@ -14,28 +15,37 @@ import java.util.Set;
  * 
  *
  */
-public class GamePlay{
+public class GamePlay extends Observable{
 	private Vector <Continent> continentsList;
 	private Vector<Country> countriesList;	
 	private Vector<Player> playerList;
-	private GameInfoTab gameInfo;
 	int playerIndex; //index deciding whose turn to play
 	String phase;
 	Player player;
 	String armyToPlace;
+	String outcome;
+	int type;
 	
 	
-	public GamePlay (Vector<Continent> continentsList, Vector<Country> countriesList, Vector<Player> playerList,InfoObsLabel iol) {
+	public GamePlay (Vector<Continent> continentsList, Vector<Country> countriesList, Vector<Player> playerList,InfoObsLabel iol,OutcomeObsLabel ocol) {
 		this.continentsList = continentsList;
 		this.countriesList = countriesList;
 		this.playerList = playerList;
 		populateRandomly();
 		this.playerIndex = 0;
+		this.type = 0;
 		this.player = playerList.get(playerIndex);
 		this.armyToPlace = String.valueOf(player.getArmyToPlace());
-		this.gameInfo = new GameInfoTab();
-		this.gameInfo.addObserver(iol);
+		this.addObserver(iol);
+		this.addObserver(ocol);
 		phaseOne();
+	}
+	
+	public void alertObservers(int x) {
+		type = x;
+		setChanged();
+		notifyObservers(this);
+		type = 0;
 	}
 	
 	private void populateRandomly(){
@@ -57,14 +67,16 @@ public class GamePlay{
 				pInd = 0;
 			}
 		}
+		outcome = "Randomly assigned countries to all players";
+		alertObservers(2);
 	}
 	
 	private void phaseOne() {
 		phase = "Reinforcement Phase";
 		
-		gameInfo.fetchInfo(phase, player.getID(), armyToPlace);
 		System.out.println("Currently in "+phase);
 		
+		alertObservers(1);
 		//phaseTwo();
 	}
 	
@@ -80,19 +92,26 @@ public class GamePlay{
 		
 		System.out.println("Currently in "+phase);
 
-		nextPlayer();
+		alertObservers(1);
 	}
 	
-	private void nextPlayer() {
+	public void nextPlayer() {
 		playerIndex++;
 		if(playerIndex % playerList.size()==0) {
 			playerIndex = 0;
 		}
 		player = playerList.get(playerIndex);
 		armyToPlace = String.valueOf(player.getArmyToPlace());
+		outcome = "Next player's turn";
+		alertObservers(2);
+		
 		phaseOne();
 	}
 	
+	/**
+	 * During Recruitment phase, when the player inputs "placeall"
+	 * Randomly places armies to current player's owned countries
+	 */
 	public void randomAssignArmy() {
 		System.out.println("placing all for player "+player.getID());
 		Vector <Country> toAdd = new Vector <>();
@@ -118,12 +137,64 @@ public class GamePlay{
 			}
 		}
 		armyToPlace = String.valueOf(player.getArmyToPlace());
-		gameInfo.fetchInfo(phase, player.getID(), armyToPlace);
+		outcome = "Randomly assigned armies to owned countries";
+		alertObservers(2);
+		phaseThree();
 	}
 	
-	public GameInfoTab getGameInfo() {
-		return this.gameInfo;
+	/**
+	 * During Recruitment phase, player chooses to place one army to specific owned country
+	 * @param countryID
+	 */
+	public void assignArmy (String countryID) {
+		System.out.println("placing army on "+countryID);
+		Country temp = new Country();
+		for (Country c:countriesList) {
+			if (c.getName().equals(countryID)) {
+				temp = c;
+			}
+		}
+		
+		if(temp.getName().equals("DNE")) {
+			outcome = "Country does not Exist!";
+			alertObservers(2);
+			return;
+		}
+		
+		if(temp.getOwner().getID().equals(player.getID())) {
+			temp.addArmy(1);
+			player.deployArmy(1);
+			armyToPlace = String.valueOf(player.getArmyToPlace());
+		}else {
+			
+		}
+		alertObservers(1);
+		if(armyToPlace.equals("0")) {
+			phaseThree();
+		}
 	}
+	
+	public String getPhase() {
+		return this.phase;
+	}
+	
+	public String getPlayerID() {
+		return this.player.getID();
+	}
+	
+	public String getArmyToPlace() {
+		return this.armyToPlace;
+	}
+	
+	public int getAlertType() {
+		return this.type;
+	}
+	
+	public String getOutcome() {
+		return this.outcome;
+	}
+	
+	
 	
 	
 }
