@@ -799,5 +799,7 @@ public class MainView extends VerticalLayout {
         dialog.setWidth("300px");
         dialog.setHeight("150px");
         dialog.open();
+        // InvalidInputAlert inputAlert = new InvalidInputAlert();
+        // inputAlert.alert();
     }
 }
