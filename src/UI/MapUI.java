@@ -131,7 +131,9 @@ public class MapUI extends JFrame {
 		
 		
 		InfoObsLabel infoLabel = new InfoObsLabel ("Phase");
-		infoLabel.setBounds(60, 660, 800, 35);
+
+		infoLabel.setBounds(24, 670, 800, 35);
+
 		contentPane.add(infoLabel);
 		OutcomeObsLabel outcomeLabel = new OutcomeObsLabel();
 		outcomeLabel.setBounds(24,690,500, 35);
