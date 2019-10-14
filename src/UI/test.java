@@ -3,15 +3,8 @@ import java.util.Random;
 import java.util.regex.*;
 
 public class test {
+	public static String isCommandPattern=("placearmy \\w*|placeall|reinforce \\w* [1-9][0-9]*|fortify (\\w* \\w* [1-9][0-9]*|none)");
 	public static void main (String args[] ) {
-		int a = 585;
-		int b = 425;
-		System.out.println((float)(a/b));
-    
-		Random rand = new Random() ;
-			
-		for (int i=0;i<30;i++) {
-			System.out.println(rand.nextInt(1/1 -1)+1);
-		}
+		System.out.println(Pattern.matches(isCommandPattern,"fortify none node 8"));
 	}
 }
