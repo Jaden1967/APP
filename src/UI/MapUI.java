@@ -22,6 +22,7 @@ import Entities.*;
 import UI.labels.CountryObsLabel;
 import UI.labels.InfoObsLabel;
 import UI.labels.OutcomeObsLabel;
+import UI.labels.PlayerTurnObsLabel;
 
 import javax.swing.JTextField;
 import javax.swing.ImageIcon;
@@ -130,15 +131,18 @@ public class MapUI extends JFrame {
 		
 		
 		InfoObsLabel infoLabel = new InfoObsLabel ("Phase");
-		infoLabel.setBounds(24, 660, 800, 35);
+		infoLabel.setBounds(60, 660, 800, 35);
 		contentPane.add(infoLabel);
 		OutcomeObsLabel outcomeLabel = new OutcomeObsLabel();
 		outcomeLabel.setBounds(24,690,500, 35);
 		contentPane.add(outcomeLabel);
+		PlayerTurnObsLabel turnLabel = new PlayerTurnObsLabel();
+		turnLabel.setBounds(24, 660, 25, 25);
+		contentPane.add(turnLabel);
 		
 		map = visualizeAndPair(map,countriesList);
 		
-		GamePlay game = new GamePlay(continentsList, countriesList, playerList,infoLabel,outcomeLabel);
+		GamePlay game = new GamePlay(continentsList, countriesList, playerList,infoLabel,outcomeLabel,turnLabel);
 		
 		JButton runBtn = new JButton("Run");
 		runBtn.addActionListener(new ActionListener() {
@@ -150,50 +154,59 @@ public class MapUI extends JFrame {
 						game.randomAssignArmy();
 					}
 					else if(splitted[0].equals("placearmy")){
-						String countryId = splitted [1];
-						boolean c_exists = false;
-						Country temp = new Country();
-						for (Country c: countriesList) {
-							if (c.getName().equals(countryId)) {
-								c_exists = true;
+						if(game.inStartUpPhase()) {
+							String countryId = splitted [1];
+							boolean c_exists = false;
+							Country temp = new Country();
+							for (Country c: countriesList) {
+								if (c.getName().equals(countryId)) {
+									c_exists = true;
 								temp = c;
 								break;
+								}
 							}
-						}
-						if(c_exists) {
-							if(!temp.hasOwner()) {
-								game.placeArmy(temp);
+							if(c_exists) {
+								if(temp.getOwner().getID().equals(game.getPlayerID())) {
+									game.placeArmy(temp);
+								}else {
+								JOptionPane.showMessageDialog(null, "Country not owned by Player!", "Warning", JOptionPane.ERROR_MESSAGE);
+								}
 							}else {
 								JOptionPane.showMessageDialog(null, "Country Does not Exist!", "Warning", JOptionPane.ERROR_MESSAGE);
 							}
 						}else {
-							JOptionPane.showMessageDialog(null, "Country Does not Exist!", "Warning", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(null, "No longer in Startup Phase!", "Warning", JOptionPane.ERROR_MESSAGE);
 						}
 					}
 					else if(splitted[0].equals("reinforce")) {
-						String countryId = splitted[1];
-						int num = Integer.parseInt(splitted[2]);
-						boolean c_exists = false;
-						Country temp = new Country();
-						for (Country c: countriesList) {
-							if (c.getName().equals(countryId)) {
-								c_exists = true;
-								temp = c;
-								break;
+						if(!game.inStartUpPhase()) {
+						
+							String countryId = splitted[1];
+							int num = Integer.parseInt(splitted[2]);
+							boolean c_exists = false;
+							Country temp = new Country();
+							for (Country c: countriesList) {
+								if (c.getName().equals(countryId)) {
+									c_exists = true;
+									temp = c;
+									break;
+								}
 							}
-						}
-						if(c_exists) {
-							if(temp.getOwner().getID().equals(game.getPlayerID())) {
-								if(num<= game.getPlayer().getArmyToPlace()) {
-									game.assignArmy(countryId, num);
+							if(c_exists) {
+								if(temp.getOwner().getID().equals(game.getPlayerID())) {
+									if(num<= game.getPlayer().getArmyToPlace()) {
+										game.assignArmy(countryId, num);
+									}else {
+										JOptionPane.showMessageDialog(null, "Number exceeds assigning limit!", "Warning", JOptionPane.ERROR_MESSAGE);
+									}
 								}else {
-									JOptionPane.showMessageDialog(null, "Number exceeds assigning limit!", "Warning", JOptionPane.ERROR_MESSAGE);
+									JOptionPane.showMessageDialog(null, "Country not owned by Player!", "Warning", JOptionPane.ERROR_MESSAGE);
 								}
 							}else {
-								JOptionPane.showMessageDialog(null, "Country not owned by Player!", "Warning", JOptionPane.ERROR_MESSAGE);
+								JOptionPane.showMessageDialog(null, "Country Does not Exist!", "Warning", JOptionPane.ERROR_MESSAGE);
 							}
 						}else {
-							JOptionPane.showMessageDialog(null, "Country Does not Exist!", "Warning", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(null, "You have to use placearmy command during Startup!", "Warning", JOptionPane.ERROR_MESSAGE);
 						}
 					}else if(splitted[0].equals("fortify")) {
 						if(splitted[1].equals("none")){
