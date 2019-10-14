@@ -468,12 +468,16 @@ public class MainView extends VerticalLayout {
             boolean hasNeighborCountry = false;
             for (ArrayList<String> arrList : neighborsData) {
                 if (arrList.get(0).equals(countryname)) {
-                    arrList.add(neighborCountryname);
                     hasCountry = true;
+                    if (!arrList.contains(neighborCountryname)) {
+                        arrList.add(neighborCountryname);
+                    }
                 }
                 if (arrList.get(0).equals(neighborCountryname)) {
-                    arrList.add(countryname);
                     hasNeighborCountry = true;
+                    if (!arrList.contains(countryname)) {
+                        arrList.add(countryname);
+                    }
                 }
             }
             if (!hasCountry) {
@@ -502,7 +506,14 @@ public class MainView extends VerticalLayout {
 
     private void removeNeighbor(String countryname, String neighborCountryname) {
         boolean hasCountry = false;
-        boolean hasNeighborCountry = false;
+        // boolean hasNeighborCountry = false;
+        // TODO: 
+        // bug need to fix!
+        if (neighborsData.size() == 0) {
+            invalidInputAlert();
+            return;
+        }
+
         for (ArrayList<String> arrList : neighborsData) {
             if (arrList.get(0).equals(countryname)) {
                 for (String neighbor_name : arrList.subList(1, arrList.size())) {
@@ -511,22 +522,27 @@ public class MainView extends VerticalLayout {
                         if (arrList.size() == 1) {
                             neighborsData.remove(arrList);
                         }
-                        
-                        updateNeighbors();
-                    }
-                    if (neighbor_name.equals(countryname)) {
-                        arrList.remove(countryname);
-                        if (arrList.size() == 1) {
-                            neighborsData.remove(arrList);
-                        }
-                        
+                        hasCountry = true;
                         updateNeighbors();
                     }
                 }
             }
+            // else if (arrList.get(0).equals(neighborCountryname)) {
+            //     for (String neighbor_name : arrList) {
+            //         if (neighbor_name.equals(countryname)) {
+            //             arrList.remove(countryname);
+            //             if (arrList.size() == 1) {
+            //                 neighborsData.remove(arrList);
+            //             }
+            //             hasNeighborCountry = true;
+            //             updateNeighbors();
+            //         }
+            //     }
+            // }
         }
 
-        if (!hasCountry || !hasNeighborCountry) {
+        // if (!hasCountry || !hasNeighborCountry) {
+        if (!hasCountry) {
             // invalid
             Dialog dialog = new Dialog();
             dialog.add(new Label("No such country, please create it first. \nClose me with the esc-key or an outside click"));
