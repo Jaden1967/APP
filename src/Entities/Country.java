@@ -2,7 +2,7 @@ package Entities;
 
 import java.awt.Color;
 import java.awt.Font;
-
+import java.util.HashSet;
 import java.util.Observable;
 import java.util.Vector;
 
@@ -22,7 +22,7 @@ public class Country extends Observable{
 		private Continent belongTo;
 		private int x;
 		private int y;
-
+		private boolean owned;
 		private CountryObsLabel l;
 		private Border b; //Continent's border, constant throughout the game
 
@@ -47,7 +47,7 @@ public class Country extends Observable{
 			this.countryName = name;
 			this.x = horizontal;
 			this.y = vertical;
-
+			this.owned = false;
 			l = new CountryObsLabel(String.valueOf(armyNum));
 
 
@@ -60,13 +60,31 @@ public class Country extends Observable{
 			
 		}
 		
+		/**
+		 * Getter for owner of Country
+		 * @return
+		 */
 		public Player getOwner() {
 			return this.owner;
 		}
 		
+		/**
+		 * Boolean of whether country's currently owned by a player
+		 * @return
+		 */
+		public boolean hasOwner() {
+			return owned;
+		}
+		
+		/**
+		 * Setter for owned player
+		 * Alerts observer to change color to that of the new player
+		 * @param p
+		 */
 		public void setOwner(Player p) {
+			owned = true;
 			owner = p;
-
+			
 			if (armyNum==0) armyNum++;
 			l.setBackground(owner.getColor());
 			alertObservers();
@@ -86,6 +104,38 @@ public class Country extends Observable{
 			this.linkCountries.add(nbour);
 		}
 		
+		public boolean hasNeighbour (String countryId) {
+			for (Country c: this.linkCountries) {
+				if (c.getName().equals(countryId)) {
+					return true;
+				}
+			}
+			return false;
+		}
+		
+		/**
+		 * Depth-first recursive search to determine if there's a linked path owned by same player to the destination Country
+		 * with countryId
+		 * @param countryId destination countryId
+		 * @param ownerId playerId who is suppoed to own the path
+		 * @param visited HashSet of visited id of Countries during the recursive call
+		 * @return false if no such path is found, true if yes
+		 */
+		public boolean hasPathTo (String countryId, String ownerId, HashSet<String>visited) {
+			visited.add(this.getName());
+			if(!this.getOwner().getID().equals(ownerId)) return false;
+			if(this.getName().equals(countryId)) return true;
+			for (Country c: this.linkCountries) {
+				if(visited.contains(c.getName())) continue;
+				if(c.hasPathTo(countryId,ownerId,visited)) return true;
+			}
+			return false;
+			
+		}
+		
+		/**
+		 * After change of state, alerts attached CountryObsLabel 
+		 */
 		public void alertObservers() {
 			setChanged();
 			notifyObservers(this);
@@ -146,12 +196,18 @@ public class Country extends Observable{
 			return this.countryId;
 		}
 		
-
+		/**
+		 * Getter of armyNum
+		 * @return
+		 */
 		public int getArmyNum() {
 			return this.armyNum;
 		}
 		
-
+		/**
+		 * Getter of countryName
+		 * @return
+		 */
 		public String getName() {
 			return this.countryName;
 		}
@@ -164,13 +220,28 @@ public class Country extends Observable{
 			return this.belongTo;
 		}
 		
+		/**
+		 * Set Continent that this Country belongs to
+		 * @param c
+		 */
 		public void setContinent(Continent c) {
 			belongTo = c;
 			b = BorderFactory.createLineBorder(c.getColor(), 3);
 			l.setBorder(b);
 		}
 		
-
+		/**
+		 * Getter of neigbouring Country Vector
+		 * @return
+		 */
+		public Vector<Country> getLinkCountries() {
+			return linkCountries;
+		}
+		
+		/**
+		 * Getter of CountryObsLabel l
+		 * @return
+		 */
 		public CountryObsLabel getLabel() {
 			return l;
 		}

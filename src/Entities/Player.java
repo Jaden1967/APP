@@ -21,12 +21,24 @@ public class Player {
 		this.armyToPlace = 0;
 	}
 	
+	public int calculateArmy() {
+        int rew = totalCountryNum/3;
+        if(rew<3) {
+            rew=3;
+        }
+        return rew;
+    }
+	
 	public void rewardArmy(int i) {
 		this.armyToPlace += i;
 	}
 	
+	public void rewardInitialArmy() {
+		this.armyToPlace += calculateArmy() + extraArmyToAdd();
+	}
+	
 	public int getArmyToPlace() {
-		return (this.armyToPlace + extraArmyToAdd());
+		return this.armyToPlace;
 	}
 	
 	public void deployArmy(int i) {
