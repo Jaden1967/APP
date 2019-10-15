@@ -9,6 +9,7 @@ webpack.generated.js
 /.settings/
 .idea  
 map
+/.vscode/
 
 # Compiled class file
 *.class
