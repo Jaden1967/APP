@@ -87,14 +87,14 @@ public class Player {
             case "yellow": return Color.yellow;
             case "blue": return Color.blue;
             case "green": return Color.green;
-            case "lightyellow": return new Color(255,255,224);
-            case "grey": return Color.gray;
+            case "lightyellow": return new Color(107,142,35);
+            case "darkgrey": return Color.darkGray;
             case "magenta": return Color.magenta;
             case "orange": return Color.orange;
             case "pink": return Color.pink;
             case "cyan": return Color.cyan;
-            case "OliveDrab": return new Color(85, 107, 47);
-            case "skyblue": return new Color(135,206,250);
+            case "DeepPink": return new Color(255,20,147);
+            case "skyblue": return new Color(176, 196, 222);
             case "white": return Color.white;
             case "purple": return new Color(128, 0, 128);
             default: return Color.white;
