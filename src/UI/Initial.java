@@ -50,7 +50,7 @@ public class Initial extends JFrame {
 	private Vector <String> filesLoad = new Vector <String>();
 	private int x,y;
 	private Vector<String> colorList = new Vector<String>();
-	private String isCommandPattern = "(gameplayer -(add|remove) \\w*|loadmap \\w*\\.txt|populatecountries)";
+	private String isCommandPattern = "(gameplayer -(add|remove) \\w*|loadmap \\w*\\.map|populatecountries)";
 	
 	private void run(JLabel lblNewLabel, JTextField textField, JTextArea textArea, JTextArea textArea_1) {
 		if(Pattern.matches(isCommandPattern, textField.getText())) {
