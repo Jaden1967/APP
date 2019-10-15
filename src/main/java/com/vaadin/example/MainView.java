@@ -64,7 +64,19 @@ public class MainView extends VerticalLayout {
     private int map_width = 0;
     private int map_height = 0;
 
+    // if value == true, this color could be used in a new continent
+    private HashMap<String, Boolean> colorAvailable = new HashMap<>();
+
     private void init() {
+
+        // continents color set
+        colorAvailable.put("yellow", true);
+        colorAvailable.put("red", true);
+        colorAvailable.put("blue", true);
+        colorAvailable.put("orange", true);
+        colorAvailable.put("magenta", true);
+        colorAvailable.put("green", true);
+        colorAvailable.put("pink", true);
 
         continents.setValue("continents shows here\n");
         continents.setLabel("Continents");
@@ -352,7 +364,22 @@ public class MainView extends VerticalLayout {
             ArrayList<String> tempAL = new ArrayList<>();
             tempAL.add(continentname);
             tempAL.add(continentvalue);
-            tempAL.add("color");
+
+            String tempColor = "";
+            for (String color_name : colorAvailable.keySet()) {
+                if (colorAvailable.get(color_name)) {
+                    colorAvailable.put(color_name, false);
+                    tempColor = color_name;
+                    break;
+                }
+            }
+            if (tempColor.equals("")) {
+                addOutputLog("Insufficient available color");
+                createAlert("Insufficient available color");
+                tempColor = "defaultColor";
+            }
+
+            tempAL.add(tempColor);
             continentsData.add(tempAL);
             continentsMap.put(continentname, Integer.valueOf(continentvalue));
         }
@@ -801,5 +828,13 @@ public class MainView extends VerticalLayout {
         dialog.open();
         // InvalidInputAlert inputAlert = new InvalidInputAlert();
         // inputAlert.alert();
+    }
+
+    private void createAlert(String alertStr){
+        Dialog dialog = new Dialog();
+        dialog.add(new Label(alertStr));
+        dialog.setWidth("300px");
+        dialog.setHeight("150px");
+        dialog.open();
     }
 }
