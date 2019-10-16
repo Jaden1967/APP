@@ -783,10 +783,17 @@ public class MainView extends VerticalLayout {
         addOutputLog("Map loaded from: " + path);
     }
 
+    /** Validation of map construction
+     * bind to command 'validatemap'
+     * @param isValidated if is true, map validation success; if is false, validation failed
+     * add log to output block
+     */
     public void validateMap() {
         boolean isValidated = true;
 
+        // check if all contries are in existing continents
         for (ArrayList<String> arrList : countriesData) {
+            // arrList.get(1) represents the continent in which the country are located
             if (!continentsMap.containsKey(arrList.get(1))) {
                 addOutputLog("Continent " + arrList.get(1) + " in country data is not exist!");
                 isValidated = false;
@@ -803,7 +810,6 @@ public class MainView extends VerticalLayout {
         }
 
         if (isValidated) {
-            // TODO:
             Dialog dialog = new Dialog();
             dialog.add(new Label("Map successful Validated!"));
             dialog.setWidth("300px");
@@ -811,7 +817,6 @@ public class MainView extends VerticalLayout {
             dialog.open();
         }
         else {
-            // TODO:
             Dialog dialog = new Dialog();
             dialog.add(new Label("Map Validation Failed!"));
             dialog.setWidth("300px");
@@ -820,6 +825,9 @@ public class MainView extends VerticalLayout {
         }
     }
 
+    /** Create Invalid Input Alert Dialog
+     * dialog can be closed with the esc-key or an outside click
+     */
     private void invalidInputAlert(){
         Dialog dialog = new Dialog();
         dialog.add(new Label("Invalid Input Command!"));
@@ -830,6 +838,10 @@ public class MainView extends VerticalLayout {
         // inputAlert.alert();
     }
 
+    /** Create Alert Dialog
+     * @param alertStr alert text will appear on the Dialog
+     * dialog can be closed with the esc-key or an outside click
+     */
     private void createAlert(String alertStr){
         Dialog dialog = new Dialog();
         dialog.add(new Label(alertStr));
@@ -837,4 +849,7 @@ public class MainView extends VerticalLayout {
         dialog.setHeight("150px");
         dialog.open();
     }
+
+    // TODO:
+    // user edit continent color
 }
