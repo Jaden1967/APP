@@ -1,4 +1,4 @@
-package UI;
+package ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -18,40 +18,31 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import Entities.*;
-import UI.labels.CountryObsLabel;
-import UI.labels.InfoObsLabel;
-import UI.labels.OutcomeObsLabel;
-import UI.labels.PlayerTurnObsLabel;
+import entities.*;
+import ui.labels.CountryObsLabel;
+import ui.labels.InfoObsLabel;
+import ui.labels.OutcomeObsLabel;
+import ui.labels.PlayerTurnObsLabel;
 
 import javax.swing.JTextField;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import javax.swing.SwingConstants;
 
 public class MapUI extends JFrame {
 	
 	private JPanel contentPane;
 	private JTextField textField;
 	private String isCommandPattern = "(placearmy \\w*(\\-\\w+)*|placeall|reinforce \\w*(\\-\\w+)* [1-9][0-9]*|fortify (\\w*(\\-\\w+)*\\ \\w*(\\-\\w+)*\\ [1-9][0-9]*|none))";
-	/**
-	 * Launch the application.
-	 */
-	/*public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Game frame = new Game();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}*/
+	
 	
 	class mapPanel extends JPanel{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		private Vector <String> filesLoad;
 		
 		mapPanel(Vector<String> filesLoad){
@@ -83,7 +74,7 @@ public class MapUI extends JFrame {
 	public MapUI() {
 		setTitle("Risk");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1000, 760);
+		setBounds(100, 100, 1000, 800);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(null);
@@ -100,10 +91,24 @@ public class MapUI extends JFrame {
 		contentPane.add(textField);
 		textField.setColumns(10);
 		
-		
 		InfoObsLabel infoLabel = new InfoObsLabel ("Phase");
-		infoLabel.setBounds(24, 670, 800, 35);
+		infoLabel.setText("Phase 1 army 1");
+		infoLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		infoLabel.setBounds(100, 670, 800, 35);
 		contentPane.add(infoLabel);
+		
+		OutcomeObsLabel outcomeLabel = new OutcomeObsLabel();
+		outcomeLabel.setText("Hi");
+		outcomeLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		outcomeLabel.setBounds(100,700,500, 35);
+		contentPane.add(outcomeLabel);
+		
+		PlayerTurnObsLabel turnLabel = new PlayerTurnObsLabel();
+		turnLabel.setBounds(30, 675, 40, 20);
+		contentPane.add(turnLabel);
+		
+		
+		
 		
 		JButton runBtn = new JButton("Run");
 		runBtn.setBounds(847, 638, 115, 27);
@@ -267,13 +272,15 @@ public class MapUI extends JFrame {
 		textField.setColumns(10);
 		
 		InfoObsLabel infoLabel = new InfoObsLabel ("Phase");
-
+		infoLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		infoLabel.setBounds(100, 670, 800, 35);
-
 		contentPane.add(infoLabel);
+		
 		OutcomeObsLabel outcomeLabel = new OutcomeObsLabel();
+		outcomeLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		outcomeLabel.setBounds(100,700,500, 35);
 		contentPane.add(outcomeLabel);
+		
 		PlayerTurnObsLabel turnLabel = new PlayerTurnObsLabel();
 		turnLabel.setBounds(30, 675, 40, 20);
 		contentPane.add(turnLabel);

@@ -1,11 +1,11 @@
-package UI.labels;
+package ui.labels;
 
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JLabel;
 
-import Entities.Country;
+import entities.Country;
 
 public class CountryObsLabel extends JLabel implements Observer{
 

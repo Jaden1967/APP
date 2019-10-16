@@ -1,4 +1,4 @@
-package Entities;
+package entities;
 
 import java.awt.Color;
 import java.util.Vector;

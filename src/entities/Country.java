@@ -1,17 +1,20 @@
-package Entities;
+package entities;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.HashSet;
 import java.util.Observable;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
-import UI.labels.CountryObsLabel;
+import ui.labels.CountryObsLabel;
 
 public class Country extends Observable{
 		private String countryName;
@@ -49,11 +52,15 @@ public class Country extends Observable{
 			this.y = vertical;
 			this.owned = false;
 			l = new CountryObsLabel(String.valueOf(armyNum));
-
-
 			l.setBounds((int)((float)plotX/imageX*x-10), (int)((float)plotY/imageY*y-10), 20, 20);
 			l.setFont(new Font("SimSun", Font.BOLD, 15));
 			l.setHorizontalAlignment(SwingConstants.CENTER);
+			l.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent arg0) {
+					JOptionPane.showMessageDialog(null, "Country name: "+countryName+"\nOwner: "+owner.getID()+"\nArmy number"+armyNum, "Country information", JOptionPane.INFORMATION_MESSAGE);
+				}
+			});
 		}
 		
 		public void modifyLabel() {

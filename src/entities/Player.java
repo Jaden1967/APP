@@ -1,4 +1,4 @@
-package Entities;
+package entities;
 
 import java.awt.Color;
 import java.util.Vector;;
@@ -31,6 +31,21 @@ public class Player {
 	
 	public void rewardArmy(int i) {
 		this.armyToPlace += i;
+	}
+	
+	public void initializeStartupArmy(int playersize) {
+		int reward;
+		switch (playersize) {
+		case 8: reward = 10; break;
+		case 7: reward = 15; break;
+		case 6: reward = 20; break;
+		case 5: reward = 25; break;
+		case 4: reward = 30; break;
+		case 3: reward = 35; break;
+		case 2: reward = 40; break;
+		default: reward = 0; 
+		}
+		this.armyToPlace += reward;
 	}
 	
 	public void rewardInitialArmy() {
@@ -88,7 +103,7 @@ public class Player {
             case "blue": return Color.blue;
             case "green": return Color.green;
             case "lightyellow": return new Color(107,142,35);
-            case "darkgrey": return Color.darkGray;
+            case "grey": return Color.gray;
             case "magenta": return Color.magenta;
             case "orange": return Color.orange;
             case "pink": return Color.pink;

@@ -1,10 +1,10 @@
-package Entities;
+package entities;
 
 import java.util.Vector;
 
-import UI.labels.InfoObsLabel;
-import UI.labels.OutcomeObsLabel;
-import UI.labels.PlayerTurnObsLabel;
+import ui.labels.InfoObsLabel;
+import ui.labels.OutcomeObsLabel;
+import ui.labels.PlayerTurnObsLabel;
 
 import java.util.HashSet;
 import java.util.Observable;
@@ -20,13 +20,13 @@ public class GamePlay extends Observable{
 	private Vector <Continent> continentsList;
 	private Vector<Country> countriesList;	
 	private Vector<Player> playerList;
-	int playerIndex; //index deciding whose turn to play
+	int player_index; //index deciding whose turn to play
 	String phase;
 	Player player;
-	String armyToPlace;
+	String army_to_place;
 	String outcome;
 	int type;
-	int placeFlag;
+	int place_flag;
 	
 	/**
 	 * Contructor for a game instance
@@ -43,13 +43,13 @@ public class GamePlay extends Observable{
 		this.continentsList = continentsList;
 		this.countriesList = countriesList;
 		this.playerList = playerList;
+		for(Player p: playerList) p.initializeStartupArmy(playerList.size());
 		populateRandomly();
-		this.playerIndex = 0;
+		this.player_index = 0;
 		this.type = 0;
-		this.placeFlag = 0;
-		this.player = playerList.get(playerIndex);
-		for(Player p: playerList) p.rewardInitialArmy();
-		this.armyToPlace = String.valueOf(player.getArmyToPlace());
+		this.place_flag = 0;
+		this.player = playerList.get(player_index);
+		this.army_to_place = String.valueOf(player.getArmyToPlace());
 		this.addObserver(iol);
 		this.addObserver(ocol);
 		this.addObserver(ptol);
@@ -84,6 +84,7 @@ public class GamePlay extends Observable{
 			polledCountries.add(cInd);
 			
 			countriesList.get(cInd).setOwner(playerList.get(pInd)); //set unassigned Country to Player in List in order
+			playerList.get(pInd).deployArmy(1);
 			pInd++;
 			if (pInd % playerList.size() == 0) {
 				pInd = 0;
@@ -101,21 +102,21 @@ public class GamePlay extends Observable{
 		c.addArmy(1);
 		player.deployArmy(1);
 		nextPlayerToPlace();
-		alertObservers(1);
 	}
 	
 	private void phaseZero() {
 		phase = "Startup Phase";
-		armyToPlace = String.valueOf(player.getArmyToPlace());
+		
+		army_to_place = String.valueOf(player.getArmyToPlace());
 		System.out.println("Currently in "+phase);
 		
 		alertObservers(1);
 	}
 	
 	private void phaseOne() {
-		placeFlag = 1;
+		place_flag = 1;
 		phase = "Reinforcement Phase";
-		armyToPlace = String.valueOf(player.getArmyToPlace());
+		army_to_place = String.valueOf(player.getArmyToPlace());
 		System.out.println("Currently in "+phase);
 		
 		alertObservers(1);
@@ -142,13 +143,13 @@ public class GamePlay extends Observable{
 	 * Initiate recruitment phase for that player
 	 */
 	public void nextPlayer() {
-		playerIndex++;
-		if(playerIndex % playerList.size()==0) {
-			playerIndex = 0;
+		player_index++;
+		if(player_index % playerList.size()==0) {
+			player_index = 0;
 		}
-		player = playerList.get(playerIndex);
+		player = playerList.get(player_index);
 		player.rewardInitialArmy();
-		armyToPlace = String.valueOf(player.getArmyToPlace());
+		army_to_place = String.valueOf(player.getArmyToPlace());
 		outcome = "Next player's turn";
 		alertObservers(2);
 		
@@ -159,16 +160,16 @@ public class GamePlay extends Observable{
 	 * For next player to place army during Startup Phase
 	 */
 	public void nextPlayerToPlace() {
-		playerIndex++;
-		if(playerIndex % playerList.size()==0) {
-			playerIndex = 0;
+		player_index++;
+		if(player_index % playerList.size()==0) {
+			player_index = 0;
 		}
-		player = playerList.get(playerIndex);
-		armyToPlace = String.valueOf(player.getArmyToPlace());
+		player = playerList.get(player_index);
+		army_to_place = String.valueOf(player.getArmyToPlace());
 		outcome = "Next player's turn";
 		alertObservers(1);
 		alertObservers(2);
-		if(armyToPlace.equals("0")) {
+		if(army_to_place.equals("0")) {
 			player.rewardInitialArmy();
 			phaseOne();
 		}
@@ -196,12 +197,12 @@ public class GamePlay extends Observable{
                 player.deployArmy(1);
 
             }
-            armyToPlace = String.valueOf(player.getArmyToPlace());
+            army_to_place = String.valueOf(player.getArmyToPlace());
 
         }
-        placeFlag  = 1;
+        place_flag  = 1;
         player = playerList.get(0);
-        playerIndex = 0;
+        player_index = 0;
         player.rewardInitialArmy();
         outcome = "Randomly assigned armies to owned countries";
         phaseOne();
@@ -246,12 +247,12 @@ public class GamePlay extends Observable{
 		if(temp.getOwner().getID().equals(player.getID())) {
 			temp.addArmy(num);
 			player.deployArmy(num);
-			armyToPlace = String.valueOf(player.getArmyToPlace());
+			army_to_place = String.valueOf(player.getArmyToPlace());
 		}else {
 			
 		}
 		alertObservers(1);
-		if(armyToPlace.equals("0")) {
+		if(army_to_place.equals("0")) {
 			phaseThree();
 		}
 	}
@@ -269,7 +270,7 @@ public class GamePlay extends Observable{
 	}
 	
 	public String getArmyToPlace() {
-		return this.armyToPlace;
+		return this.army_to_place;
 	}
 	
 	public int getAlertType() {
@@ -281,7 +282,7 @@ public class GamePlay extends Observable{
 	}
 	
 	public boolean inStartUpPhase() {
-		return placeFlag == 0;
+		return place_flag == 0;
 	}
 	
 	
