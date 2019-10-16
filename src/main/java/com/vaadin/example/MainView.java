@@ -852,4 +852,7 @@ public class MainView extends VerticalLayout {
 
     // TODO:
     // user edit continent color
+
+    // TODO:
+    // outputlog save to .txt file, for each simple line
 }
