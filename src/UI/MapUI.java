@@ -118,7 +118,8 @@ public class MapUI extends JFrame {
                     //place all armies randomly for current player
                     game.randomAssignArmy();
                 }else {
-                    JOptionPane.showMessageDialog(null, "Not in correct phase!", "Warning", JOptionPane.ERROR_MESSAGE);                        }
+                    JOptionPane.showMessageDialog(null, "Not in correct phase!", "Warning", JOptionPane.ERROR_MESSAGE); 
+                }
             }
 			else if(splitted[0].equals("placearmy")){
 				if(game.inStartUpPhase()) {
@@ -135,17 +136,21 @@ public class MapUI extends JFrame {
 					if(c_exists) {
 						if(temp.getOwner().getID().equals(game.getPlayerID())) {
 							game.placeArmy(temp);
-						}else {
-						JOptionPane.showMessageDialog(null, "Country not owned by Player!", "Warning", JOptionPane.ERROR_MESSAGE);
 						}
-					}else {
+						else {
+							JOptionPane.showMessageDialog(null, "Country not owned by Player!", "Warning", JOptionPane.ERROR_MESSAGE);
+						}
+					}
+					else{
 						JOptionPane.showMessageDialog(null, "Country Does not Exist!", "Warning", JOptionPane.ERROR_MESSAGE);
 					}
-				}else {
-                    JOptionPane.showMessageDialog(null, "Not in correct phase!", "Warning", JOptionPane.ERROR_MESSAGE);						}
+				}
+				else{
+                    JOptionPane.showMessageDialog(null, "Not in correct phase!", "Warning", JOptionPane.ERROR_MESSAGE);
+                }
 			}
-			else if(!game.inStartUpPhase() || game.getPhase().equals("Reinforcement Phase")) {
-				if(!game.inStartUpPhase()) {
+			else if(splitted[0].equals("reinforce")) {
+				if(game.getPhase().equals("Reinforcement Phase")) {
 				
 					String countryId = splitted[1];
 					int num = Integer.parseInt(splitted[2]);
@@ -162,69 +167,83 @@ public class MapUI extends JFrame {
 						if(temp.getOwner().getID().equals(game.getPlayerID())) {
 							if(num<= game.getPlayer().getArmyToPlace()) {
 								game.assignArmy(countryId, num);
-							}else {
+							}
+							else {
 								JOptionPane.showMessageDialog(null, "Number exceeds assigning limit!", "Warning", JOptionPane.ERROR_MESSAGE);
 							}
-						}else {
+						}
+						else {
 							JOptionPane.showMessageDialog(null, "Country not owned by Player!", "Warning", JOptionPane.ERROR_MESSAGE);
 						}
-					}else {
+					}
+					else {
 						JOptionPane.showMessageDialog(null, "Country Does not Exist!", "Warning", JOptionPane.ERROR_MESSAGE);
 					}
-				}else {
+				}
+				else {
                     JOptionPane.showMessageDialog(null, "Not in correct phase!", "Warning", JOptionPane.ERROR_MESSAGE);						}
-			}else if(splitted[0].equals("fortify")) {
-				if(splitted[1].equals("none")){
-					game.nextPlayer();
-				}else {
-					String fromCountry = splitted[1];
-					String toCountry = splitted[2];
-					int number = Integer.parseInt(splitted[3]);
-					boolean f_exists = false;
-					boolean t_exists = false;
-					Country tempFrom = new Country();
-					Country tempTo = new Country();
-					for (Country c: countriesList) {
-						if (c.getName().equals(fromCountry)) {
-							f_exists = true;
-							tempFrom = c;
-							break;
-						}
+			}
+			else if(splitted[0].equals("fortify")) {
+				if (game.getPhase().equals("Fortification Phase")) {
+					if(splitted[1].equals("none")){
+						game.nextPlayer();
 					}
-					for (Country c: countriesList) {
-						if (c.getName().equals(toCountry)) {
-							t_exists = true;
-							tempTo = c;
-							break;
-						}
-					}
-					if(f_exists && t_exists) {
-						if(tempFrom.getOwner().getID().equals(tempTo.getOwner().getID())) {
-							HashSet<String> visited = new HashSet<>();
-							if(tempFrom.hasPathTo(toCountry,tempFrom.getOwner().getID(),visited)) {
-								if(tempFrom.getArmyNum() > number) {
-									game.fortify(tempFrom,tempTo,number);
-								}else {
-									JOptionPane.showMessageDialog(null, "Fortifying army exceeds limit!", "Warning", JOptionPane.ERROR_MESSAGE);
-								}
-							}else {
-								JOptionPane.showMessageDialog(null, "No linked path between countries "+fromCountry+" and "+toCountry+"!", "Warning", JOptionPane.ERROR_MESSAGE);
+					else {
+						String fromCountry = splitted[1];
+						String toCountry = splitted[2];
+						int number = Integer.parseInt(splitted[3]);
+						boolean f_exists = false;
+						boolean t_exists = false;
+						Country tempFrom = new Country();
+						Country tempTo = new Country();
+						for (Country c: countriesList) {
+							if (c.getName().equals(fromCountry)) {
+								f_exists = true;
+								tempFrom = c;
+								break;
 							}
-						}else {
-							JOptionPane.showMessageDialog(null, "Countries not owned by the same player!", "Warning", JOptionPane.ERROR_MESSAGE);
 						}
-						
-					}else {
-						JOptionPane.showMessageDialog(null, "Country(ies)"+ (f_exists?"":tempFrom)+
-								(t_exists?"":toCountry)+" do(es)'nt exist!", "Warning", JOptionPane.ERROR_MESSAGE);
+						for (Country c: countriesList) {
+							if (c.getName().equals(toCountry)) {
+								t_exists = true;
+								tempTo = c;
+								break;
+							}
+						}
+						if(f_exists && t_exists) {
+							if(tempFrom.getOwner().getID().equals(tempTo.getOwner().getID())) {
+								HashSet<String> visited = new HashSet<>();
+								if(tempFrom.hasPathTo(toCountry,tempFrom.getOwner().getID(),visited)) {
+									if(tempFrom.getArmyNum() > number) {
+										game.fortify(tempFrom,tempTo,number);
+									}
+									else {
+										JOptionPane.showMessageDialog(null, "Fortifying army exceeds limit!", "Warning", JOptionPane.ERROR_MESSAGE);
+									}
+								}
+								else {
+									JOptionPane.showMessageDialog(null, "No linked path between countries "+fromCountry+" and "+toCountry+"!", "Warning", JOptionPane.ERROR_MESSAGE);
+								}
+							}
+							else {
+								JOptionPane.showMessageDialog(null, "Countries not owned by the same player!", "Warning", JOptionPane.ERROR_MESSAGE);
+							}
+						}
+						else {
+							JOptionPane.showMessageDialog(null, "Country(ies)"+ (f_exists?"":tempFrom)+
+									(t_exists?"":toCountry)+" do(es)'nt exist!", "Warning", JOptionPane.ERROR_MESSAGE);
+						}
 					}
+				}
+				else {
+						JOptionPane.showMessageDialog(null, "Not in Correct Phase!", "Warning", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 			
-		}else {
+		}
+		else {
 			JOptionPane.showMessageDialog(null, "Command invalid!", "Warning", JOptionPane.ERROR_MESSAGE);
 		}
-		
 	}
 	
 	public MapUI(Vector<Continent> continentsList, Vector<Country> countriesList, Vector<Player> playerList, Vector <String> filesLoad, int x, int y) {

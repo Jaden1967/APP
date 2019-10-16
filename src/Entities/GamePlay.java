@@ -182,7 +182,6 @@ public class GamePlay extends Observable{
         System.out.println("placing all for player "+player.getID());
         for (Player p: playerList) {
             player = p;
-            playerIndex++;
             Vector <Country> toAdd = new Vector <>();
             for(Country c: countriesList) {
                 if(c.getOwner().getID().equals(player.getID())) {
@@ -200,12 +199,14 @@ public class GamePlay extends Observable{
             armyToPlace = String.valueOf(player.getArmyToPlace());
 
         }
-        playerIndex--;
         placeFlag  = 1;
+        player = playerList.get(0);
+        playerIndex = 0;
+        player.rewardInitialArmy();
         outcome = "Randomly assigned armies to owned countries";
-        nextPlayer();
+        phaseOne();
         alertObservers(2);
-
+        	
     }
 	
 	/**
