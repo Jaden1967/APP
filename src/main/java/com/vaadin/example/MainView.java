@@ -548,25 +548,14 @@ public class MainView extends VerticalLayout {
                     if (neighbor_name.equals(neighborCountryname)) {
                         arrList.remove(neighborCountryname);
                         if (arrList.size() == 1) {
-                            neighborsData.remove(arrList);
+
+                            neighborsData.remove(neighborsData.indexOf(arrList));
                         }
                         hasCountry = true;
                         updateNeighbors();
                     }
                 }
             }
-            // else if (arrList.get(0).equals(neighborCountryname)) {
-            //     for (String neighbor_name : arrList) {
-            //         if (neighbor_name.equals(countryname)) {
-            //             arrList.remove(countryname);
-            //             if (arrList.size() == 1) {
-            //                 neighborsData.remove(arrList);
-            //             }
-            //             hasNeighborCountry = true;
-            //             updateNeighbors();
-            //         }
-            //     }
-            // }
         }
         // TODO:
         for (ArrayList<String> arrList : neighborsData) {
