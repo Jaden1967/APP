@@ -606,7 +606,7 @@ public class MainView extends VerticalLayout {
 
     public void saveMap(String fileName) {
         try {
-            String path = "map/" + fileName + ".txt";
+            String path = "map/" + fileName + ".map";
             // TODO:
             // encoding
             StringBuilder strBuilder = new StringBuilder();
@@ -661,7 +661,7 @@ public class MainView extends VerticalLayout {
 
     // TODO:
     public void editMap(String fileName) {
-        String path = "map/" + fileName + ".txt";
+        String path = "map/" + fileName + ".map";
         File file = new File(path);
 
         if (!file.exists()) {
@@ -854,5 +854,5 @@ public class MainView extends VerticalLayout {
     // user edit continent color
 
     // TODO:
-    // outputlog save to .txt file, for each simple line
+    // output log save to .txt file, for each simple line
 }
