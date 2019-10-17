@@ -57,7 +57,9 @@ public class Country extends Observable{
 			this.y = vertical;
 			this.owned = false;
 			l = new CountryObsLabel(String.valueOf(armyNum));
-			l.setBounds((int)((float)plotX/imageX*x-10), (int)((float)plotY/imageY*y-10), 20, 20);
+			x = (int)((float)plotX/imageX*x);
+			y = (int)((float)plotY/imageY*y);
+			l.setBounds(x-10, y-10, 20, 20);
 			l.setFont(new Font("SimSun", Font.BOLD, 15));
 			l.setHorizontalAlignment(SwingConstants.CENTER);
 			l.addMouseListener(new MouseAdapter() {
@@ -273,5 +275,14 @@ public class Country extends Observable{
 		 */
 		public void printLinkedCountriesNum() {
 			System.out.println(linkCountries.size());
+		}
+		
+		/**
+		 * 
+		 * @return array of coordinate
+		 */
+		public int[] getXY() {
+			int[] tmp = {x,y};
+			return tmp;
 		}
 }

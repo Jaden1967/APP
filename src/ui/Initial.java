@@ -37,9 +37,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 /**
- * 
- * @author Administrator
- *
+ * Creating the JFrame
  */
 
 public class Initial extends JFrame {
@@ -54,6 +52,13 @@ public class Initial extends JFrame {
 	private Vector<String> colorList = new Vector<String>();
 	private String isCommandPattern = "(gameplayer -(add|remove) \\w*|loadmap \\w*\\.map|populatecountries)";
 	
+	/**
+	 * Used as the controller, containing all the possible commands and responding based on the command
+	 * @param picture_label
+	 * @param input_text
+	 * @param player_text
+	 * @param output_text
+	 */
 	private void run(JLabel picture_label, JTextField input_text, JTextArea player_text, JTextArea output_text) {
 		if(Pattern.matches(isCommandPattern, input_text.getText())) {
 			if(input_text.getText().equals("populatecountries")) {

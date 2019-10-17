@@ -1,10 +1,13 @@
 package ui;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -29,6 +32,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Line2D;
+
 import javax.swing.SwingConstants;
 
 public class MapUI extends JFrame {
@@ -36,29 +41,48 @@ public class MapUI extends JFrame {
 	private JPanel contentPane;
 	private JTextField textField;
 	private String isCommandPattern = "(placearmy \\w*(\\-\\w+)*|placeall|reinforce \\w*(\\-\\w+)* [1-9][0-9]*|fortify (\\w*(\\-\\w+)*\\ \\w*(\\-\\w+)*\\ [1-9][0-9]*|none))";
+	private Vector<Country> countriesList = null;
 	
-	
+	/**
+	 * Used for showing map
+	 */
 	class mapPanel extends JPanel{
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 1L;
 		private Vector <String> filesLoad;
 		
 		mapPanel(Vector<String> filesLoad){
 			this.filesLoad = filesLoad;
 		}
+		/**
+		 * Default painting the JPanel (map)
+		 */
 		@Override
 		public void paintComponent(Graphics g) {
+			Graphics2D g2=(Graphics2D)g;
 			String tmp[] = filesLoad.get(0).split(" ");
 			File file = new File("image\\"+tmp[1]);
 			if(file.exists()) {
 				Image i = new ImageIcon("Image\\"+tmp[1]).getImage();
 				g.drawImage(i,0,0,940,585,this);
 			}
+			Stroke stroke=new BasicStroke(3.0f);//…Ë÷√œﬂøÌŒ™3.0
+			g2.setStroke(stroke);
+			for(Country c:countriesList) {
+				int[] from = c.getXY();
+				for(Country linkc:c.getLinkCountries()) {
+					int[] to = linkc.getXY();
+					g2.drawLine(from[0],from[1],to[0],to[1]);
+				}
+			}
 		}
 	}
-
+	
+	/**
+	 * Add every countries as a label on the map
+	 * @param map a JPanel
+	 * @param countriesList containing all the countries
+	 * @return update the map
+	 */
 	private mapPanel visualizeAndPair(mapPanel map,Vector<Country> countriesList) {
 		for(Country c:countriesList) {
 			CountryObsLabel oL = c.getLabel();
@@ -67,6 +91,7 @@ public class MapUI extends JFrame {
 		}
 		return map;
 	}
+	
 	
 	/**
 	 * Create the frame.
@@ -107,14 +132,16 @@ public class MapUI extends JFrame {
 		turnLabel.setBounds(30, 675, 40, 20);
 		contentPane.add(turnLabel);
 		
-		
-		
-		
 		JButton runBtn = new JButton("Run");
 		runBtn.setBounds(847, 638, 115, 27);
 		contentPane.add(runBtn);
 	}
-
+	
+	/**
+	 * Used as the controller, containing all the possible commands and responding based on the command
+	 * @param game game model
+	 * @param countriesList vector of all the countries
+	 */
 	public void run(GamePlay game,Vector<Country> countriesList) {
 		if(Pattern.matches(isCommandPattern, textField.getText())) {
 			String [] splitted = textField.getText().split("\\s+");
@@ -252,6 +279,7 @@ public class MapUI extends JFrame {
 	}
 	
 	public MapUI(Vector<Continent> continentsList, Vector<Country> countriesList, Vector<Player> playerList, Vector <String> filesLoad, int x, int y) {
+		this.countriesList = countriesList;
 		setTitle("Risk");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1000, 800);
