@@ -9,9 +9,6 @@ import entities.Country;
 
 public class CountryObsLabel extends JLabel implements Observer{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public CountryObsLabel(String valueOf) {

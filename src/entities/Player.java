@@ -10,10 +10,20 @@ public class Player {
 	private String color;
 	private int armyToPlace;
 	
+	/**
+	 * Empty constructor for Player
+	 * Creates a player with the id: "DNE"
+	 */
 	public Player () {
 		this.playerID = "DNE";
 	}
 	
+	/**
+	 * Proper constructor for Player
+	 * Initializes player with input id and Color
+	 * @param id name of Player
+	 * @param color Color of player
+	 */
 	public Player(String id, String color) {
 		this.playerID = id;
 		this.color = color;
@@ -21,6 +31,11 @@ public class Player {
 		this.armyToPlace = 0;
 	}
 	
+	/**
+	 * Calculate the default amount of army rewarded to Player at the start of the recruitment phase
+	 * Based on total number of Countries owned by the player
+	 * @return rew number of armies to place as int
+	 */
 	public int calculateArmy() {
         int rew = totalCountryNum/3;
         if(rew<3) {
@@ -29,10 +44,18 @@ public class Player {
         return rew;
     }
 	
+	/**
+	 * Reward a specified amount of army to place during recruitment phase
+	 * @param i number of army to be rewarded
+	 */
 	public void rewardArmy(int i) {
 		this.armyToPlace += i;
 	}
 	
+	/**
+	* At the start of startup phase, this method is called to give players an initial amount of army
+	* To place one at a time in round-robin fashion
+	*/
 	public void initializeStartupArmy(int playersize) {
 		int reward;
 		switch (playersize) {
@@ -48,14 +71,25 @@ public class Player {
 		this.armyToPlace += reward;
 	}
 	
+	/**
+	 * Reward army to place during recruitment phase
+	 */
 	public void rewardInitialArmy() {
 		this.armyToPlace += calculateArmy() + extraArmyToAdd();
 	}
 	
+	/**
+	 * Getter for army to place
+	 * @return armyToPlace as int
+	 */
 	public int getArmyToPlace() {
 		return this.armyToPlace;
 	}
 	
+	/**
+	 * Decreases army to place by a certain amount after deployment or mobilization
+	 * @param i amount of army to be deployed 
+	 */
 	public void deployArmy(int i) {
 		this.armyToPlace -= i;
 	}
@@ -91,11 +125,19 @@ public class Player {
 		return value;
 	}
 	
-
+	/**
+	 * Getter for Player's assigned Color
+	 * @return
+	 */
 	public Color getColor() {
 		return this.getColor(getColorStr());
 	}
 	
+	/**
+	 * Getter for corresponding color of input String
+	 * @param color color as String
+	 * @return Color color as Object
+	 */
 	private Color getColor(String color) {
         switch (color) {
             case "red": return Color.red;
@@ -125,18 +167,35 @@ public class Player {
 		return this.ownedContinent.size() == totalContinents;
 	}
 	
+	/**
+	 * Getter for player's id
+	 * @return playerID as String
+	 */
 	public String getID() {
 		return this.playerID;
 	}
 	
+	/**
+	 * Getter for player's color String
+	 * @return color as String
+	 */
 	public String getColorStr() {
 		return this.color;
 	}
 	
+	/**
+	 * Adds continent under Player's ownedContinent list when all countries in that continent is owned by player
+	 * @param con Continent currently fully conquered by Player
+	 */
 	public void addContinent (Continent con) {
 		ownedContinent.add(con);
 	}
 	
+	/**
+	 * Removes continent under Player's ownedContinent list when player has lost control of full ownership of the Continent
+	 * @param con Continent object to be removed from ownedContinent
+	 * @return if continent is successfully removed
+	 */
 	public boolean removeContinent (Continent con) {
 		int counter = 0;
 		for (Continent c: ownedContinent) {

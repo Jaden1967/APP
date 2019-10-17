@@ -97,13 +97,18 @@ public class GamePlay extends Observable{
 	
 	/**
 	 * From player command: placearmy countryname
+     * place one army to target country in parameter, then give the turn to the next player 
 	 */
 	public void placeArmy(Country c) {
 		c.addArmy(1);
 		player.deployArmy(1);
 		nextPlayerToPlace();
 	}
-	
+    
+    /**
+     * Startup Phase
+     */
+
 	private void phaseZero() {
 		phase = "Startup Phase";
 		
@@ -112,7 +117,12 @@ public class GamePlay extends Observable{
 		
 		alertObservers(1);
 	}
-	
+	/**
+     * Recruitment Phase
+     * Set phase to "Fortification Phase"
+     * Alerts InfoObsLabel
+     */
+
 	private void phaseOne() {
 		place_flag = 1;
 		phase = "Reinforcement Phase";
@@ -123,6 +133,9 @@ public class GamePlay extends Observable{
 		//phaseTwo();
 	}
 	
+    /**
+     * Attack Phase
+     */
 	private void phaseTwo() {
 		phase = "Attack Phase";
 		System.out.println("Currently in "+phase);
@@ -130,6 +143,11 @@ public class GamePlay extends Observable{
 		phaseThree();
 	}
 	
+    /**
+     * Fortify Phase
+     * Set phase to "Fortification Phase"
+     * alerts InfoObsLabel
+     */
 	private void phaseThree() {
 		phase = "Fortification Phase";
 		
@@ -158,6 +176,7 @@ public class GamePlay extends Observable{
 	
 	/**
 	 * For next player to place army during Startup Phase
+	 * Switches GamePlay context to next player's datasets
 	 */
 	public void nextPlayerToPlace() {
 		player_index++;
@@ -175,10 +194,13 @@ public class GamePlay extends Observable{
 		}
 	}
 	
-	/**
-     * During startup phase, when the player inputs "placeall"
+    /**
+     * From player command: placeall
+     * During starup phase, randomly places army on the map for all players until all players have no more units to place
+     * Enters Recruitment phase once all troops are deployed
      * Randomly places armies to current player's owned countries
      */
+
     public void randomAssignArmy() {
         System.out.println("placing all for player "+player.getID());
         for (Player p: playerList) {
@@ -225,10 +247,13 @@ public class GamePlay extends Observable{
 		nextPlayer();
 	}
 	
-	/**
-	 * During Recruitment phase, player chooses to place one army to specific owned country
-	 * @param countryID
-	 */
+    /**
+     * From player command: recruit country num
+     * During recruitment phase, player assigns the input amount of army to target country 
+     * @param countryID target countryId
+     * @param num amount of army to assign
+     */
+
 	public void assignArmy (String countryID, int num) {
 		System.out.println("placing army on "+countryID);
 		Country temp = new Country();
@@ -257,33 +282,69 @@ public class GamePlay extends Observable{
 		}
 	}
 	
-	public String getPhase() {
-		return this.phase;
-	}
-	
-	public String getPlayerID() {
-		return this.player.getID();
-	}
-	
-	public Player getPlayer() {
-		return this.player;
-	}
-	
-	public String getArmyToPlace() {
-		return this.army_to_place;
-	}
-	
-	public int getAlertType() {
-		return this.type;
-	}
-	
-	public String getOutcome() {
-		return this.outcome;
-	}
-	
-	public boolean inStartUpPhase() {
-		return place_flag == 0;
-	}
+    /**
+     * Getter for phase attribute
+     * @return phase as String
+     */
+ 
+    public String getPhase() {
+        return this.phase;
+    }
+    
+    /**
+     * Getter for current player ID
+     * @return player id as String
+     */
+ 
+    public String getPlayerID() {
+        return this.player.getID();
+    }
+    
+    /**
+     * Getter for current Player
+     * @return player as Player object
+     */
+ 
+    public Player getPlayer() {
+        return this.player;
+    }
+    
+    /**
+     * Getter for army to place
+     * @return armyToPlace as String
+     */
+ 
+    public String getArmyToPlace() {
+        return this.army_to_place;
+    }
+    
+    /**
+     * Getter for alert type for observers
+     * @return type as int
+     */
+ 
+    public int getAlertType() {
+        return this.type;
+    }
+    
+    /**
+     * Getter for outcome after a player action
+     * @return outcome as String
+     */
+ 
+    public String getOutcome() {
+        return this.outcome;
+    }
+    
+    /**
+     * Determines if Gameplay is in Startup Phase
+     * @return
+     */
+ 
+    public boolean inStartUpPhase() {
+        return place_flag == 0;
+    }
+
 	
 	
 	

@@ -322,7 +322,7 @@ public class Initial extends JFrame {
 		
 		JTextArea player_text = new JTextArea();
 		player_text.setForeground(Color.BLACK);
-		player_text.setFont(new Font("Monospaced", Font.PLAIN, 20));
+		player_text.setFont(new Font("Monospaced", Font.PLAIN, 15));
 		player_text.setEditable(false);
 		player_text.setBounds(412, 13, 356, 254);
 		getContentPane().add(player_text);
