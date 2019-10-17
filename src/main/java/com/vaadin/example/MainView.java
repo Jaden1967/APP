@@ -30,10 +30,12 @@ public class MainView extends VerticalLayout {
     private static final long serialVersionUID = 1125267260411033039L;
     // TODO:
     // private static ArrayList<String> continentColourList = new ArrayList<>();
+    // 存储大陆和国家的数据
     private ArrayList<ArrayList<String>> continentsData = new ArrayList<>();
     private ArrayList<ArrayList<String>> countriesData = new ArrayList<>();
     private ArrayList<ArrayList<String>> neighborsData = new ArrayList<>();
 
+    // 存储是否包含这个大陆或者国家
     private HashMap<String, Integer> continentsMap = new HashMap<>();
     private HashMap<String, String> countriesMap = new HashMap<>();
     private HashMap<String, Integer> neighborsMap = new HashMap<>();
@@ -644,8 +646,23 @@ public class MainView extends VerticalLayout {
             int countryIndex = 1;
             for (ArrayList<String> arrList : countriesData) {
                 String counutryStr = countryIndex + " ";
-                for (String strList : arrList) {
-                    counutryStr += (strList + " ");
+                for (int i = 0; i < arrList.size(); i++) {
+                    if (i == 1) {
+                        int index = 1;
+                        // int ind = continentsMap.keySet.indexOf(arrList.get(1));
+                        for (ArrayList<String> contList : continentsData) {
+                            if (!contList.get(0).equals(arrList.get(1))) {
+                                index++;
+                            }
+                            else {
+                                break;
+                            }
+                        }
+                        counutryStr += (index + " ");
+                    }
+                    else {
+                        counutryStr += (arrList.get(i) + " ");
+                    }
                 }
                 strBuilder.append(counutryStr + "\n");
                 neighborsMap.put(arrList.get(0), countryIndex);

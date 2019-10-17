@@ -56,6 +56,7 @@ public class Country extends Observable{
 			this.x = horizontal;
 			this.y = vertical;
 			this.owned = false;
+			this.owner = new Player();
 			l = new CountryObsLabel(String.valueOf(armyNum));
 			x = (int)((float)plotX/imageX*x);
 			y = (int)((float)plotY/imageY*y);
