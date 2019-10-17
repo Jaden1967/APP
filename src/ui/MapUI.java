@@ -59,11 +59,13 @@ public class MapUI extends JFrame {
 		@Override
 		public void paintComponent(Graphics g) {
 			Graphics2D g2=(Graphics2D)g;
-			String tmp[] = filesLoad.get(0).split(" ");
-			File file = new File("image\\"+tmp[1]);
-			if(file.exists()) {
-				Image i = new ImageIcon("Image\\"+tmp[1]).getImage();
-				g.drawImage(i,0,0,940,585,this);
+			if(filesLoad.size()>=1) {
+				String tmp[] = filesLoad.get(0).split(" ");
+				File file = new File("image\\"+tmp[1]);
+				if(file.exists()) {
+					Image i = new ImageIcon("Image\\"+tmp[1]).getImage();
+					g.drawImage(i,0,0,940,585,this);
+				}
 			}
 			Stroke stroke=new BasicStroke(3.0f);//ÉèÖÃÏß¿íÎª3.0
 			g2.setStroke(stroke);

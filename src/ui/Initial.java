@@ -132,12 +132,14 @@ public class Initial extends JFrame {
 					if(readFile(name)) {
 						output_text.append("Loading map "+name+" success!\n");
 						input_text.setText("");
-						String tmp[] = filesLoad.get(3).split(" ");
-						File file = new File("image\\"+tmp[1]);
-						if(file.exists()) {
-							picture_label.setText("");
-							ImageIcon icon = new ImageIcon("Image\\"+tmp[1]);
-							picture_label.setIcon(icon);
+						if(filesLoad.size()>=3) {
+							String tmp[] = filesLoad.get(3).split(" ");
+							File file = new File("image\\"+tmp[1]);
+							if(file.exists()) {
+								picture_label.setText("");
+								ImageIcon icon = new ImageIcon("Image\\"+tmp[1]);
+								picture_label.setIcon(icon);
+							}
 						}
 					}
 					else {
@@ -201,7 +203,7 @@ public class Initial extends JFrame {
 	 * @param address address of map file
 	 * @return Validation of map data file
 	 */
-	private boolean readFile(String address) {
+	public boolean readFile(String address) {
 		try {
 			String pathname = "map\\"+address;
 			File filename = new File(pathname);
