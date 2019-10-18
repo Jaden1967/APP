@@ -1,4 +1,4 @@
-package UI;
+package ui;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -10,9 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
-
-import UI.MapUI.mapPanel;
-
+import ui.MapUI.mapPanel;
 
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -22,6 +20,8 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.io.File;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class test_J extends JFrame {
 
@@ -67,5 +67,9 @@ public class test_J extends JFrame {
 		map.setBounds(20, 20, 940, 585);
 		map.setLayout(null);
 		contentPane.add(map);
+		
+		JLabel lblNewLabel = new JLabel("New label");
+		lblNewLabel.setBounds(215, 173, 72, 18);
+		contentPane.add(lblNewLabel);
 	}
 }

@@ -1,17 +1,20 @@
-package Entities;
+package entities;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.HashSet;
 import java.util.Observable;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
-import UI.labels.CountryObsLabel;
+import ui.labels.CountryObsLabel;
 
 public class Country extends Observable{
 		private String countryName;
@@ -26,16 +29,21 @@ public class Country extends Observable{
 		private CountryObsLabel l;
 		private Border b; //Continent's border, constant throughout the game
 
+		/**
+		* Default contructor for Country
+		* Creates empty Country object with name "DNE"
+		*/
 		public Country() {
 			this.countryName = "DNE";
 			this.owner = new Player();
 		}
 	
 		/**
-		 * 
-		 * @param id
-		 * @param name
-		 * @param horizontal
+		 * Initialize Country Object given parameters of id, name, map attributes
+		 * Creates a corresponding CountryObsLabel to be fetched later 
+		 * @param id serialized Country id number created 
+		 * @param name assigned Country name 
+		 * @param horizontal TODO
 		 * @param vertical
 		 * @param imageX
 		 * @param imageY
@@ -48,16 +56,19 @@ public class Country extends Observable{
 			this.x = horizontal;
 			this.y = vertical;
 			this.owned = false;
+			this.owner = new Player();
 			l = new CountryObsLabel(String.valueOf(armyNum));
-
-
-			l.setBounds((int)((float)plotX/imageX*x-10), (int)((float)plotY/imageY*y-10), 20, 20);
+			x = (int)((float)plotX/imageX*x);
+			y = (int)((float)plotY/imageY*y);
+			l.setBounds(x-10, y-10, 20, 20);
 			l.setFont(new Font("SimSun", Font.BOLD, 15));
 			l.setHorizontalAlignment(SwingConstants.CENTER);
-		}
-		
-		public void modifyLabel() {
-			
+			l.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent arg0) {
+					JOptionPane.showMessageDialog(null, "Country name: "+countryName+"\nOwner: "+owner.getID()+"\nArmy number"+armyNum, "Country information", JOptionPane.INFORMATION_MESSAGE);
+				}
+			});
 		}
 		
 		/**
@@ -104,6 +115,11 @@ public class Country extends Observable{
 			this.linkCountries.add(nbour);
 		}
 		
+		/**
+		 * Determines if this Country has a neighbour with the ID of the argument String
+		 * @param countryId target neighbour's name
+		 * @return true if country is connected, false if not
+		 */
 		public boolean hasNeighbour (String countryId) {
 			for (Country c: this.linkCountries) {
 				if (c.getName().equals(countryId)) {
@@ -246,13 +262,28 @@ public class Country extends Observable{
 			return l;
 		}
 		
+		/**
+		 * Print all neighbours' name
+		 */
 		public void printLinkedCountries() {
 			for(Country c:linkCountries) {
 				System.out.println(c.getName());
 			}
 		}
 		
+		/**
+		 * Print number of neighbours this Country has 
+		 */
 		public void printLinkedCountriesNum() {
 			System.out.println(linkCountries.size());
+		}
+		
+		/**
+		 * 
+		 * @return array of coordinate
+		 */
+		public int[] getXY() {
+			int[] tmp = {x,y};
+			return tmp;
 		}
 }

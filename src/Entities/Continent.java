@@ -1,4 +1,4 @@
-package Entities;
+package entities;
 
 import java.awt.Color;
 import java.util.Vector;
@@ -51,26 +51,42 @@ public class Continent {
 		return this.value;
 	}
 	
+	/**
+	 * Getter for Continent name
+	 * @return name as String
+	 */
 	public String getName() {
 		return this.name;
 	}
 	
+	/**
+	 * Getter for Continent id 
+	 * @return continent id as int
+	 */
 	public int getID() {
 		return this.continentID;
 	}
 	
+	/**
+	 * Add a country to belong to this Continent
+	 * @param c country to be added
+	 */
 	public void addToCountriesList(Country c) {
 		countries.add(c);
 	}
 	
-	public void updateOwner (int countryID, String playerID) {
-		
-	}
 	
+	/**
+	 * Getter for the Continent's color
+	 * @return color Color Object
+	 */
 	public Color getColor() {
 		return color;
 	}
 	
+	/**
+	 * Print all countries included in this Continent
+	 */
 	public void printSelfCountries() {
 		for(Country c:countries) {
 			System.out.println(c.getName());

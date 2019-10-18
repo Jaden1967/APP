@@ -1,4 +1,4 @@
-package UI;
+package ui;
 
 import java.awt.EventQueue;
 
@@ -8,9 +8,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
-import Entities.Continent;
-import Entities.Country;
-import Entities.Player;
+import entities.Continent;
+import entities.Country;
+import entities.Player;
 
 import java.awt.Color;
 import javax.swing.JButton;
@@ -36,12 +36,12 @@ import javax.swing.JScrollPane;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+/**
+ * Creating the JFrame
+ */
+
 public class Initial extends JFrame {
 
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private Vector<Continent> continentsList = new Vector<Continent>();
@@ -50,40 +50,46 @@ public class Initial extends JFrame {
 	private Vector <String> filesLoad = new Vector <String>();
 	private int x,y;
 	private Vector<String> colorList = new Vector<String>();
-	private String isCommandPattern = "(gameplayer -(add|remove) \\w*|loadmap \\w*\\.txt|populatecountries)";
+	private String isCommandPattern = "(gameplayer -(add|remove) \\w*|loadmap \\w*\\.map|populatecountries)";
 	
-	private void run(JLabel lblNewLabel, JTextField textField, JTextArea textArea, JTextArea textArea_1) {
-		if(Pattern.matches(isCommandPattern, textField.getText())) {
-			if(textField.getText().equals("populatecountries")) {
+	/**
+	 * Used as the controller, containing all the possible commands and responding based on the command
+	 * @param picture_label
+	 * @param input_text
+	 * @param player_text
+	 * @param output_text
+	 */
+	private void run(JLabel picture_label, JTextField input_text, JTextArea player_text, JTextArea output_text) {
+		if(Pattern.matches(isCommandPattern, input_text.getText())) {
+			if(input_text.getText().equals("populatecountries")) {
 				if(countriesList.size()==0||continentsList.size()==0||playerList.size()<=1||playerList.size()>countriesList.size()) {
 					JOptionPane.showMessageDialog(null, "Please check the arguments!\nCountry numbers: "+countriesList.size()+"\nContinent numbers: "+continentsList.size()+"\nPlayer numbers: "+playerList.size(), "Warning", JOptionPane.ERROR_MESSAGE);
-					textArea_1.append("Fail to start game!");
+					output_text.append("Fail to start game!");
 				}
 				else {
 					JOptionPane.showMessageDialog(null, "Game start!", "Good luck!", JOptionPane.INFORMATION_MESSAGE);
 					setVisible(false);
 					MapUI g = new MapUI(continentsList, countriesList, playerList, filesLoad, x, y);
-
 					g.setVisible(true);
 				}
 			}
 			else {
-				if(textField.getText().substring(0, textField.getText().indexOf(" ")).equals("gameplayer")) {
-					textField.setText(textField.getText().substring(textField.getText().indexOf(" ")+1));
+				if(input_text.getText().substring(0, input_text.getText().indexOf(" ")).equals("gameplayer")) {
+					input_text.setText(input_text.getText().substring(input_text.getText().indexOf(" ")+1));
 				}
-				String type = textField.getText().substring(0, textField.getText().indexOf(" "));
-				String name = textField.getText().substring(textField.getText().indexOf(" ")+1);
+				String type = input_text.getText().substring(0, input_text.getText().indexOf(" "));
+				String name = input_text.getText().substring(input_text.getText().indexOf(" ")+1);
 				int flag = 0;
 				if(type.equals("-add")) {
 					if(playerList.size()>=8) {
 						JOptionPane.showMessageDialog(null, "Too many players!", "Warning", JOptionPane.ERROR_MESSAGE);
-						textArea_1.append("Fail to add player "+name+"\n");
+						output_text.append("Fail to add player "+name+"\n");
 					}
 					else {
 						for(int i = 0;i<playerList.size();i++) {
 							if(name.equals(playerList.get(i).getID())) {
 								JOptionPane.showMessageDialog(null, "Same player name!", "Warning", JOptionPane.ERROR_MESSAGE);
-								textArea_1.append("Fail to add player "+name+"\n");
+								output_text.append("Fail to add player "+name+"\n");
 								flag = 1;
 								break;
 							}
@@ -92,28 +98,28 @@ public class Initial extends JFrame {
 							String c = getRandColor(colorList);
 							Player p = new Player(name, c);
 							playerList.add(p);
-							textField.setText("");
-							textArea_1.append("Successfully add player "+name+"\n");
+							input_text.setText("");
+							output_text.append("Successfully add player "+name+"\n");
 						}
 					}
 				}
 				else if(type.equals("-remove")) {
 					if(playerList.size()==0) {
 						JOptionPane.showMessageDialog(null, "Invalid removal!", "Warning", JOptionPane.ERROR_MESSAGE);
-						textArea_1.append("Fail to remove player "+name+"\n");
+						output_text.append("Fail to remove player "+name+"\n");
 					}
 					else {
 						for(int i = 0;i<playerList.size();i++) {
 							if(name.equals(playerList.get(i).getID())) {
 								colorList.add(playerList.get(i).getColorStr());
 								playerList.remove(playerList.get(i));
-								textField.setText("");
-								textArea_1.append("Successfully remove player "+name+"\n");
+								input_text.setText("");
+								output_text.append("Successfully remove player "+name+"\n");
 								break;
 							}
 							if(i==playerList.size()-1) {
 								JOptionPane.showMessageDialog(null, "No such username!", "Warning", JOptionPane.ERROR_MESSAGE);
-								textArea_1.append("Fail to remove player "+name+"\n");
+								output_text.append("Fail to remove player "+name+"\n");
 							}
 
 						}
@@ -124,23 +130,25 @@ public class Initial extends JFrame {
 					countriesList.clear();
 					continentsList.clear();
 					if(readFile(name)) {
-						textArea_1.append("Loading map "+name+" success!\n");
-						textField.setText("");
-						String tmp[] = filesLoad.get(3).split(" ");
-						File file = new File("image\\"+tmp[1]);
-						if(file.exists()) {
-							lblNewLabel.setText("");
-							ImageIcon icon = new ImageIcon("Image\\"+tmp[1]);
-							lblNewLabel.setIcon(icon);
+						output_text.append("Loading map "+name+" success!\n");
+						input_text.setText("");
+						if(filesLoad.size()>=3) {
+							String tmp[] = filesLoad.get(3).split(" ");
+							File file = new File("image\\"+tmp[1]);
+							if(file.exists()) {
+								picture_label.setText("");
+								ImageIcon icon = new ImageIcon("Image\\"+tmp[1]);
+								picture_label.setIcon(icon);
+							}
 						}
 					}
 					else {
-						textArea_1.append("Loading map "+name+" fail!\n");
+						output_text.append("Loading map "+name+" fail!\n");
 					}
 				}
-				textArea.setText("");
+				player_text.setText("");
 				for(Player p:playerList) {
-					textArea.append("Name: "+p.getID()+"    Color: "+p.getColorStr()+"\n");
+					player_text.append("Name: "+p.getID()+"    Color: "+p.getColorStr()+"\n");
 				}
 
 			}
@@ -150,38 +158,52 @@ public class Initial extends JFrame {
 		}
 	}
 	
+	/**
+	 * Initial list of colors (string)
+	 */
 	private void initialList() {
 		colorList.add("pink");
 		colorList.add("cyan");
-		colorList.add("OliveDrab");
-		colorList.add("skybule");
+		colorList.add("DeepPink");
+		colorList.add("skyblue");
 		colorList.add("lightyellow");
-		colorList.add("gray");
+		colorList.add("grey");
 		colorList.add("white");
 		colorList.add("purple");
 	}
-	
+	/**
+	 * Returns corresponding Color object to the parsed String
+	 * @param color
+	 * @return default color white
+	 */
 	private Color getColor(String color) {
         switch (color) {
             case "red": return Color.red;
             case "yellow": return Color.yellow;
             case "blue": return Color.blue;
             case "green": return Color.green;
-            case "lightyellow": return new Color(255,255,224);
+            case "lightyellow": return new Color(107,142,35);
             case "grey": return Color.gray;
             case "magenta": return Color.magenta;
             case "orange": return Color.orange;
             case "pink": return Color.pink;
             case "cyan": return Color.cyan;
-            case "OliveDrab": return new Color(85, 107, 47);
-            case "skyblue": return new Color(135,206,250);
+            case "DeepPink": return new Color(255,20,147);
+            case "skyblue": return new Color(176, 196, 222);
             case "white": return Color.white;
             case "purple": return new Color(128, 0, 128);
             default: return Color.white;
         }
     }
 	
-	private boolean readFile(String address) {
+	/**
+	 * Reads map data file
+	 * Parses lines in file into relevant data to be used in game
+	 * Generate Game Object entities and their respective connections to each other
+	 * @param address address of map file
+	 * @return Validation of map data file
+	 */
+	public boolean readFile(String address) {
 		try {
 			String pathname = "map\\"+address;
 			File filename = new File(pathname);
@@ -273,6 +295,11 @@ public class Initial extends JFrame {
 		}
 	}
 	
+	/**
+	 * Get random color from String List colorList
+	 * @param colorList
+	 * @return Color as String
+	 */
 	private String getRandColor(Vector<String> colorList) {
         int c = new Random().nextInt(colorList.size());
         String color = colorList.get(c);
@@ -280,24 +307,9 @@ public class Initial extends JFrame {
         return color;
     }
 	
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Initial frame = new Initial();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
-	 * Create the frame.
+	 * Create the frame for Startup Phase
 	 */
 	public Initial() {
 		initialList();
@@ -308,31 +320,32 @@ public class Initial extends JFrame {
 		contentPane.setLayout(null);
 		setContentPane(contentPane);
 
-		JLabel lblNewLabel = new JLabel("no picture at this time");
-		lblNewLabel.setOpaque(true);
-		lblNewLabel.setBackground(Color.PINK);
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setBounds(14, 13, 370, 254);
-		getContentPane().add(lblNewLabel);
+		JLabel picture_label = new JLabel("no picture at this time");
+		picture_label.setOpaque(true);
+		picture_label.setBackground(Color.PINK);
+		picture_label.setHorizontalAlignment(SwingConstants.CENTER);
+		picture_label.setBounds(14, 13, 370, 254);
+		getContentPane().add(picture_label);
 		
-		JTextArea textArea = new JTextArea();
-		textArea.setForeground(Color.BLACK);
-		textArea.setFont(new Font("Monospaced", Font.PLAIN, 20));
-		textArea.setEditable(false);
-		textArea.setBounds(412, 13, 356, 254);
-		getContentPane().add(textArea);
+		JTextArea player_text = new JTextArea();
+		player_text.setForeground(Color.BLACK);
+		player_text.setFont(new Font("Monospaced", Font.PLAIN, 15));
+		player_text.setEditable(false);
+		player_text.setBounds(412, 13, 356, 254);
+		getContentPane().add(player_text);
 		
-		JTextField textField = new JTextField();
-		textField.setBounds(14, 303, 627, 24);
-		contentPane.add(textField);
-		textField.setColumns(10);
+		JTextField input_text = new JTextField();
+		input_text.setBounds(14, 303, 627, 24);
+		contentPane.add(input_text);
+		input_text.setColumns(10);
 		
 		
-		JTextArea textArea_1 = new JTextArea();
-		textArea_1.setEditable(false);
-		textArea_1.setBounds(14, 380, 754, 160);
-		textArea_1.setLineWrap(true);
-		JScrollPane scroll = new JScrollPane(textArea_1);
+		
+		JTextArea output_text = new JTextArea();
+		output_text.setEditable(false);
+		output_text.setBounds(14, 380, 754, 160);
+		output_text.setLineWrap(true);
+		JScrollPane scroll = new JScrollPane(output_text);
 		scroll.setBounds(14,380,754,160);
 		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		contentPane.add(scroll);
@@ -343,18 +356,18 @@ public class Initial extends JFrame {
 		
 		JButton btnRun = new JButton("Run");
 		
-		textField.addKeyListener(new KeyAdapter() {
+		input_text.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-					run(lblNewLabel, textField, textArea, textArea_1);
+					run(picture_label, input_text, player_text, output_text);
 				}
 			}
 		});
 		
 		btnRun.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				run(lblNewLabel, textField, textArea, textArea_1);
+				run(picture_label, input_text, player_text, output_text);
 			}
 		});
 		btnRun.setBounds(655, 302, 113, 27);

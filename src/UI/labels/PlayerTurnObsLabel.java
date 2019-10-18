@@ -1,11 +1,11 @@
-package UI.labels;
+package ui.labels;
 
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JLabel;
 
-import Entities.GamePlay;
+import entities.GamePlay;
 
 public class PlayerTurnObsLabel extends JLabel implements Observer{
 	/**
