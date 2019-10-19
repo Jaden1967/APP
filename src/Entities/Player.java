@@ -4,10 +4,10 @@ import java.awt.Color;
 import java.util.Vector;;
 
 public class Player {
-	private String playerID;
-	private int totalCountryNum;
+	private String id;
+	private int total_country_number;
 	private Vector <Continent> ownedContinent = new Vector<Continent>();
-	private String color;
+	private Color color;
 	private int armyToPlace;
 	
 	/**
@@ -15,7 +15,7 @@ public class Player {
 	 * Creates a player with the id: "DNE"
 	 */
 	public Player () {
-		this.playerID = "DNE";
+		this.id = "DNE";
 	}
 	
 	/**
@@ -24,8 +24,8 @@ public class Player {
 	 * @param id name of Player
 	 * @param color Color of player
 	 */
-	public Player(String id, String color) {
-		this.playerID = id;
+	public Player(String id, Color color) {
+		this.id = id;
 		this.color = color;
 		this.ownedContinent = new Vector<>();
 		this.armyToPlace = 0;
@@ -37,7 +37,7 @@ public class Player {
 	 * @return rew number of armies to place as int
 	 */
 	public int calculateArmy() {
-        int rew = totalCountryNum/3;
+        int rew = total_country_number/3;
         if(rew<3) {
             rew=3;
         }
@@ -68,7 +68,7 @@ public class Player {
 		case 2: reward = 40; break;
 		default: reward = 0; 
 		}
-		this.armyToPlace += reward;
+		rewardArmy(reward);
 	}
 	
 	/**
@@ -98,7 +98,7 @@ public class Player {
 	 * When the player successfully conquers a new country, increment the totalaCountryNum this player has
 	 */
 	public void increaseCountry () {
-		this.totalCountryNum++;
+		this.total_country_number++;
 	}
 	
 	/**
@@ -107,8 +107,8 @@ public class Player {
 	 * @return true if player lost, false if player still has at least 1 country remaining
 	 */
 	public boolean decreaseCountry()  {
-		this.totalCountryNum--;
-		if (this.totalCountryNum >0 ) return false;
+		this.total_country_number--;
+		if (this.total_country_number >0 ) return false;
 		return true;
 	}
 	
@@ -130,7 +130,7 @@ public class Player {
 	 * @return
 	 */
 	public Color getColor() {
-		return this.getColor(getColorStr());
+		return this.color;
 	}
 	
 	/**
@@ -172,7 +172,7 @@ public class Player {
 	 * @return playerID as String
 	 */
 	public String getID() {
-		return this.playerID;
+		return this.id;
 	}
 	
 	/**
@@ -180,7 +180,7 @@ public class Player {
 	 * @return color as String
 	 */
 	public String getColorStr() {
-		return this.color;
+		return this.color.toString();
 	}
 	
 	/**

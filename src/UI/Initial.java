@@ -8,8 +8,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
+import controller.Controller;
 import entities.Continent;
 import entities.Country;
+import entities.GamePlay;
 import entities.Player;
 
 import java.awt.Color;
@@ -51,6 +53,8 @@ public class Initial extends JFrame {
 	private int x,y;
 	private Vector<String> colorList = new Vector<String>();
 	private String isCommandPattern = "(gameplayer -(add|remove) \\w*|loadmap \\w*\\.map|populatecountries)";
+	GamePlay game;
+	Controller control;
 	
 	/**
 	 * Used as the controller, containing all the possible commands and responding based on the command
@@ -69,7 +73,7 @@ public class Initial extends JFrame {
 				else {
 					JOptionPane.showMessageDialog(null, "Game start!", "Good luck!", JOptionPane.INFORMATION_MESSAGE);
 					setVisible(false);
-					MapUI g = new MapUI(continentsList, countriesList, playerList, filesLoad, x, y);
+					MapUI g = new MapUI(continentsList, countriesList, playerList, filesLoad, x, y, control);
 					g.setVisible(true);
 				}
 			}
@@ -95,7 +99,7 @@ public class Initial extends JFrame {
 							}
 						}
 						if(flag==0) {
-							String c = getRandColor(colorList);
+							Color c = getColor(getRandColor(colorList));
 							Player p = new Player(name, c);
 							playerList.add(p);
 							input_text.setText("");
@@ -127,8 +131,6 @@ public class Initial extends JFrame {
 					
 				}
 				else if(type.equals("loadmap")) {
-					countriesList.clear();
-					continentsList.clear();
 					if(readFile(name)) {
 						output_text.append("Loading map "+name+" success!\n");
 						input_text.setText("");
@@ -171,6 +173,7 @@ public class Initial extends JFrame {
 		colorList.add("white");
 		colorList.add("purple");
 	}
+	
 	/**
 	 * Returns corresponding Color object to the parsed String
 	 * @param color
@@ -312,6 +315,8 @@ public class Initial extends JFrame {
 	 * Create the frame for Startup Phase
 	 */
 	public Initial() {
+		game = new GamePlay();
+		control = new Controller(game);
 		initialList();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 800, 600);
