@@ -19,6 +19,7 @@ public class Controller {
 	GamePlay game;
 	private String isCommandPattern = "(gameplayer -(add|remove) \\w*|loadmap \\w*\\.map|populatecountries)";
 	Vector<Color> colorList = new Vector<>();
+	Vector <String> files_load = new Vector <String>();
 
 	
 	public Controller(GamePlay game) {
@@ -55,7 +56,6 @@ public class Controller {
 		Vector<Continent> continents_list = new Vector<Continent>();
 		Vector<Country> countries_list = new Vector<Country>();
 		Vector<Player> player_list = new Vector<Player>();
-		Vector <String> files_load = new Vector <String>();
 		int x=0,y=0;
 		try {
 			String pathname = "map\\"+address;
@@ -325,7 +325,9 @@ public class Controller {
 	}
 	
 
-
+	public Vector<String> getFilesLoad() {
+		return this.files_load;
+	}
 	
 	
 	

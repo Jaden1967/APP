@@ -169,8 +169,7 @@ public class GamePlay extends Observable{
      */
 	public void reinforceArmy (Country c, int num) {
 		System.out.println("placing army on "+c.getName());
-		
-		
+
 		if(c.getOwner().getID().equals(player.getID())) {
 			c.addArmy(num);
 			player.deployArmy(num);
@@ -321,6 +320,10 @@ public class GamePlay extends Observable{
         return this.outcome;
     }
     
+    public Vector<Continent> getContinents(){
+    	return continents_list;
+    }
+    
     public void setContinents(Vector<Continent> continentsList) {
 		this.continents_list = continentsList;
 	}
@@ -331,6 +334,10 @@ public class GamePlay extends Observable{
 	
 	public void setCountries(Vector<Country> countriesList) {
 		this.countries_list = countriesList;
+	}
+	
+	public Vector<Player> getPlayers(){
+		return player_list;
 	}
 	
 	public void setPlayers(Vector<Player> playerList) {

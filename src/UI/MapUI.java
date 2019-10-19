@@ -158,7 +158,7 @@ public class MapUI extends JFrame {
 		}
 	}
 	
-	public MapUI(Vector<Continent> continentsList, Vector<Country> countriesList, Vector<Player> playerList, Vector <String> filesLoad, int x, int y, Controller control) {
+	public MapUI(Vector<Country> countriesList, Controller control) {
 		this.countries_list = countriesList;
 		setTitle("Risk");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -168,7 +168,7 @@ public class MapUI extends JFrame {
 		contentPane.setLayout(null);
 		setContentPane(contentPane);
 		
-		mapPanel map = new mapPanel(filesLoad);
+		mapPanel map = new mapPanel(control.getFilesLoad());
 		map.setBounds(20, 20, 940, 585);
 		map.setLayout(null);
 		
@@ -195,7 +195,6 @@ public class MapUI extends JFrame {
 		
 		map = visualizeAndPair(map,countriesList);
 		
-		GamePlay game = new GamePlay(continentsList, countriesList, playerList,infoLabel,outcomeLabel,turnLabel);
 		this.control = control;
 		
 		textField.addKeyListener(new KeyAdapter() {
