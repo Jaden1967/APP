@@ -1,4 +1,4 @@
-package UI;
+package ui;
 import java.util.Random;
 import java.util.regex.*;
 

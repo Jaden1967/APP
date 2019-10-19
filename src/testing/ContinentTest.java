@@ -1,14 +1,14 @@
-package JUnit;
+package testing;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
 import java.util.Vector;
 
 import org.junit.Ignore;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
-import Entities.Continent;
-import Entities.Country;
+import entities.Continent;
+import entities.Country;
 
 class ContinentTest {
 	
