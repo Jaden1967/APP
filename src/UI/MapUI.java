@@ -160,6 +160,8 @@ public class MapUI extends JFrame {
 	
 	public MapUI(Vector<Country> countriesList, Controller control) {
 		this.countries_list = countriesList;
+		this.control = control;
+		
 		setTitle("Risk");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1000, 800);
@@ -179,23 +181,25 @@ public class MapUI extends JFrame {
 		contentPane.add(textField);
 		textField.setColumns(10);
 		
-		InfoObsLabel infoLabel = new InfoObsLabel ("Phase");
-		infoLabel.setHorizontalAlignment(SwingConstants.LEFT);
-		infoLabel.setBounds(100, 670, 800, 35);
-		contentPane.add(infoLabel);
+		InfoObsLabel info_label = new InfoObsLabel ("Phase");
+		info_label.setHorizontalAlignment(SwingConstants.LEFT);
+		info_label.setBounds(100, 670, 800, 35);
+		contentPane.add(info_label);
 		
-		OutcomeObsLabel outcomeLabel = new OutcomeObsLabel();
-		outcomeLabel.setHorizontalAlignment(SwingConstants.LEFT);
-		outcomeLabel.setBounds(100,700,500, 35);
-		contentPane.add(outcomeLabel);
+		OutcomeObsLabel outcome_label = new OutcomeObsLabel();
+		outcome_label.setHorizontalAlignment(SwingConstants.LEFT);
+		outcome_label.setBounds(100,700,500, 35);
+		contentPane.add(outcome_label);
 		
-		PlayerTurnObsLabel turnLabel = new PlayerTurnObsLabel();
-		turnLabel.setBounds(30, 675, 40, 20);
-		contentPane.add(turnLabel);
+		PlayerTurnObsLabel turn_label = new PlayerTurnObsLabel();
+		turn_label.setBounds(30, 675, 40, 20);
+		contentPane.add(turn_label);
+		
+		control.attachObserver(info_label);
+		control.attachObserver(outcome_label);
+		control.attachObserver(turn_label);
 		
 		map = visualizeAndPair(map,countriesList);
-		
-		this.control = control;
 		
 		textField.addKeyListener(new KeyAdapter() {
 			@Override
@@ -214,5 +218,7 @@ public class MapUI extends JFrame {
 		});
 		runBtn.setBounds(847, 638, 115, 27);
 		contentPane.add(runBtn);
+		
+		control.startGame();
 	}
 }

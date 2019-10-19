@@ -17,9 +17,9 @@ public class OutcomeObsLabel extends JLabel implements Observer{
 	
 	public void update(Observable obs, Object arg1) {
 		// TODO Auto-generated method stub
-		if (((GamePlay)obs).getAlertType() == type) {
-			this.setText(((GamePlay)obs).getOutcome());
-		}
+	
+		this.setText(((GamePlay)obs).getOutcome());
+		
 	}
 
 }

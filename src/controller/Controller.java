@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.HashSet;
+import java.util.Observer;
 import java.util.Random;
 import java.util.Vector;
 
@@ -19,44 +20,32 @@ import entities.Player;
 public class Controller {
 	GamePlay game;
 	private String isCommandPattern = "(gameplayer -(add|remove) \\w*|loadmap \\w*\\.map|populatecountries)";
-	Vector<Color> colorList = new Vector<>();
 	Vector <String> files_load = new Vector <String>();
 
 	
 	public Controller(GamePlay game) {
 		this.game = game;
-		initializeColors();
 	}
 	
-	/**
-	 * Initial list of colors (string)
-	 */
-	private void initializeColors() {
-		colorList.add(getColor("pink"));
-		colorList.add(getColor("cyan"));
-		colorList.add(getColor("DeepPink"));
-		colorList.add(getColor("skyblue"));
-		colorList.add(getColor("lightyellow"));
-		colorList.add(getColor("grey"));
-		colorList.add(getColor("white"));
-		colorList.add(getColor("purple"));
+	public void startGame() {
+		game.populateCountries();
 	}
 	
-	/**
-	 * Get random color from String List colorList
-	 * @param colorList
-	 * @return Color as String
-	 */
-	private String getRandColor (Vector<String> colorList) {
-        int c = new Random().nextInt(colorList.size());
-        String color = colorList.get(c);
-        colorList.remove(c);
-        return color;
-    }
+	
 	
 	//Commands from Initial
 	
+	public void addPlayers(Vector<String[]> list) {
+		Vector<Player> player_list = new Vector<>();
+		for(String [] s: list) {
+			player_list.add(new Player(s[0],getColor(s[1])));
+		}
+		game.setPlayers(player_list);
+	}
 	
+	public void attachObserver (Observer ob) {
+		game.addObserver(ob);
+	}
 	
 	/**
 	 * Reads map data file
@@ -155,8 +144,6 @@ public class Controller {
 			}
 			this.game.setContinents(continents_list);
 			this.game.setCountries(countries_list);
-			this.game.setPlayers(player_list);
-			
 			
 			return true;
 		}

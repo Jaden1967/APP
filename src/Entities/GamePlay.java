@@ -28,40 +28,17 @@ public class GamePlay extends Observable{
 	private int alert_type;
 	
 	public GamePlay() {
-		this.player_index = 0;
-		this.alert_type = 0;
+		phase = "";
+		player_index = 0;
+		alert_type = 0;
 	}
 	
-	/**
-	 * Contructor for a game instance
-	 * Sets all instances of continents, countries and players to allow interaction
-	 * Initiates Startup Phase at the end of function
-	 * @param continentsList
-	 * @param countriesList
-	 * @param playerList
-	 * @param iol
-	 * @param ocol
-	 */
-	public GamePlay (Vector<Continent> continentsList, Vector<Country> countriesList, Vector<Player> playerList,InfoObsLabel iol,OutcomeObsLabel ocol,
-			PlayerTurnObsLabel ptol) {
-	
-		for(Player p: playerList) p.initializeStartupArmy(playerList.size());
-		populateCountries();
-		this.player_index = 0;
-		this.alert_type = 0;
-		this.player = playerList.get(player_index);
-		this.army_to_place = player.getArmyToPlace();
-		this.addObserver(iol);
-		this.addObserver(ocol);
-		this.addObserver(ptol);
-		phaseZero();
-	}
 	
 	/**
 	 * Player input: populatecountries
 	 * randomly assign ownership of countries on the map until all are filled
 	 */
-	private void populateCountries(){
+	public void populateCountries(){
 		HashSet <Integer> polledCountries = new HashSet <>();
 		Random rand = new Random();
 		int cInd; // Country index in list
@@ -83,6 +60,7 @@ public class GamePlay extends Observable{
 		
 		outcome = "Randomly assigned countries to all players";
 		alertObservers(2);
+		phaseZero();
 	}
 	
 	/**
@@ -91,8 +69,11 @@ public class GamePlay extends Observable{
 
 	private void phaseZero() {
 		phase = "Startup Phase";
-		this.player = player_list.get(player_index);
-		this.army_to_place = player.getArmyToPlace();
+		for(Player p: player_list) p.initializeStartupArmy(player_list.size());
+
+		player = player_list.get(player_index);
+		army_to_place = player.getArmyToPlace();
+		
 		System.out.println("Currently in "+phase);
 		
 		alertObservers(1);
@@ -170,13 +151,9 @@ public class GamePlay extends Observable{
 	public void reinforceArmy (Country c, int num) {
 		System.out.println("placing army on "+c.getName());
 
-		if(c.getOwner().getID().equals(player.getID())) {
-			c.addArmy(num);
-			player.deployArmy(num);
-			army_to_place = player.getArmyToPlace();
-		}else {
-			
-		}
+		c.addArmy(num);
+		player.deployArmy(num);
+		outcome = "Reinforced "+c.getName()+" with "+num+" armies";
 		alertObservers(1);
 		if(army_to_place==0) {
 			phaseThree();
@@ -218,9 +195,9 @@ public class GamePlay extends Observable{
 	public void fortify(Country from, Country to, int num) {
 		from.removeArmy(num);
 		to.addArmy(num);
-		outcome = "Sucessfull mobilized";
-		alertObservers(2);
+		outcome = "Sucessfully mobilized from "+ from.getName()+" to "+to.getName()+" "+num+" armies";
 		nextPlayer();
+		
 	}
 	
 	/**
@@ -235,7 +212,7 @@ public class GamePlay extends Observable{
 		player = player_list.get(player_index);
 		player.rewardInitialArmy();
 		army_to_place = player.getArmyToPlace();
-		outcome = "Next player's turn";
+		outcome += "\tNext player's turn";
 		alertObservers(2);
 		
 		phaseOne();
@@ -252,7 +229,7 @@ public class GamePlay extends Observable{
 		}
 		player = player_list.get(player_index);
 		army_to_place = player.getArmyToPlace();
-		outcome = "Next player's turn";
+		outcome += "Next player's turn";
 		alertObservers(1);
 		alertObservers(2);
 		if(army_to_place==0) {
@@ -342,7 +319,7 @@ public class GamePlay extends Observable{
 	
 	public void setPlayers(Vector<Player> playerList) {
 		this.player_list = playerList;
-		this.player = playerList.get(player_index);
+		this.player = playerList.get(0);
 	}
     
     /**
@@ -350,9 +327,12 @@ public class GamePlay extends Observable{
 	 * @param x type of Observer to alert: 1 = InfoObsLabel, 2 = OutcomeObsLabel
 	 */
 	public void alertObservers(int x) {
+		this.player = player_list.get(player_index);
+		this.army_to_place = player.getArmyToPlace();
 		alert_type = x;
 		setChanged();
 		notifyObservers(this);
+		outcome = "";
 		alert_type = 0;
 	}
     
