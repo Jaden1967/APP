@@ -150,14 +150,6 @@ public class Country extends Observable{
 		}
 		
 		/**
-		 * After change of state, alerts attached CountryObsLabel 
-		 */
-		public void alertObservers() {
-			setChanged();
-			notifyObservers(this);
-		}
-		
-		/**
 		 * Only used in phase 1 and phase 3
 		 * @param playerID
 		 */
@@ -285,5 +277,13 @@ public class Country extends Observable{
 		public int[] getXY() {
 			int[] tmp = {x,y};
 			return tmp;
+		}
+		
+		/**
+		 * After change of state, alerts attached CountryObsLabel 
+		 */
+		public void alertObservers() {
+			setChanged();
+			notifyObservers(this);
 		}
 }

@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
@@ -40,6 +41,18 @@ public class Controller {
 		colorList.add(getColor("white"));
 		colorList.add(getColor("purple"));
 	}
+	
+	/**
+	 * Get random color from String List colorList
+	 * @param colorList
+	 * @return Color as String
+	 */
+	private String getRandColor (Vector<String> colorList) {
+        int c = new Random().nextInt(colorList.size());
+        String color = colorList.get(c);
+        colorList.remove(c);
+        return color;
+    }
 	
 	//Commands from Initial
 	

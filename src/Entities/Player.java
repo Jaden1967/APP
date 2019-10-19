@@ -210,5 +210,9 @@ public class Player {
 		
 	}
 	
+	public String toString() {
+		
+	}
+	
 	
 }
