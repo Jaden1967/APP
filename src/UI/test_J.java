@@ -43,13 +43,6 @@ public class test_J extends JFrame {
 		});
 	}
 
-	class mapPanel extends JPanel{
-		public void paintComponent(Graphics g) {
-			Image i = new ImageIcon("Image\\luca_pic.jpg").getImage();
-			Dimension size = this.getParent().getSize();
-			g.drawImage(i,0,0,940,585,this);
-		}
-	}
 	
 	/**
 	 * Create the frame.
@@ -63,12 +56,9 @@ public class test_J extends JFrame {
 		contentPane.setLayout(null);
 		setContentPane(contentPane);
 		
-		mapPanel map = new mapPanel();
-		map.setBounds(20, 20, 940, 585);
-		map.setLayout(null);
-		contentPane.add(map);
 		
 		JLabel lblNewLabel = new JLabel("New label");
+		lblNewLabel.setToolTipText("HI\nWAW");
 		lblNewLabel.setBounds(215, 173, 72, 18);
 		contentPane.add(lblNewLabel);
 	}

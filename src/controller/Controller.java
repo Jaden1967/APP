@@ -1,5 +1,6 @@
 package controller;
 
+import entities.*;
 import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
@@ -7,22 +8,13 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Observer;
-import java.util.Random;
 import java.util.Vector;
 
-import javax.swing.JOptionPane;
-
-import entities.Continent;
-import entities.Country;
-import entities.GamePlay;
-import entities.Player;
 
 public class Controller {
 	GamePlay game;
-	private String isCommandPattern = "(gameplayer -(add|remove) \\w*|loadmap \\w*\\.map|populatecountries)";
 	Vector <String> files_load = new Vector <String>();
 
-	
 	public Controller(GamePlay game) {
 		this.game = game;
 	}
@@ -31,10 +23,10 @@ public class Controller {
 		game.populateCountries();
 	}
 	
-	
-	
-	//Commands from Initial
-	
+	/**
+	 * Convert string type of player list into actual object type of player list
+	 * @param list
+	 */
 	public void addPlayers(Vector<String[]> list) {
 		Vector<Player> player_list = new Vector<>();
 		for(String [] s: list) {
@@ -57,7 +49,6 @@ public class Controller {
 	public boolean readFile(String address) {
 		Vector<Continent> continents_list = new Vector<Continent>();
 		Vector<Country> countries_list = new Vector<Country>();
-		Vector<Player> player_list = new Vector<Player>();
 		int x=0,y=0;
 		try {
 			String pathname = "map\\"+address;
@@ -107,6 +98,7 @@ public class Controller {
 					}
 				}
 				if(flag == 0) {
+					br.close();
 					return false;
 				}
 				countries_list.add(c);
@@ -130,7 +122,8 @@ public class Controller {
 									break;
 								}
 							}
-							if(tc.getLabel().equals("")) {
+							if(tc.getLabel().getText().equals("")) {
+								br.close();
 								return false;
 							}
 							c.addNeighbour(tc);
@@ -138,13 +131,14 @@ public class Controller {
 					}
 				}
 				if(flag==0) {
+					br.close();
 					return false;
 				}
 				line = br.readLine();
 			}
 			this.game.setContinents(continents_list);
 			this.game.setCountries(countries_list);
-			
+			br.close();
 			return true;
 		}
 		 catch (Exception e) {
@@ -153,6 +147,12 @@ public class Controller {
 		}
 	}
 	
+	/**
+	 * Called when read map fail, clear all the existing data
+	 */
+	public void refreshData() {
+		
+	}
 	
 	/**
 	 * Returns corresponding Color object to the parsed String
