@@ -1,19 +1,12 @@
 package entities;
 
-import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.HashSet;
 import java.util.Observable;
 import java.util.Vector;
-
 import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
-
 import ui.labels.CountryObsLabel;
 
 public class Country extends Observable{
@@ -29,10 +22,6 @@ public class Country extends Observable{
 		private CountryObsLabel label;
 		private Border border; //Continent's border, constant throughout the game
 
-		/**
-		* Default contructor for Country
-		* Creates empty Country object with name "DNE"
-		*/
 		public Country() {
 			this.countryName = "DNE";
 			this.owner = new Player();
@@ -60,15 +49,9 @@ public class Country extends Observable{
 			label = new CountryObsLabel(String.valueOf(army_to_place));
 			x = (int)((float)plotX/imageX*x);
 			y = (int)((float)plotY/imageY*y);
-			label.setBounds(x-10, y-10, 20, 20);
+			label.setBounds(x-15, y-15, 30, 30);
 			label.setFont(new Font("SimSun", Font.BOLD, 15));
 			label.setHorizontalAlignment(SwingConstants.CENTER);
-			label.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent arg0) {
-					JOptionPane.showMessageDialog(null, "Country name: "+countryName+"\nOwner: "+owner.getID()+"\nArmy number"+army_to_place, "Country information", JOptionPane.INFORMATION_MESSAGE);
-				}
-			});
 		}
 		
 		/**
@@ -94,8 +77,7 @@ public class Country extends Observable{
 		 */
 		public void setOwner(Player p) {
 			owned = true;
-			owner = p;
-			
+			owner = p;	
 			if (army_to_place==0) army_to_place++;
 			label.setBackground(owner.getColor());
 			alertObservers();
@@ -239,7 +221,14 @@ public class Country extends Observable{
 		}
 		
 		/**
-		 * Getter of neigbouring Country Vector
+		 * Change information which will be shown on the screen
+		 */
+		public void setInfoText() {
+			label.setToolTipText("Country name: "+countryName+"  Owner: "+owner.getID()+"  Army number: "+army_to_place);
+		}
+		
+		/**
+		 * Getter of surrounding Country Vector
 		 * @return
 		 */
 		public Vector<Country> getLinkCountries() {
@@ -255,7 +244,7 @@ public class Country extends Observable{
 		}
 		
 		/**
-		 * Print all neighbours' name
+		 * Print all neighbors' name
 		 */
 		public void printLinkedCountries() {
 			for(Country c:linked_countries) {
@@ -264,7 +253,7 @@ public class Country extends Observable{
 		}
 		
 		/**
-		 * Print number of neighbours this Country has 
+		 * Print number of neighbors this Country has 
 		 */
 		public void printLinkedCountriesNum() {
 			System.out.println(linked_countries.size());

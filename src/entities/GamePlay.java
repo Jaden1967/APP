@@ -1,38 +1,27 @@
 package entities;
 
 import java.util.Vector;
-
-import ui.labels.InfoObsLabel;
-import ui.labels.OutcomeObsLabel;
-import ui.labels.PlayerTurnObsLabel;
-
+import javax.swing.JOptionPane;
 import java.util.HashSet;
 import java.util.Observable;
 import java.util.Random;
-import java.util.Set;
 
 /**
  * Model for Risk Game
- * 
- *
  */
 public class GamePlay extends Observable{
 	private Vector <Continent> continents_list;
 	private Vector<Country> countries_list;	
 	private Vector<Player> player_list;
-	private int player_index; //index deciding whose turn to play
-	private String phase;
 	private Player player;
+	private int player_index = 0; //index deciding whose turn to play
 	private int army_to_place;
+	private int alert_type = 0;
 	private String outcome;
-	private int alert_type;
+	private String phase = "";
 	
 	public GamePlay() {
-		phase = "";
-		player_index = 0;
-		alert_type = 0;
 	}
-	
 	
 	/**
 	 * Player input: populatecountries
@@ -66,7 +55,6 @@ public class GamePlay extends Observable{
 	/**
      * Startup Phase
      */
-
 	private void phaseZero() {
 		phase = "Startup Phase";
 		for(Player p: player_list) p.initializeStartupArmy(player_list.size());
@@ -91,8 +79,8 @@ public class GamePlay extends Observable{
 	
 	/**
      * From player command: placeall
-     * During starup phase, randomly places army on the map for all players until all players have no more units to place
-     * Enters Recruitment phase once all troops are deployed
+     * During startup phase, randomly places army on the map for all players until all players have no more units to place
+     * Enters Reinforcement phase once all troops are deployed
      * Randomly places armies to current player's owned countries
      */
 
@@ -122,87 +110,12 @@ public class GamePlay extends Observable{
         player.rewardInitialArmy();
         outcome = "Randomly assigned armies to owned countries";
         phaseOne();
-        alertObservers(2);
-        	
+        alertObservers(2);   	
     }
     
-    
-	/**
-     * Recruitment Phase
-     * Set phase to "Fortification Phase"
-     * Alerts InfoObsLabel
-     */
-
-	private void phaseOne() {
-		phase = "Reinforcement Phase";
-		army_to_place = player.getArmyToPlace();
-		System.out.println("Currently in "+phase);
-		
-		alertObservers(1);
-		//phaseTwo();
-	}
-	
-	/**
-     * From player command: recruit country num
-     * During recruitment phase, player assigns the input amount of army to target country 
-     * @param c target countryId
-     * @param num amount of army to assign
-     */
-	public void reinforceArmy (Country c, int num) {
-		System.out.println("placing army on "+c.getName());
-
-		c.addArmy(num);
-		player.deployArmy(num);
-		outcome = "Reinforced "+c.getName()+" with "+num+" armies";
-		alertObservers(1);
-		if(army_to_place==0) {
-			phaseThree();
-		}
-	}
-	
-	
-	
-    /**
-     * Attack Phase
-     */
-	private void phaseTwo() {
-		phase = "Attack Phase";
-		System.out.println("Currently in "+phase);
-		
-		phaseThree();
-	}
-	
-    /**
-     * Fortify Phase
-     * Set phase to "Fortification Phase"
-     * alerts InfoObsLabel
-     */
-	private void phaseThree() {
-		phase = "Fortification Phase";
-		
-		System.out.println("Currently in "+phase);
-
-		alertObservers(1);
-	}
-	
-	/**
-	 * From player command fortify fromcountry tocountry num
-	 * removes army number from from country, add it to to country
-	 * @param from Country mobilizing army
-	 * @param to Country receiving army
-	 * @param num Amount of army mobilized
-	 */
-	public void fortify(Country from, Country to, int num) {
-		from.removeArmy(num);
-		to.addArmy(num);
-		outcome = "Sucessfully mobilized from "+ from.getName()+" to "+to.getName()+" "+num+" armies";
-		nextPlayer();
-		
-	}
-	
 	/**
 	 * Switches context to next player in chronological order
-	 * Initiate recruitment phase for that player
+	 * Initiate reinforcement phase for that player
 	 */
 	public void nextPlayer() {
 		player_index++;
@@ -238,16 +151,76 @@ public class GamePlay extends Observable{
 		}
 	}
 	
-    
+	/**
+     * From player command: recruit country number
+     * During reinforcement phase, player assigns the input amount of army to target country 
+     * @param c target countryId
+     * @param num amount of army to assign
+     */
+	public void reinforceArmy (Country c, int num) {
+		System.out.println("placing army on "+c.getName());
+
+		c.addArmy(num);
+		player.deployArmy(num);
+		outcome = "Reinforced "+c.getName()+" with "+num+" armies";
+		alertObservers(1);
+		if(army_to_place==0) {
+			phaseTwo();
+		}
+	}
 	
+	/**
+     * Reinforcement Phase
+     * Set phase to "Fortification Phase"
+     * Alerts InfoObsLabel
+     */
+	private void phaseOne() {
+		JOptionPane.showMessageDialog(null, "Reinforcement Phase for player "+player.getID(), "Information", JOptionPane.INFORMATION_MESSAGE);
+		phase = "Reinforcement Phase";
+		army_to_place = player.getArmyToPlace();
+		alertObservers(1);
+	}
 	
+    /**
+     * Attack Phase
+     */
+	private void phaseTwo() {
+		JOptionPane.showMessageDialog(null, "Attack Phase for player "+player.getID(), "Information", JOptionPane.INFORMATION_MESSAGE);
+		phase = "Attack Phase";
+		JOptionPane.showMessageDialog(null, "Attack Phase is now under construction!", "Warning", JOptionPane.ERROR_MESSAGE);
+		phaseThree();
+	}
 	
+    /**
+     * Fortify Phase
+     * Set phase to "Fortification Phase"
+     * alerts InfoObsLabel
+     */
+	private void phaseThree() {
+		JOptionPane.showMessageDialog(null, "Fortification Phase for player "+player.getID(), "Information", JOptionPane.INFORMATION_MESSAGE);
+		phase = "Fortification Phase";
+		alertObservers(1);
+	}
+	
+	/**
+	 * From player command fortify fromcountry tocountry num
+	 * removes army number from from country, add it to to country
+	 * @param from Country mobilizing army
+	 * @param to Country receiving army
+	 * @param num Amount of army mobilized
+	 */
+	public void fortify(Country from, Country to, int num) {
+		from.removeArmy(num);
+		to.addArmy(num);
+		outcome = "Sucessfully mobilized from "+ from.getName()+" to "+to.getName()+" "+num+" armies";
+		nextPlayer();
+		
+	}
 	
     /**
      * Getter for phase attribute
      * @return phase as String
      */
- 
     public String getPhase() {
         return this.phase;
     }
@@ -256,7 +229,6 @@ public class GamePlay extends Observable{
      * Getter for current player ID
      * @return player id as String
      */
- 
     public String getPlayerID() {
         return this.player.getID();
     }
@@ -265,7 +237,6 @@ public class GamePlay extends Observable{
      * Getter for current Player
      * @return player as Player object
      */
- 
     public Player getPlayer() {
         return this.player;
     }
@@ -274,7 +245,6 @@ public class GamePlay extends Observable{
      * Getter for army to place
      * @return armyToPlace as String
      */
- 
     public int getArmyToPlace() {
         return this.army_to_place;
     }
@@ -283,7 +253,6 @@ public class GamePlay extends Observable{
      * Getter for alert type for observers
      * @return type as int
      */
- 
     public int getAlertType() {
         return this.alert_type;
     }
@@ -292,31 +261,54 @@ public class GamePlay extends Observable{
      * Getter for outcome after a player action
      * @return outcome as String
      */
- 
     public String getOutcome() {
         return this.outcome;
     }
     
+    /**
+     * Getter for vector of continent
+     * @return continents_list as vector
+     */
     public Vector<Continent> getContinents(){
     	return continents_list;
     }
     
+    /**
+     * Setter for continents_list
+     * @param continentsList
+     */
     public void setContinents(Vector<Continent> continentsList) {
 		this.continents_list = continentsList;
 	}
 	
+    /**
+     * Getter for vector of countries
+     * @return countries_list as vector
+     */
 	public Vector<Country> getCountries() {
 		return countries_list;
 	}
 	
+	/**
+	 * Setter for countries_list
+	 * @param countriesList
+	 */
 	public void setCountries(Vector<Country> countriesList) {
 		this.countries_list = countriesList;
 	}
 	
+    /**
+     * Getter for vector of players
+     * @return player_list as vector
+     */
 	public Vector<Player> getPlayers(){
 		return player_list;
 	}
 	
+	/**
+	 * Setter for player_list
+	 * @param playerList
+	 */
 	public void setPlayers(Vector<Player> playerList) {
 		this.player_list = playerList;
 		this.player = playerList.get(0);
@@ -335,9 +327,4 @@ public class GamePlay extends Observable{
 		outcome = "";
 		alert_type = 0;
 	}
-    
-
-	
-	
-	
 }

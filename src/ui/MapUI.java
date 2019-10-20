@@ -1,9 +1,6 @@
 package ui;
 
 import java.awt.BasicStroke;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -11,34 +8,28 @@ import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.HashSet;
 import java.util.Vector;
 import java.util.regex.Pattern;
-
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-
 import controller.Controller;
 import entities.*;
-import ui.labels.CountryObsLabel;
-import ui.labels.InfoObsLabel;
-import ui.labels.OutcomeObsLabel;
-import ui.labels.PlayerTurnObsLabel;
-
+import ui.labels.*;
 import javax.swing.JTextField;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.geom.Line2D;
-
 import javax.swing.SwingConstants;
 
 public class MapUI extends JFrame {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField textField;
 	private String isCommandPattern = "(placearmy \\w*(\\-\\w+)*|placeall|reinforce \\w*(\\-\\w+)* [1-9][0-9]*|fortify (\\w*(\\-\\w+)*\\ \\w*(\\-\\w+)*\\ [1-9][0-9]*|none))";
@@ -69,7 +60,7 @@ public class MapUI extends JFrame {
 					g.drawImage(i,0,0,940,585,this);
 				}
 			}
-			Stroke stroke=new BasicStroke(3.0f);//…Ë÷√œﬂøÌŒ™3.0
+			Stroke stroke=new BasicStroke(3.0f);
 			g2.setStroke(stroke);
 			for(Country c:countries_list) {
 				int[] from = c.getXY();
@@ -95,7 +86,6 @@ public class MapUI extends JFrame {
 		}
 		return map;
 	}
-	
 	
 	/**
 	 * Create the frame.

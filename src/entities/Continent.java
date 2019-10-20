@@ -11,7 +11,6 @@ public class Continent {
 	private int value;
 	private Color color;
 	
-	
 	/**
 	 * Constructor for Continent
 	 * @param name of continent
@@ -23,8 +22,8 @@ public class Continent {
 		this.name = name;
 		this.value = value;
 		this.color = color;
+		this.isConquered = false;
 	}
-	
 	
 	/**
 	 * If one player fully occupied the continent, function will add its name in the player occupied list
@@ -35,7 +34,7 @@ public class Continent {
 		String owner = countries.get(0).getOwner().getID();
 		if(countries.size() == 1 && !owner.contentEquals("")) return true;
 		for (int i=1;i<countries.size();i++){
-			if (!owner.equals(countries.get(i).getOwner())) {
+			if (!owner.equals(countries.get(i).getOwner().getID())) {
 				return false;
 			}
 		}
@@ -75,7 +74,6 @@ public class Continent {
 		countries.add(c);
 	}
 	
-	
 	/**
 	 * Getter for the Continent's color
 	 * @return color Color Object
@@ -92,5 +90,4 @@ public class Continent {
 			System.out.println(c.getName());
 		}
 	}
-	
 }

@@ -1,7 +1,7 @@
 package entities;
 
 import java.awt.Color;
-import java.util.Vector;;
+import java.util.Vector;
 
 public class Player {
 	private String id;
@@ -52,7 +52,7 @@ public class Player {
 		this.armyToPlace += i;
 	}
 	
-	/**
+   /**
 	* At the start of startup phase, this method is called to give players an initial amount of army
 	* To place one at a time in round-robin fashion
 	*/
@@ -72,7 +72,7 @@ public class Player {
 	}
 	
 	/**
-	 * Reward army to place during recruitment phase
+	 * Reward army to place during reinforcement phase
 	 */
 	public void rewardInitialArmy() {
 		this.armyToPlace += calculateArmy() + extraArmyToAdd();
@@ -134,31 +134,6 @@ public class Player {
 	}
 	
 	/**
-	 * Getter for corresponding color of input String
-	 * @param color color as String
-	 * @return Color color as Object
-	 */
-	private Color getColor(String color) {
-        switch (color) {
-            case "red": return Color.red;
-            case "yellow": return Color.yellow;
-            case "blue": return Color.blue;
-            case "green": return Color.green;
-            case "lightyellow": return new Color(107,142,35);
-            case "grey": return Color.gray;
-            case "magenta": return Color.magenta;
-            case "orange": return Color.orange;
-            case "pink": return Color.pink;
-            case "cyan": return Color.cyan;
-            case "DeepPink": return new Color(255,20,147);
-            case "skyblue": return new Color(176, 196, 222);
-            case "white": return Color.white;
-            case "purple": return new Color(128, 0, 128);
-            default: return Color.white;
-        }
-    }
-	
-	/**
 	 * Verifies if the player has won the game by owning all continents available in the game
 	 * @param totalContinents
 	 * @return
@@ -207,10 +182,5 @@ public class Player {
 		if(counter >= this.ownedContinent.size()) return false;
 		ownedContinent.remove(counter);
 		return true;
-		
 	}
-	
-	
-	
-	
 }

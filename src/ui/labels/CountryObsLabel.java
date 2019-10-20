@@ -18,10 +18,8 @@ public class CountryObsLabel extends JLabel implements Observer{
 
 	@Override
 	public void update(Observable obs, Object x) {
+		((Country)obs).setInfoText();
 		this.setBackground(((Country)obs).getOwner().getColor());
 		this.setText(String.valueOf(((Country)obs).getArmyNum()));
 	}
-	
-	
-
 }
