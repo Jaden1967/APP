@@ -20,14 +20,14 @@ public class Country extends Observable{
 		private String countryName;
 		private Player owner;
 		private int countryId;
-		private Vector <Country> linkCountries = new Vector<Country>();
-		private int armyNum = 0;
-		private Continent belongTo;
+		private Vector <Country> linked_countries = new Vector<Country>();
+		private int army_to_place = 0;
+		private Continent continent;
 		private int x;
 		private int y;
 		private boolean owned;
-		private CountryObsLabel l;
-		private Border b; //Continent's border, constant throughout the game
+		private CountryObsLabel label;
+		private Border border; //Continent's border, constant throughout the game
 
 		/**
 		* Default contructor for Country
@@ -57,16 +57,16 @@ public class Country extends Observable{
 			this.y = vertical;
 			this.owned = false;
 			this.owner = new Player();
-			l = new CountryObsLabel(String.valueOf(armyNum));
+			label = new CountryObsLabel(String.valueOf(army_to_place));
 			x = (int)((float)plotX/imageX*x);
 			y = (int)((float)plotY/imageY*y);
-			l.setBounds(x-10, y-10, 20, 20);
-			l.setFont(new Font("SimSun", Font.BOLD, 15));
-			l.setHorizontalAlignment(SwingConstants.CENTER);
-			l.addMouseListener(new MouseAdapter() {
+			label.setBounds(x-10, y-10, 20, 20);
+			label.setFont(new Font("SimSun", Font.BOLD, 15));
+			label.setHorizontalAlignment(SwingConstants.CENTER);
+			label.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent arg0) {
-					JOptionPane.showMessageDialog(null, "Country name: "+countryName+"\nOwner: "+owner.getID()+"\nArmy number"+armyNum, "Country information", JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Country name: "+countryName+"\nOwner: "+owner.getID()+"\nArmy number"+army_to_place, "Country information", JOptionPane.INFORMATION_MESSAGE);
 				}
 			});
 		}
@@ -96,8 +96,8 @@ public class Country extends Observable{
 			owned = true;
 			owner = p;
 			
-			if (armyNum==0) armyNum++;
-			l.setBackground(owner.getColor());
+			if (army_to_place==0) army_to_place++;
+			label.setBackground(owner.getColor());
 			alertObservers();
 
 		}
@@ -108,11 +108,11 @@ public class Country extends Observable{
 		 * @param nbour
 		 */
 		public void addNeighbour(Country nbour) {
-			for (Country c: this.linkCountries) {
+			for (Country c: this.linked_countries) {
 				if (c.getID() == nbour.getID())
 					return;
 			}
-			this.linkCountries.add(nbour);
+			this.linked_countries.add(nbour);
 		}
 		
 		/**
@@ -121,7 +121,7 @@ public class Country extends Observable{
 		 * @return true if country is connected, false if not
 		 */
 		public boolean hasNeighbour (String countryId) {
-			for (Country c: this.linkCountries) {
+			for (Country c: this.linked_countries) {
 				if (c.getName().equals(countryId)) {
 					return true;
 				}
@@ -141,7 +141,7 @@ public class Country extends Observable{
 			visited.add(this.getName());
 			if(!this.getOwner().getID().equals(ownerId)) return false;
 			if(this.getName().equals(countryId)) return true;
-			for (Country c: this.linkCountries) {
+			for (Country c: this.linked_countries) {
 				if(visited.contains(c.getName())) continue;
 				if(c.hasPathTo(countryId,ownerId,visited)) return true;
 			}
@@ -150,19 +150,11 @@ public class Country extends Observable{
 		}
 		
 		/**
-		 * After change of state, alerts attached CountryObsLabel 
-		 */
-		public void alertObservers() {
-			setChanged();
-			notifyObservers(this);
-		}
-		
-		/**
 		 * Only used in phase 1 and phase 3
 		 * @param playerID
 		 */
 		public void addArmy(int amount) {
-			armyNum += amount;
+			army_to_place += amount;
 			alertObservers();
 		}
 		
@@ -171,7 +163,7 @@ public class Country extends Observable{
 		 * @param amount
 		 */
 		public void removeArmy(int amount) {
-			armyNum -= amount;
+			army_to_place -= amount;
 			alertObservers();
 		}
 		
@@ -184,16 +176,16 @@ public class Country extends Observable{
 		 * @return whether or not moving is successful
 		 */
 		public boolean moveArmy(int toID, int armyNum) {
-			if (this.armyNum < armyNum+1) return false;
+			if (this.army_to_place < armyNum+1) return false;
 			boolean neighBourExists = false;
-			for(Country c: this.linkCountries) {
+			for(Country c: this.linked_countries) {
 				if (c.getID() == toID) {
 					neighBourExists = true;
 				}
 			}
 			if(!neighBourExists) return false;
 			Country temp = new Country();
-			for (Country c: linkCountries) {
+			for (Country c: linked_countries) {
 				temp = c;
 				if (c.getID() == toID) break;
 			}
@@ -217,7 +209,7 @@ public class Country extends Observable{
 		 * @return
 		 */
 		public int getArmyNum() {
-			return this.armyNum;
+			return this.army_to_place;
 		}
 		
 		/**
@@ -233,7 +225,7 @@ public class Country extends Observable{
 		 * @return Continent object
 		 */
 		public Continent getContinent() {
-			return this.belongTo;
+			return this.continent;
 		}
 		
 		/**
@@ -241,9 +233,9 @@ public class Country extends Observable{
 		 * @param c
 		 */
 		public void setContinent(Continent c) {
-			belongTo = c;
-			b = BorderFactory.createLineBorder(c.getColor(), 3);
-			l.setBorder(b);
+			continent = c;
+			border = BorderFactory.createLineBorder(c.getColor(), 3);
+			label.setBorder(border);
 		}
 		
 		/**
@@ -251,7 +243,7 @@ public class Country extends Observable{
 		 * @return
 		 */
 		public Vector<Country> getLinkCountries() {
-			return linkCountries;
+			return linked_countries;
 		}
 		
 		/**
@@ -259,14 +251,14 @@ public class Country extends Observable{
 		 * @return
 		 */
 		public CountryObsLabel getLabel() {
-			return l;
+			return label;
 		}
 		
 		/**
 		 * Print all neighbours' name
 		 */
 		public void printLinkedCountries() {
-			for(Country c:linkCountries) {
+			for(Country c:linked_countries) {
 				System.out.println(c.getName());
 			}
 		}
@@ -275,7 +267,7 @@ public class Country extends Observable{
 		 * Print number of neighbours this Country has 
 		 */
 		public void printLinkedCountriesNum() {
-			System.out.println(linkCountries.size());
+			System.out.println(linked_countries.size());
 		}
 		
 		/**
@@ -285,5 +277,13 @@ public class Country extends Observable{
 		public int[] getXY() {
 			int[] tmp = {x,y};
 			return tmp;
+		}
+		
+		/**
+		 * After change of state, alerts attached CountryObsLabel 
+		 */
+		public void alertObservers() {
+			setChanged();
+			notifyObservers(this);
 		}
 }
