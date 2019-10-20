@@ -46,7 +46,6 @@ public class GamePlay extends Observable{
 				pInd = 0;
 			}
 		}
-		
 		outcome = "Randomly assigned countries to all players";
 		alertObservers(2);
 		phaseZero();
@@ -62,8 +61,6 @@ public class GamePlay extends Observable{
 		player = player_list.get(player_index);
 		army_to_place = player.getArmyToPlace();
 		
-		System.out.println("Currently in "+phase);
-		
 		alertObservers(1);
 	}
 	
@@ -74,7 +71,7 @@ public class GamePlay extends Observable{
 	public void placeArmy(Country c) {
 		c.addArmy(1);
 		player.deployArmy(1);
-		nextPlayerToPlace();
+		startUpNext();
 	}
 	
 	/**
@@ -135,7 +132,7 @@ public class GamePlay extends Observable{
 	 * For next player to place army during Startup Phase
 	 * Switches GamePlay context to next player's datasets
 	 */
-	public void nextPlayerToPlace() {
+	public void startUpNext() {
 		player_index++;
 		if(player_index % player_list.size()==0) {
 			player_index = 0;
@@ -159,7 +156,6 @@ public class GamePlay extends Observable{
      */
 	public void reinforceArmy (Country c, int num) {
 		System.out.println("placing army on "+c.getName());
-
 		c.addArmy(num);
 		player.deployArmy(num);
 		outcome = "Reinforced "+c.getName()+" with "+num+" armies";

@@ -66,7 +66,29 @@ public class MapUI extends JFrame {
 				int[] from = c.getXY();
 				for(Country linkc:c.getLinkCountries()) {
 					int[] to = linkc.getXY();
-					g2.drawLine(from[0],from[1],to[0],to[1]);
+					if(Math.abs(from[0]-to[0])>600) {
+						int[] tmpXL;
+						int[] tmpXR;
+						if(from[0]>=to[0]) {
+							tmpXL = to;
+							tmpXR = from;
+						}
+						else {
+							tmpXL = from;
+							tmpXR = to;
+						}
+						if(tmpXL[1]>=tmpXR[1]) {
+							g2.drawLine(tmpXL[0], tmpXL[1], 7, tmpXL[1]-(Math.abs(tmpXL[1]-tmpXR[1])*tmpXL[0]/(tmpXL[0]+940-tmpXR[0])));
+							g2.drawLine(tmpXR[0], tmpXR[1], 933, tmpXL[1]-(Math.abs(tmpXL[1]-tmpXR[1])*tmpXL[0]/(tmpXL[0]+940-tmpXR[0])));
+						}
+						else{
+							g2.drawLine(tmpXL[0], tmpXL[1], 7, tmpXL[1]+(Math.abs(tmpXL[1]-tmpXR[1])*tmpXL[0]/(tmpXL[0]+940-tmpXR[0])));
+							g2.drawLine(tmpXR[0], tmpXR[1], 933, tmpXL[1]+(Math.abs(tmpXL[1]-tmpXR[1])*tmpXL[0]/(tmpXL[0]+940-tmpXR[0])));
+						}
+					}
+					else {
+						g2.drawLine(from[0],from[1],to[0],to[1]);
+					}
 				}
 			}
 		}
