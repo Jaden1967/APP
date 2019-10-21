@@ -49,9 +49,9 @@ public class Menu {
 		JButton btnPlay = new JButton("Play");
 		btnPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frmRisk.setVisible(false);
 				Initial i = new Initial();
 				i.setVisible(true);
+				frmRisk.dispose();
 			}
 		});
 		btnPlay.setFont(new Font("SimSun", Font.BOLD, 30));

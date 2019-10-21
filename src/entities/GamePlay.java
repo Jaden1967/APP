@@ -40,6 +40,7 @@ public class GamePlay extends Observable{
 			polledCountries.add(cInd);
 			
 			countries_list.get(cInd).setOwner(player_list.get(pInd)); //set unassigned Country to Player in List in order
+			player_list.get(pInd).increaseCountry();
 			player_list.get(pInd).deployArmy(1);
 			pInd++;
 			if (pInd % player_list.size() == 0) {
@@ -48,6 +49,9 @@ public class GamePlay extends Observable{
 		}
 		outcome = "Randomly assigned countries to all players";
 		alertObservers(2);
+		for(int i = 0;i<continents_list.size();i++) {
+			continents_list.get(i).checkIfConquered();
+		}
 		phaseZero();
 	}
 	
@@ -97,10 +101,8 @@ public class GamePlay extends Observable{
                 ind = rand.nextInt(toAdd.size());
                 toAdd.get(ind).addArmy(1);
                 player.deployArmy(1);
-
             }
             army_to_place = player.getArmyToPlace();
-
         }
         player = player_list.get(0);
         player_index = 0;

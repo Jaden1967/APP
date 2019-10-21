@@ -7,7 +7,6 @@ public class Continent {
 	private int continentID;
 	private String name;
 	private Vector<Country> countries = new Vector<Country>();
-	private boolean isConquered;
 	private int value;
 	private Color color;
 	
@@ -22,7 +21,6 @@ public class Continent {
 		this.name = name;
 		this.value = value;
 		this.color = color;
-		this.isConquered = false;
 	}
 	
 	/**
@@ -32,11 +30,19 @@ public class Continent {
 	public boolean checkIfConquered () {
 		if (countries.size() == 0) return false;
 		String owner = countries.get(0).getOwner().getID();
-		if(countries.size() == 1 && !owner.contentEquals("")) return true;
 		for (int i=1;i<countries.size();i++){
 			if (!owner.equals(countries.get(i).getOwner().getID())) {
 				return false;
 			}
+		}
+		int flag = 0;
+		for(int i = 0;i<countries.get(0).getOwner().getOwnContinent().size();i++) {
+			if(countries.get(0).getOwner().getOwnContinent().get(i).getName().equals(name)) {
+				flag = 1;
+			}
+		}
+		if(flag==0) {
+			countries.get(0).getOwner().addContinent(this);
 		}
 		return true;
 	}
@@ -64,6 +70,14 @@ public class Continent {
 	 */
 	public int getID() {
 		return this.continentID;
+	}
+	
+	/**
+	 * Getter for list of countries
+	 * @return vector of countries
+	 */
+	public Vector<Country> getContinentsCountries(){
+		return this.countries;
 	}
 	
 	/**

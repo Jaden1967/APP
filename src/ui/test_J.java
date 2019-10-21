@@ -22,6 +22,11 @@ import java.awt.Image;
 import java.io.File;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class test_J extends JFrame {
 
@@ -61,5 +66,20 @@ public class test_J extends JFrame {
 		lblNewLabel.setToolTipText("HI\nWAW");
 		lblNewLabel.setBounds(215, 173, 72, 18);
 		contentPane.add(lblNewLabel);
+		
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setBounds(0, 0, 982, 26);
+		contentPane.add(menuBar);
+		
+		JMenu mnNewMenu = new JMenu("New menu");
+		menuBar.add(mnNewMenu);
+		
+		JMenuItem mntmNewMenuItem = new JMenuItem("New menu item");
+		mntmNewMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("HI");
+			}
+		});
+		mnNewMenu.add(mntmNewMenuItem);
 	}
 }

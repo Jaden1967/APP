@@ -77,10 +77,10 @@ public class Initial extends JFrame {
 				}
 				else {
 					JOptionPane.showMessageDialog(null, "Game start!", "Good luck!", JOptionPane.INFORMATION_MESSAGE);
-					setVisible(false);
 					control.addPlayers(player_str_list);
 					MapUI g = new MapUI(game.getCountries(), control);
 					g.setVisible(true);
+					dispose();
 				}
 			}
 			else if(command[0].equals("gameplayer")) {

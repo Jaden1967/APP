@@ -8,7 +8,7 @@ public class Player {
 	private int total_country_number;
 	private Vector <Continent> ownedContinent = new Vector<Continent>();
 	private Color color;
-	private int armyToPlace;
+	private int army_to_place;
 	
 	/**
 	 * Empty constructor for Player
@@ -28,7 +28,7 @@ public class Player {
 		this.id = id;
 		this.color = color;
 		this.ownedContinent = new Vector<>();
-		this.armyToPlace = 0;
+		this.army_to_place = 0;
 	}
 	
 	/**
@@ -49,7 +49,7 @@ public class Player {
 	 * @param i number of army to be rewarded
 	 */
 	public void rewardArmy(int i) {
-		this.armyToPlace += i;
+		this.army_to_place += i;
 	}
 	
    /**
@@ -75,7 +75,7 @@ public class Player {
 	 * Reward army to place during reinforcement phase
 	 */
 	public void rewardInitialArmy() {
-		this.armyToPlace += calculateArmy() + extraArmyToAdd();
+		this.army_to_place += calculateArmy() + extraArmyToAdd();
 	}
 	
 	/**
@@ -83,7 +83,7 @@ public class Player {
 	 * @return armyToPlace as int
 	 */
 	public int getArmyToPlace() {
-		return this.armyToPlace;
+		return this.army_to_place;
 	}
 	
 	/**
@@ -91,7 +91,7 @@ public class Player {
 	 * @param i amount of army to be deployed 
 	 */
 	public void deployArmy(int i) {
-		this.armyToPlace -= i;
+		this.army_to_place -= i;
 	}
 	
 	/**
@@ -182,5 +182,21 @@ public class Player {
 		if(counter >= this.ownedContinent.size()) return false;
 		ownedContinent.remove(counter);
 		return true;
+	}
+	
+	/**
+	 * Getter of total countries number
+	 * @return number
+	 */
+	public int getTotalCountriesNumber() {
+		return this.total_country_number;
+	}
+	
+	/**
+	 * Getter for vector of owned continent
+	 * @return owned continent
+	 */
+	public Vector<Continent> getOwnContinent(){
+		return this.ownedContinent;
 	}
 }
