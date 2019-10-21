@@ -28,21 +28,16 @@ import javax.swing.SwingConstants;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JMenuBar;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.Font;
 
 public class MapUI extends JFrame {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField textField;
 	private String isCommandPattern = "(placearmy \\w*(\\-\\w+)*|placeall|reinforce \\w*(\\-\\w+)* [1-9][0-9]*|fortify (\\w*(\\-\\w+)*\\ \\w*(\\-\\w+)*\\ [1-9][0-9]*|none))";
 	private Vector<Country> countries_list = null;
-	private Controller control;
+	private Controller control = new Controller();
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -194,7 +189,8 @@ public class MapUI extends JFrame {
 		JMenuItem mntmSaveGame = new JMenuItem("save game");
 		mntmSaveGame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//save game
+				Save s = new Save(control);
+				s.setVisible(true);
 			}
 		});
 		mntmSaveGame.setHorizontalAlignment(SwingConstants.LEFT);
@@ -223,8 +219,7 @@ public class MapUI extends JFrame {
 			String [] result = control.processInput(textField.getText());
 			if(result[0].equals("F")) {
 				JOptionPane.showMessageDialog(null, result[1], "Warning", JOptionPane.ERROR_MESSAGE);
-			}
-			
+			}	
 		}
 		else {
 			JOptionPane.showMessageDialog(null, "Command invalid!", "Warning", JOptionPane.ERROR_MESSAGE);
@@ -304,7 +299,8 @@ public class MapUI extends JFrame {
 		JMenuItem mntmSaveGame = new JMenuItem("save game");
 		mntmSaveGame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//save game
+				Save s = new Save(control);
+				s.setVisible(true);
 			}
 		});
 		mntmSaveGame.setHorizontalAlignment(SwingConstants.LEFT);

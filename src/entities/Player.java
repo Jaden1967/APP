@@ -6,7 +6,8 @@ import java.util.Vector;
 public class Player {
 	private String id;
 	private int total_country_number;
-	private Vector <Continent> ownedContinent = new Vector<Continent>();
+	private Vector<Continent> ownedContinent = new Vector<Continent>();
+	private Vector<Card> ownedCard = new Vector<Card>(); 
 	private Color color;
 	private int army_to_place;
 	

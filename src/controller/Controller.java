@@ -19,6 +19,10 @@ public class Controller {
 		this.game = game;
 	}
 	
+	public Controller() {
+		
+	}
+	
 	public void startGame() {
 		game.populateCountries();
 	}
@@ -148,10 +152,13 @@ public class Controller {
 	}
 	
 	/**
-	 * Called when read map fail, clear all the existing data
+	 * Save current data
+	 * @param name name of the file
+	 * @return success or not
 	 */
-	public void refreshData() {
+	public boolean saveFile(String name) {
 		
+		return true;
 	}
 	
 	/**
