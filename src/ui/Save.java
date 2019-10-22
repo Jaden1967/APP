@@ -49,6 +49,7 @@ public class Save extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if(control.saveFile(textField.getText())) {
 					JOptionPane.showMessageDialog(null, "Successfully saved!", "Save file", JOptionPane.INFORMATION_MESSAGE);
+					dispose();
 				}
 				else {
 					JOptionPane.showMessageDialog(null, "Save fail!", "Warning", JOptionPane.ERROR_MESSAGE);

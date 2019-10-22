@@ -194,6 +194,14 @@ public class Player {
 	}
 	
 	/**
+	 * Getter of owned card
+	 * @return vector of card
+	 */
+	public Vector<Card> getOwnCard(){
+		return this.ownedCard;
+	}
+	
+	/**
 	 * Getter for vector of owned continent
 	 * @return owned continent
 	 */

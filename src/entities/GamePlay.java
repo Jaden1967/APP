@@ -325,4 +325,12 @@ public class GamePlay extends Observable{
 		outcome = "";
 		alert_type = 0;
 	}
+	
+	/**
+	 * Getter of player index
+	 * @return integer of player index
+	 */
+	public int getPlayerIndex() {
+		return this.player_index;
+	}
 }
