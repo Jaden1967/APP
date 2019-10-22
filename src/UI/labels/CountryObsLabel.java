@@ -18,7 +18,7 @@ public class CountryObsLabel extends JLabel implements Observer{
 
 	@Override
 	public void update(Observable obs, Object x) {
-		((Country)obs).setInfoText();
+		this.setToolTipText("Name: "+((Country)obs).getName()+"  Owner: "+((Country)obs).getOwner().getID()+"  Army: "+String.valueOf(((Country)obs).getArmyNum()));
 		this.setBackground(((Country)obs).getOwner().getColor());
 		this.setText(String.valueOf(((Country)obs).getArmyNum()));
 	}

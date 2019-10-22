@@ -33,4 +33,8 @@ public class Card {
 		}
 		return false;
 	}
+	
+	public String getType() {
+		return this.type;
+	}
 }

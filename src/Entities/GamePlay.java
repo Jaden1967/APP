@@ -40,15 +40,18 @@ public class GamePlay extends Observable{
 			polledCountries.add(cInd);
 			
 			countries_list.get(cInd).setOwner(player_list.get(pInd)); //set unassigned Country to Player in List in order
+			player_list.get(pInd).increaseCountry();
 			player_list.get(pInd).deployArmy(1);
 			pInd++;
 			if (pInd % player_list.size() == 0) {
 				pInd = 0;
 			}
 		}
-		
 		outcome = "Randomly assigned countries to all players";
 		alertObservers(2);
+		for(int i = 0;i<continents_list.size();i++) {
+			continents_list.get(i).checkIfConquered();
+		}
 		phaseZero();
 	}
 	
@@ -62,8 +65,6 @@ public class GamePlay extends Observable{
 		player = player_list.get(player_index);
 		army_to_place = player.getArmyToPlace();
 		
-		System.out.println("Currently in "+phase);
-		
 		alertObservers(1);
 	}
 	
@@ -74,7 +75,7 @@ public class GamePlay extends Observable{
 	public void placeArmy(Country c) {
 		c.addArmy(1);
 		player.deployArmy(1);
-		nextPlayerToPlace();
+		startUpNext();
 	}
 	
 	/**
@@ -100,10 +101,8 @@ public class GamePlay extends Observable{
                 ind = rand.nextInt(toAdd.size());
                 toAdd.get(ind).addArmy(1);
                 player.deployArmy(1);
-
             }
             army_to_place = player.getArmyToPlace();
-
         }
         player = player_list.get(0);
         player_index = 0;
@@ -135,7 +134,7 @@ public class GamePlay extends Observable{
 	 * For next player to place army during Startup Phase
 	 * Switches GamePlay context to next player's datasets
 	 */
-	public void nextPlayerToPlace() {
+	public void startUpNext() {
 		player_index++;
 		if(player_index % player_list.size()==0) {
 			player_index = 0;
@@ -159,7 +158,6 @@ public class GamePlay extends Observable{
      */
 	public void reinforceArmy (Country c, int num) {
 		System.out.println("placing army on "+c.getName());
-
 		c.addArmy(num);
 		player.deployArmy(num);
 		outcome = "Reinforced "+c.getName()+" with "+num+" armies";
@@ -326,5 +324,13 @@ public class GamePlay extends Observable{
 		notifyObservers(this);
 		outcome = "";
 		alert_type = 0;
+	}
+	
+	/**
+	 * Getter of player index
+	 * @return integer of player index
+	 */
+	public int getPlayerIndex() {
+		return this.player_index;
 	}
 }

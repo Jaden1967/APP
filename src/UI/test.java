@@ -1,10 +1,27 @@
 package ui;
-import java.util.Random;
-import java.util.regex.*;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Date;
+import java.util.Vector;
+import java.text.SimpleDateFormat;
 
 public class test {
-	public static String isCommandPattern=("placearmy \\w*|placeall|reinforce \\w* [1-9][0-9]*|fortify (\\w* \\w* [1-9][0-9]*|none)");
+
+	
 	public static void main (String args[] ) {
-		System.out.println(Pattern.matches(isCommandPattern,"fortify none node 8"));
+		Vector<String> v = new Vector<String>();
+		for(String s:v) {
+			System.out.println(s);
+		}
+		try {
+			FileWriter out=new FileWriter(".\\save\\test.save",true);
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			out.write(df.format(new Date())+"\r\n");
+			out.flush();
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -5,18 +5,30 @@ import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Observer;
 import java.util.Vector;
 
+import javax.imageio.ImageIO;
+
+import java.util.Date;
+import java.text.SimpleDateFormat;
+
 
 public class Controller {
 	GamePlay game;
 	Vector <String> files_load = new Vector <String>();
+	String map_file_name = "";
 
 	public Controller(GamePlay game) {
 		this.game = game;
+	}
+	
+	public Controller() {
+		
 	}
 	
 	public void startGame() {
@@ -139,6 +151,7 @@ public class Controller {
 			this.game.setContinents(continents_list);
 			this.game.setCountries(countries_list);
 			br.close();
+			map_file_name = address;
 			return true;
 		}
 		 catch (Exception e) {
@@ -148,10 +161,56 @@ public class Controller {
 	}
 	
 	/**
-	 * Called when read map fail, clear all the existing data
+	 * Save current data
+	 * @param name name of the file
+	 * @return success or not
 	 */
-	public void refreshData() {
-		
+	public boolean saveFile(String name) {
+		try {
+			FileWriter out=new FileWriter(".\\save\\"+name+".save");
+			out.write(name+".save\r\n");
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			out.write("Save at "+df.format(new Date())+"\r\n");
+			out.write("\r\n[map]\r\n");
+			out.write(map_file_name+"\r\n");
+			out.write("\r\n[players]\r\n");
+			for(Player p:game.getPlayers()) {
+				out.write(p.getID()+" "+p.getTotalCountriesNumber()+" "+p.getColorStr()+" ");
+				out.write("{");
+				for(int i = 0;i<p.getOwnCard().size();i++) {
+					if(i==0) {
+						out.write(p.getOwnCard().get(i).getType());
+					}
+					else {
+						out.write(","+p.getOwnCard().get(i).getType());
+					}
+				}
+				out.write("} "+p.getArmyToPlace()+"\r\n");
+			}
+			out.write("\r\n[countries]\r\n");
+			for(Country c:game.getCountries()) {
+				out.write(c.getID()+" "+c.getOwner().getID()+" "+c.getArmyNum()+"\r\n");
+			}
+			out.write("\r\n[status]\r\n");
+			out.write(game.getPlayerIndex()+" ");
+			if(game.getPhase().equals("Startup Phase")) {
+				out.write("0");
+			}
+			else if(game.getPhase().equals("Reinforcement Phase")) {
+				out.write("1");
+			}
+			else if(game.getPhase().equals("Attack Phase")) {
+				out.write("2");
+			}
+			else if(game.getPhase().equals("Fortification Phase")) {
+				out.write("3");
+			}
+			out.flush();
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return true;
 	}
 	
 	/**
