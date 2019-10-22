@@ -40,6 +40,7 @@ public class GamePlay extends Observable{
 			polledCountries.add(cInd);
 			
 			countries_list.get(cInd).setOwner(player_list.get(pInd)); //set unassigned Country to Player in List in order
+			countries_list.get(cInd).addArmy(1);
 			player_list.get(pInd).increaseCountry();
 			player_list.get(pInd).deployArmy(1);
 			pInd++;
@@ -151,7 +152,7 @@ public class GamePlay extends Observable{
 	}
 	
 	/**
-     * From player command: recruit country number
+     * From player command: reinforce country number
      * During reinforcement phase, player assigns the input amount of army to target country 
      * @param c target countryId
      * @param num amount of army to assign
@@ -221,6 +222,15 @@ public class GamePlay extends Observable{
      */
     public String getPhase() {
         return this.phase;
+    }
+    
+    public void setPhase(String s) {
+    	switch (s) {
+    		case "0": phase = "Startup Phase";return;
+    		case "1": phase = "Reinforcement Phase";return;
+    		case "2": phase = "Attack Phase";return;
+    		case "3": phase = "Fortification Phase";return;
+    	}
     }
     
     /**
@@ -319,6 +329,8 @@ public class GamePlay extends Observable{
 	public void alertObservers(int x) {
 		this.player = player_list.get(player_index);
 		this.army_to_place = player.getArmyToPlace();
+		System.out.println("countries size: "+countries_list.size() );
+
 		alert_type = x;
 		setChanged();
 		notifyObservers(this);
@@ -332,5 +344,9 @@ public class GamePlay extends Observable{
 	 */
 	public int getPlayerIndex() {
 		return this.player_index;
+	}
+	
+	public void setPlayerIndex(int i) {
+		this.player_index = i;
 	}
 }

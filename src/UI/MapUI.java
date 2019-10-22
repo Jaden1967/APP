@@ -36,8 +36,7 @@ public class MapUI extends JFrame {
 	private JPanel contentPane;
 	private JTextField textField;
 	private String isCommandPattern = "(placearmy \\w*(\\-\\w+)*|placeall|reinforce \\w*(\\-\\w+)* [1-9][0-9]*|fortify (\\w*(\\-\\w+)*\\ \\w*(\\-\\w+)*\\ [1-9][0-9]*|none))";
-	private Vector<Country> countries_list = null;
-	private Controller control = new Controller();
+	private Controller control;
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -58,7 +57,7 @@ public class MapUI extends JFrame {
 	class mapPanel extends JPanel{
 		private static final long serialVersionUID = 1L;
 		private Vector <String> load_files;
-		
+		private 
 		mapPanel(Vector<String> filesLoad){
 			this.load_files = filesLoad;
 		}
@@ -67,6 +66,7 @@ public class MapUI extends JFrame {
 		 */
 		@Override
 		public void paintComponent(Graphics g) {
+			Vector<Country> countries_list = control.getCountries();
 			Graphics2D g2=(Graphics2D)g;
 			if(load_files.size()>=1) {
 				String tmp[] = load_files.get(0).split(" ");
@@ -114,15 +114,11 @@ public class MapUI extends JFrame {
 	 * Add every countries as a label on the map
 	 * @param map a JPanel
 	 * @param countriesList containing all the countries
-	 * @return update the map
 	 */
-	private mapPanel visualizeAndPair(mapPanel map,Vector<Country> countriesList) {
-		for(Country c:countriesList) {
-			CountryObsLabel oL = c.getLabel();
-			c.addObserver(oL);
-			map.add(oL);
+	private void visualizeCountryLabels(mapPanel map,Controller control) {
+		for(Country c: control.getCountries()) {
+			map.add(c.getLabel());
 		}
-		return map;
 	}
 	
 	/**
@@ -189,7 +185,7 @@ public class MapUI extends JFrame {
 		JMenuItem mntmSaveGame = new JMenuItem("save game");
 		mntmSaveGame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Save s = new Save(control);
+				SavePrompt s = new SavePrompt(control);
 				s.setVisible(true);
 			}
 		});
@@ -224,10 +220,10 @@ public class MapUI extends JFrame {
 		else {
 			JOptionPane.showMessageDialog(null, "Command invalid!", "Warning", JOptionPane.ERROR_MESSAGE);
 		}
+		textField.setText("");
 	}
 	
-	public MapUI(Vector<Country> countriesList, Controller control) {
-		this.countries_list = countriesList;
+	public MapUI(Controller control) {
 		this.control = control;
 		
 		setTitle("Risk");
@@ -267,7 +263,7 @@ public class MapUI extends JFrame {
 		control.attachObserver(outcome_label);
 		control.attachObserver(turn_label);
 		
-		map = visualizeAndPair(map,countriesList);
+		visualizeCountryLabels(map,control);
 		
 		textField.addKeyListener(new KeyAdapter() {
 			@Override
@@ -299,7 +295,7 @@ public class MapUI extends JFrame {
 		JMenuItem mntmSaveGame = new JMenuItem("save game");
 		mntmSaveGame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Save s = new Save(control);
+				SavePrompt s = new SavePrompt(control);
 				s.setVisible(true);
 			}
 		});
@@ -318,7 +314,11 @@ public class MapUI extends JFrame {
 		mntmExit.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 18));
 		mntmExit.setPreferredSize(new Dimension(150,35));	
 		Menu.add(mntmExit);
-		
-		control.startGame();
+		if(!control.loadedGame()) {
+			control.startGame();
+		}else {
+			this.setVisible(true);
+			control.refresh();
+		}
 	}
 }

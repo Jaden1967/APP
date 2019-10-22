@@ -1,6 +1,8 @@
 package controller;
 
 import entities.*;
+import ui.labels.CountryObsLabel;
+
 import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
@@ -22,6 +24,8 @@ public class Controller {
 	GamePlay game;
 	Vector <String> files_load = new Vector <String>();
 	String map_file_name = "";
+	Vector <Country> countries_list = new Vector<>();
+	boolean loaded_game = false;
 
 	public Controller(GamePlay game) {
 		this.game = game;
@@ -58,9 +62,8 @@ public class Controller {
 	 * @param address address of map file
 	 * @return Validation of map data file
 	 */
-	public boolean readFile(String address) {
+	public boolean loadMap(String address) {
 		Vector<Continent> continents_list = new Vector<Continent>();
-		Vector<Country> countries_list = new Vector<Country>();
 		int x=0,y=0;
 		try {
 			String pathname = "map\\"+address;
@@ -114,6 +117,7 @@ public class Controller {
 					return false;
 				}
 				countries_list.add(c);
+				
 				line = br.readLine();
 			}
 			do {
@@ -178,18 +182,15 @@ public class Controller {
 				out.write(p.getID()+" "+p.getTotalCountriesNumber()+" "+p.getColorStr()+" ");
 				out.write("{");
 				for(int i = 0;i<p.getOwnCard().size();i++) {
-					if(i==0) {
-						out.write(p.getOwnCard().get(i).getType());
-					}
-					else {
-						out.write(","+p.getOwnCard().get(i).getType());
-					}
+					out.write(p.getOwnCard().get(i).getType().substring(0,1));	
 				}
 				out.write("} "+p.getArmyToPlace()+"\r\n");
 			}
 			out.write("\r\n[countries]\r\n");
 			for(Country c:game.getCountries()) {
+				if (c.getOwner().getID().equals("DNE")) break;
 				out.write(c.getID()+" "+c.getOwner().getID()+" "+c.getArmyNum()+"\r\n");
+				
 			}
 			out.write("\r\n[status]\r\n");
 			out.write(game.getPlayerIndex()+" ");
@@ -211,6 +212,94 @@ public class Controller {
 			e.printStackTrace();
 		}
 		return true;
+	}
+	
+	public boolean loadFile(String name) {
+		loaded_game = true;
+		Vector<Player> players = new Vector<>();
+
+		try {
+			String pathname = "save\\"+name+".save";
+			File filename = new File(pathname);
+			InputStreamReader reader = new InputStreamReader(new FileInputStream(filename));
+			BufferedReader br = new BufferedReader(reader);
+			String line = "";
+			
+			//load map
+			do {
+				line = br.readLine();
+			}while(!line.trim().equals("[map]"));
+			line = br.readLine();
+			loadMap(line);
+
+			//load players
+			do {
+				line = br.readLine();
+			}while(!line.trim().equals("[players]"));
+			line = br.readLine();
+			while(!line.trim().isEmpty()) {
+				String[] split = line.split("\\s+");
+				Player p = new Player(split[0],new Color(Integer.parseInt(split[2]),true));
+				players.add(p);
+				p.increaseCountry(Integer.parseInt(split[1]));
+				for (int i=0;i<split[3].length();i++) {
+					if (String.valueOf(split[3].charAt(i)).equals("{")) continue;
+					if (String.valueOf(split[3].charAt(i)).equals("}")) break;
+					p.addCard(cardType(String.valueOf(split[3].charAt(i))));
+				}
+				p.setArmyToPlace(Integer.parseInt(split[4]));
+				line = br.readLine();
+			}
+			game.setPlayers(players);
+
+			//load countries
+			do{
+				line = br.readLine();
+			}while(!line.trim().equals("[countries]"));
+			line = br.readLine();
+			while(!line.trim().isEmpty()) {
+				String[] split = line.split("\\s+");
+				int index = Integer.parseInt(split[0])-1; //country index
+				game.getCountries().get(index).setOwner(getPlayer(game.getPlayers(),split[1]));
+				game.getCountries().get(index).setArmy(Integer.parseInt(split[2]));
+				line = br.readLine();
+			}
+			
+			//load status
+			do {
+				line = br.readLine();
+			}while(!line.trim().equals("[status]"));
+			line = br.readLine();
+			String[] split = line.split("\\s+");
+			game.setPlayerIndex(Integer.parseInt(split[0]));
+			game.setPhase(split[1]);
+			line = br.readLine();
+			
+		}catch(IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		
+		return true;
+	}
+	
+	private String cardType(String c) {
+		switch (c) {
+			case "I": return "Infantry";
+			case "C": return "Cavalry";
+			case "A": return "Artillery";
+			default: return "Error";
+		}
+	}
+	
+	private Player getPlayer(Vector<Player> players, String id) {
+		for (Player p: players) {
+			if (p.getID().equals(id)) {
+				return p;
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -381,6 +470,18 @@ public class Controller {
 			}
 		}
 			return new String [] {"S"};
+	}
+	
+	public void refresh() {
+		game.alertObservers(1);
+	}
+	
+	public boolean loadedGame() {
+		return this.loaded_game;
+	}
+	
+	public Vector<Country> getCountries() {
+		return this.countries_list;
 	}
 	
 

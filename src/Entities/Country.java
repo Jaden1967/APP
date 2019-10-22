@@ -50,6 +50,7 @@ public class Country extends Observable{
 			label.setBounds(x-15, y-15, 30, 30);
 			label.setFont(new Font("SimSun", Font.BOLD, 15));
 			label.setHorizontalAlignment(SwingConstants.CENTER);
+			this.addObserver(label);
 		}
 		
 		/**
@@ -67,7 +68,6 @@ public class Country extends Observable{
 		 */
 		public void setOwner(Player p) {
 			owner = p;	
-			if (armyNum==0) armyNum++;
 			label.setBackground(owner.getColor());
 			alertObservers();
 
@@ -181,6 +181,10 @@ public class Country extends Observable{
 		 */
 		public int getArmyNum() {
 			return this.armyNum;
+		}
+		
+		public void setArmy(int i) {
+			this.armyNum =i;
 		}
 		
 		/**

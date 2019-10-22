@@ -79,13 +79,7 @@ public class Player {
 		this.army_to_place += calculateArmy() + extraArmyToAdd();
 	}
 	
-	/**
-	 * Getter for army to place
-	 * @return armyToPlace as int
-	 */
-	public int getArmyToPlace() {
-		return this.army_to_place;
-	}
+	
 	
 	/**
 	 * Decreases army to place by a certain amount after deployment or mobilization
@@ -100,6 +94,10 @@ public class Player {
 	 */
 	public void increaseCountry () {
 		this.total_country_number++;
+	}
+	
+	public void increaseCountry(int i) {
+		this.total_country_number+=i;
 	}
 	
 	/**
@@ -156,7 +154,7 @@ public class Player {
 	 * @return color as String
 	 */
 	public String getColorStr() {
-		return this.color.toString();
+		return String.valueOf(Integer.toString(this.color.getRGB()));
 	}
 	
 	/**
@@ -202,10 +200,35 @@ public class Player {
 	}
 	
 	/**
+	 * Adds a card to the player's arsenal
+	 * @param type Type of the card (Infantry, Calvary, Artillery)
+	 */
+	public void addCard(String type) {
+		ownedCard.add(new Card(type));
+	}
+	
+	/**
 	 * Getter for vector of owned continent
 	 * @return owned continent
 	 */
 	public Vector<Continent> getOwnContinent(){
 		return this.ownedContinent;
+	}
+	
+	/**
+	 * Setter for army to place
+	 * @param i Value to set
+	 */
+	public void setArmyToPlace(int i) {
+		this.army_to_place = i;
+	}
+	
+	
+	/**
+	 * Getter for army to place
+	 * @return armyToPlace as int
+	 */
+	public int getArmyToPlace() {
+		return this.army_to_place;
 	}
 }
