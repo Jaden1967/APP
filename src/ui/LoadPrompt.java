@@ -49,9 +49,8 @@ public class LoadPrompt extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String address = textField.getText();
 				Controller control = new Controller(new GamePlay());
-				control.loadFile(address);
-				MapUI map_ui = new MapUI (control);
-				if(control.loadFile(textField.getText())) {
+				if(control.loadFile(address)) {
+					MapUI map_ui = new MapUI (control);
 					JOptionPane.showMessageDialog(null, "Successfully loaded!", "Save file", JOptionPane.INFORMATION_MESSAGE);
 					dispose();
 					menuFrame.dispose();

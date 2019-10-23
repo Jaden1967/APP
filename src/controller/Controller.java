@@ -188,9 +188,7 @@ public class Controller {
 			}
 			out.write("\r\n[countries]\r\n");
 			for(Country c:game.getCountries()) {
-				if (c.getOwner().getID().equals("DNE")) break;
 				out.write(c.getID()+" "+c.getOwner().getID()+" "+c.getArmyNum()+"\r\n");
-				
 			}
 			out.write("\r\n[status]\r\n");
 			out.write(game.getPlayerIndex()+" ");

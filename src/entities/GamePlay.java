@@ -329,7 +329,6 @@ public class GamePlay extends Observable{
 	public void alertObservers(int x) {
 		this.player = player_list.get(player_index);
 		this.army_to_place = player.getArmyToPlace();
-		System.out.println("countries size: "+countries_list.size() );
 
 		alert_type = x;
 		setChanged();

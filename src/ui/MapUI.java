@@ -318,6 +318,9 @@ public class MapUI extends JFrame {
 			control.startGame();
 		}else {
 			this.setVisible(true);
+			for(Country cl: control.getCountries()) {
+				cl.alertObservers();
+			}
 			control.refresh();
 		}
 	}
