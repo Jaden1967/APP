@@ -471,6 +471,9 @@ public class Controller {
 	}
 	
 	public void refresh() {
+		for(Country cl: countries_list) {
+			cl.alertObservers();
+		}
 		game.alertObservers(1);
 	}
 	
