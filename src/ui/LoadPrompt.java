@@ -1,11 +1,11 @@
 package ui;
 
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import controller.Controller;
+import entities.GamePlay;
 
 import javax.swing.JTextField;
 import javax.swing.JLabel;
@@ -16,7 +16,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class Save extends JFrame {
+public class LoadPrompt extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -25,8 +25,8 @@ public class Save extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Save(Controller control) {
-		setTitle("Saveing progress");
+	public LoadPrompt(JFrame menuFrame) {
+		setTitle("Load progress");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(350, 400, 447, 196);
 		contentPane = new JPanel();
@@ -47,12 +47,16 @@ public class Save extends JFrame {
 		JButton btnOk = new JButton("Ok");
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(control.saveFile(textField.getText())) {
-					JOptionPane.showMessageDialog(null, "Successfully saved!", "Save file", JOptionPane.INFORMATION_MESSAGE);
+				String address = textField.getText();
+				Controller control = new Controller(new GamePlay());
+				if(control.loadFile(address)) {
+					MapUI map_ui = new MapUI (control);
+					JOptionPane.showMessageDialog(null, "Successfully loaded!", "Save file", JOptionPane.INFORMATION_MESSAGE);
 					dispose();
+					menuFrame.dispose();
 				}
 				else {
-					JOptionPane.showMessageDialog(null, "Save fail!", "Warning", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Load fail!", "Warning", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});

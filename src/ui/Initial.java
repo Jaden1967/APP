@@ -78,7 +78,7 @@ public class Initial extends JFrame {
 				else {
 					JOptionPane.showMessageDialog(null, "Game start!", "Good luck!", JOptionPane.INFORMATION_MESSAGE);
 					control.addPlayers(player_str_list);
-					MapUI g = new MapUI(game.getCountries(), control);
+					MapUI g = new MapUI(control);
 					g.setVisible(true);
 					dispose();
 				}
@@ -109,7 +109,7 @@ public class Initial extends JFrame {
 					}
 				}
 				else if(type.equals("-remove")) {
-					if(game.getPlayers().size()==0) {
+					if(player_str_list.size()==0) {
 						JOptionPane.showMessageDialog(null, "Invalid removal!", "Warning", JOptionPane.ERROR_MESSAGE);
 						output_text.append("Fail to remove player "+name+"\n");
 					}
@@ -130,7 +130,7 @@ public class Initial extends JFrame {
 				}
 			}
 			else if(command[0].equals("loadmap")) {
-				if(control.readFile(command[1])) {
+				if(control.loadMap(command[1])) {
 					output_text.append("Loading map "+command[1]+" success!\n");
 					input_text.setText("");
 					if(control.getFilesLoad().size()>=3) {

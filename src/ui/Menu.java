@@ -59,6 +59,12 @@ public class Menu {
 		frmRisk.getContentPane().add(btnPlay);
 		
 		JButton btnLoadGame = new JButton("Load Game");
+		btnLoadGame.addActionListener(new ActionListener() {
+			public void actionPerformed (ActionEvent e) {
+				LoadPrompt lp = new LoadPrompt(frmRisk);
+				lp.setVisible(true);
+			}
+		});
 		btnLoadGame.setFont(new Font("SimSun", Font.BOLD, 30));
 		btnLoadGame.setBounds(250, 319, 250, 45);
 		frmRisk.getContentPane().add(btnLoadGame);
