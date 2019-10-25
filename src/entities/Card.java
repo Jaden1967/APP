@@ -1,16 +1,23 @@
 package entities;
 
+import java.util.Observable;
+
 import javax.swing.ImageIcon;
 
-public class Card {
+import ui.labels.CardView;
+
+public class Card extends Observable{
 	private String type;
 	private ImageIcon icon;
+	private CardView cv = null;
 	
 	public Card() {}
 	
 	public Card(String type) {
 		this.type = type;
 		loadImage(this.type);
+		cv = new CardView(this,icon);
+		addObserver(cv);
 	}
 	 
 	public boolean loadImage (String type) {
@@ -34,5 +41,14 @@ public class Card {
 	
 	public ImageIcon getImage() {
 		return this.icon;
+	}
+	
+	public CardView getCardView() {
+		return cv;
+	}
+	
+	public void changeView() {
+		setChanged();
+		notifyObservers(this);
 	}
 }

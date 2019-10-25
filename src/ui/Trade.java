@@ -13,6 +13,7 @@ import javax.swing.border.EmptyBorder;
 
 import entities.Card;
 import entities.GamePlay;
+import ui.labels.CardView;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -20,20 +21,15 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Observer;
 import java.util.Vector;
 import java.awt.event.ActionEvent;
 
-public class Trade extends JFrame {
+public class Trade extends JFrame{
 
 	private static final long serialVersionUID = 1L;
 	private Vector<Card> chosen_cards_list = new Vector<Card>();
 	private JPanel contentPane;
-
-	class myLabel extends JLabel{
-		private static final long serialVersionUID = 1L;
-		int count = 0;
-		Card represent = new Card();
-	}
 	
 	/**
 	 * Create the frame.
@@ -105,22 +101,17 @@ public class Trade extends JFrame {
 		setContentPane(contentPane);
 		
 		for(int i = 0;i<game.getPlayer().getOwnCard().size();i++) {
-			myLabel l = new myLabel();
+			CardView l = game.getPlayer().getOwnCard().get(i).getCardView();
 			l.setBounds(50+130*i, 50, 120, 200);
-			l.setIcon(game.getPlayer().getOwnCard().get(i).getImage());
-			l.represent = game.getPlayer().getOwnCard().get(i);
 			l.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent arg0) {
-					l.count++;
-					if(l.count%2==1) {
-						Border border = BorderFactory.createLineBorder(Color.red, 2);
-						l.setBorder(border);
-						chosen_cards_list.add(l.represent);
+					l.getRepresent().changeView();
+					if(l.getCount()%2==1) {
+						chosen_cards_list.add(l.getRepresent());
 					}
 					else {
-						l.setBorder(null);
-						chosen_cards_list.remove(l.represent);
+						chosen_cards_list.remove(l.getRepresent());
 					}
 				}
 			});

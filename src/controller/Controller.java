@@ -200,11 +200,17 @@ public class Controller {
 			else if(game.getPhase().equals("Reinforcement Phase")) {
 				out.write("1");
 			}
-			else if(game.getPhase().equals("Attack Phase")) {
+			else if(game.getPhase().equals("Attack Phase 1")) {
 				out.write("2");
 			}
-			else if(game.getPhase().equals("Fortification Phase")) {
+			else if(game.getPhase().equals("Attack Phase 2")) {
 				out.write("3");
+			}
+			else if(game.getPhase().equals("Attack Phase 3")) {
+				out.write("4");
+			}
+			else if(game.getPhase().equals("Fortification Phase")) {
+				out.write("5");
 			}
 			out.flush();
 			out.close();

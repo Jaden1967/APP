@@ -194,7 +194,7 @@ public class GamePlay extends Observable{
      */
 	private void phaseTwo() {
 		JOptionPane.showMessageDialog(null, "Attack Phase for player "+player.getID(), "Information", JOptionPane.INFORMATION_MESSAGE);
-		phase = "Attack Phase";
+		phase = "Attack Phase 1";
 		JOptionPane.showMessageDialog(null, "Attack Phase is now under construction!", "Warning", JOptionPane.ERROR_MESSAGE);
 		phaseThree();
 	}
@@ -237,8 +237,10 @@ public class GamePlay extends Observable{
     	switch (s) {
     		case "0": phase = "Startup Phase";return;
     		case "1": phase = "Reinforcement Phase";return;
-    		case "2": phase = "Attack Phase";return;
-    		case "3": phase = "Fortification Phase";return;
+    		case "2": phase = "Attack Phase 1";return;
+    		case "3": phase = "Attack Phase 2";return;
+    		case "4": phase = "Attack Phase 3";return;
+    		case "5": phase = "Fortification Phase";return;
     	}
     }
     
