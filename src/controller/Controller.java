@@ -425,7 +425,7 @@ public class Controller {
 		//Command fortify fromcountry tocountry num
 		else if(splitted[0].equals("fortify")) {
 			if (game.getPhase().equals("Fortification Phase")) {
-				if(splitted[1].equals("none")){
+				if(splitted[1].equals("-none")){
 					game.nextPlayer();
 				}
 				else {
