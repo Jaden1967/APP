@@ -1,40 +1,50 @@
 package controller;
 
+import entities.*;
+import ui.Trade;
+import ui.labels.CountryObsLabel;
+
 import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Observer;
-import java.util.Random;
 import java.util.Vector;
 
-import javax.swing.JOptionPane;
+import javax.imageio.ImageIO;
 
-import entities.Continent;
-import entities.Country;
-import entities.GamePlay;
-import entities.Player;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+
 
 public class Controller {
-	GamePlay game;
-	private String isCommandPattern = "(gameplayer -(add|remove) \\w*|loadmap \\w*\\.map|populatecountries)";
-	Vector <String> files_load = new Vector <String>();
-
 	
+	GamePlay game;
+	Vector <String> files_load = new Vector <String>();
+	String map_file_name = "";
+	Vector <Country> countries_list = new Vector<>();
+	boolean loaded_game = false;
+
 	public Controller(GamePlay game) {
 		this.game = game;
+	}
+	
+	public Controller() {
+		
 	}
 	
 	public void startGame() {
 		game.populateCountries();
 	}
 	
-	
-	
-	//Commands from Initial
-	
+	/**
+	 * Convert string type of player list into actual object type of player list
+	 * @param list
+	 */
 	public void addPlayers(Vector<String[]> list) {
 		Vector<Player> player_list = new Vector<>();
 		for(String [] s: list) {
@@ -54,10 +64,8 @@ public class Controller {
 	 * @param address address of map file
 	 * @return Validation of map data file
 	 */
-	public boolean readFile(String address) {
+	public boolean loadMap(String address) {
 		Vector<Continent> continents_list = new Vector<Continent>();
-		Vector<Country> countries_list = new Vector<Country>();
-		Vector<Player> player_list = new Vector<Player>();
 		int x=0,y=0;
 		try {
 			String pathname = "map\\"+address;
@@ -107,9 +115,11 @@ public class Controller {
 					}
 				}
 				if(flag == 0) {
+					br.close();
 					return false;
 				}
 				countries_list.add(c);
+				
 				line = br.readLine();
 			}
 			do {
@@ -130,7 +140,8 @@ public class Controller {
 									break;
 								}
 							}
-							if(tc.getLabel().equals("")) {
+							if(tc.getLabel().getText().equals("")) {
+								br.close();
 								return false;
 							}
 							c.addNeighbour(tc);
@@ -138,13 +149,15 @@ public class Controller {
 					}
 				}
 				if(flag==0) {
+					br.close();
 					return false;
 				}
 				line = br.readLine();
 			}
 			this.game.setContinents(continents_list);
 			this.game.setCountries(countries_list);
-			
+			br.close();
+			map_file_name = address;
 			return true;
 		}
 		 catch (Exception e) {
@@ -153,6 +166,152 @@ public class Controller {
 		}
 	}
 	
+	/**
+	 * Save current data
+	 * @param name name of the file
+	 * @return success or not
+	 */
+	public boolean saveFile(String name) {
+		try {
+			FileWriter out=new FileWriter(".\\save\\"+name+".save");
+			out.write(name+".save\r\n");
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			out.write("Save at "+df.format(new Date())+"\r\n");
+			out.write("\r\n[map]\r\n");
+			out.write(map_file_name+"\r\n");
+			out.write("\r\n[players]\r\n");
+			for(Player p:game.getPlayers()) {
+				out.write(p.getID()+" "+p.getTotalCountriesNumber()+" "+p.getColorStr()+" ");
+				out.write("{");
+				for(int i = 0;i<p.getOwnCard().size();i++) {
+					out.write(p.getOwnCard().get(i).getType().substring(0,1));	
+				}
+				out.write("} "+p.getArmyToPlace()+"\r\n");
+			}
+			out.write("\r\n[countries]\r\n");
+			for(Country c:game.getCountries()) {
+				out.write(c.getID()+" "+c.getOwner().getID()+" "+c.getArmyNum()+"\r\n");
+			}
+			out.write("\r\n[status]\r\n");
+			out.write(game.getPlayerIndex()+" ");
+			if(game.getPhase().equals("Startup Phase")) {
+				out.write("0");
+			}
+			else if(game.getPhase().equals("Reinforcement Phase")) {
+				out.write("1");
+			}
+			else if(game.getPhase().equals("Attack Phase 1")) {
+				out.write("2");
+			}
+			else if(game.getPhase().equals("Attack Phase 2")) {
+				out.write("3");
+			}
+			else if(game.getPhase().equals("Attack Phase 3")) {
+				out.write("4");
+			}
+			else if(game.getPhase().equals("Fortification Phase")) {
+				out.write("5");
+			}
+			out.flush();
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+	
+	public boolean loadFile(String name) {
+		loaded_game = true;
+		Vector<Player> players = new Vector<>();
+		
+		try {
+			String pathname = "save\\"+name+".save";
+			File filename = new File(pathname);
+			InputStreamReader reader = new InputStreamReader(new FileInputStream(filename));
+			BufferedReader br = new BufferedReader(reader);
+			String line = "";
+			
+			//load map
+			do {
+				line = br.readLine();
+			}while(!line.trim().equals("[map]"));
+			line = br.readLine();
+			loadMap(line);
+
+			//load players
+			do {
+				line = br.readLine();
+			}while(!line.trim().equals("[players]"));
+			line = br.readLine();
+			while(!line.trim().isEmpty()) {
+				String[] split = line.split("\\s+");
+				Player p = new Player(split[0],new Color(Integer.parseInt(split[2]),true));
+				players.add(p);
+				p.increaseCountry(Integer.parseInt(split[1]));
+				for (int i=0;i<split[3].length();i++) {
+					if (String.valueOf(split[3].charAt(i)).equals("{")) continue;
+					if (String.valueOf(split[3].charAt(i)).equals("}")) break;
+					p.addCard(cardType(String.valueOf(split[3].charAt(i))));
+				}
+				p.setArmyToPlace(Integer.parseInt(split[4]));
+				line = br.readLine();
+			}
+			game.setPlayers(players);
+
+			//load countries
+			do{
+				line = br.readLine();
+			}while(!line.trim().equals("[countries]"));
+			line = br.readLine();
+			while(!line.trim().isEmpty()) {
+				String[] split = line.split("\\s+");
+				int index = Integer.parseInt(split[0])-1; //country index
+				game.getCountries().get(index).setOwner(getPlayer(game.getPlayers(),split[1]));
+				game.getCountries().get(index).setArmy(Integer.parseInt(split[2]));
+				line = br.readLine();
+			}
+			
+			//load status
+			do {
+				line = br.readLine();
+			}while(!line.trim().equals("[status]"));
+			line = br.readLine();
+			String[] split = line.split("\\s+");
+			if(Integer.parseInt(split[0])>=game.getPlayers().size()||Integer.parseInt(split[1])>3) {
+				game.clearData();
+				br.close();
+				return false;
+			}
+			else {
+				game.setPlayerIndex(Integer.parseInt(split[0]));
+				game.setPhase(split[1]);
+				line = br.readLine();
+				br.close();
+				return true;
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}	
+	}
+	
+	private String cardType(String c) {
+		switch (c) {
+			case "I": return "Infantry";
+			case "C": return "Cavalry";
+			case "A": return "Artillery";
+			default: return "Error";
+		}
+	}
+	
+	private Player getPlayer(Vector<Player> players, String id) {
+		for (Player p: players) {
+			if (p.getID().equals(id)) {
+				return p;
+			}
+		}
+		return null;
+	}
 	
 	/**
 	 * Returns corresponding Color object to the parsed String
@@ -321,7 +480,39 @@ public class Controller {
 	        	return new String [] {"F","Not in Fortification Phase!"};
 			}
 		}
-			return new String [] {"S"};
+		else if(splitted[0].equals("cheat")) {
+			if(game.getPhase().equals("Reinforcement Phase")) {
+				game.cheatAddCard();	
+			}
+			else {
+				return new String [] {"F","Not in Reinforcement Phase!"};
+			}
+		}
+		else if(splitted[0].equals("trade")) {
+			if(game.getPhase().equals("Reinforcement Phase")) {
+				Trade t = new Trade(game);
+				t.setVisible(true);
+			}
+			else {
+				return new String [] {"F","Not in Reinforcement Phase!"};
+			}
+		}
+		return new String [] {"S"};
+	}
+	
+	public void refresh() {
+		for(Country cl:countries_list) {
+			cl.alertObservers();
+		}
+		game.alertObservers(1);
+	}
+	
+	public boolean loadedGame() {
+		return this.loaded_game;
+	}
+	
+	public Vector<Country> getCountries() {
+		return this.countries_list;
 	}
 	
 

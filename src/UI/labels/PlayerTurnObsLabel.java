@@ -8,11 +8,8 @@ import javax.swing.JLabel;
 import entities.GamePlay;
 
 public class PlayerTurnObsLabel extends JLabel implements Observer{
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
-	private final int type = 1;
 	
 	public PlayerTurnObsLabel() {
 		this.setOpaque(true);
@@ -22,5 +19,4 @@ public class PlayerTurnObsLabel extends JLabel implements Observer{
 	public void update(Observable obs, Object arg1) {
 		this.setBackground(((GamePlay)obs).getPlayer().getColor());
 	}
-	
 }

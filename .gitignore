@@ -1,14 +1,14 @@
+node
+node_modules
 target
 .settings
 .classpath
 .project
+webpack.generated.js
 /bin/
 /build/
 .idea  
 map
-/.vscode/
-/node/
-/node_modules/
 
 # Compiled class file
 *.class
