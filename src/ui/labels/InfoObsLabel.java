@@ -17,7 +17,7 @@ public class InfoObsLabel extends JLabel implements Observer{
 	}
 	
 	public void update(Observable obs, Object x) {
-		if(((GamePlay)obs).getAlertType() == type ) {
+		if(((GamePlay)obs).getAlertType() == type ) {		
 			String s = "Phase: " +((GamePlay)obs).getPhase() +"      "+
 					"Player: "+ ((GamePlay)obs).getPlayerID() + "      "+
 					"Army: "+ ((GamePlay)obs).getArmyToPlace();

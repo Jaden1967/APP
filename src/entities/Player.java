@@ -19,6 +19,7 @@ public class Player {
 		this.id = "DNE";
 	}
 	
+	
 	/**
 	 * Proper constructor for Player
 	 * Initializes player with input id and Color

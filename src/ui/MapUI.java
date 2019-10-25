@@ -37,9 +37,9 @@ public class MapUI extends JFrame {
 	private JTextField textField;
 	private String isCommandPattern = "(placearmy \\w*(\\-\\w+)*|placeall|"
 			+ "reinforce \\w*(\\-\\w+)* [1-9][0-9]*|"
-			+ "fortify (\\w*(\\-\\w+)*\\ \\w*(\\-\\w+)*\\ [1-9][0-9]*|\\-none))|"
+			+ "fortify (\\w*(\\-\\w+)* \\w*(\\-\\w+)* [1-9][0-9]*|\\-none))|"
 			+ "cheat|trade|"
-			+ "attack \\w*(\\-\\w+)* \\w*(\\-\\w+)* [1-3]( \\-allout)?|"
+			+ "attack \\w*(\\-\\w+)* \\w*(\\-\\w+)* ([1-3]|\\-allout)|"
 			+ "\\-noattack|defence [1-2]|attackmove [1-9][0-9]*";
 	private Controller control;
 	
