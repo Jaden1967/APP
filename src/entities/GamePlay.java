@@ -2,6 +2,10 @@ package entities;
 
 import java.util.Vector;
 import javax.swing.JOptionPane;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Observable;
 import java.util.Random;
@@ -19,8 +23,10 @@ public class GamePlay extends Observable{
 	private int alert_type = 0;
 	private String outcome;
 	private String phase = "";
-	private Player attacker = null;
-	private Player defender = null;
+	private Country attacker = null;
+	private Country defender = null;
+	private int att_dice=0;
+	private int def_dice=0;
 	
 	public GamePlay() {
 	}
@@ -212,10 +218,59 @@ public class GamePlay extends Observable{
 	}
 	
 	public void setAttack(Country from, Country to, int dicenum) {
-		attacker = from.getOwner();
-		defender = to.getOwner();
-		attacker.setDice(dicenum);
+		attacker = from;
+		defender = to;
+		att_dice = dicenum;
 		phase = "Attack Phase 2";
+		alertObservers(1);
+	}
+	
+	public void commenceAttack(int defenderDice) {
+		def_dice = defenderDice;
+		attackRound();
+	}
+	
+	private void attackRound() {
+		Vector<Integer> adice = new Vector<>();
+		Vector<Integer> ddice = new Vector<>();
+		Random rand = new Random();
+		for (int i=0;i<att_dice;i++) {
+			adice.add(rand.nextInt(6)+1);
+		}
+		for (int i=0;i<att_dice;i++) {
+			adice.add(rand.nextInt(6)+1);
+		}
+		Comparator comparator = Collections.reverseOrder();
+		Collections.sort(adice,comparator);
+		Collections.sort(ddice,comparator);
+		outcome = "Player "+attacker.getOwner().getID()+" rolled "
+		+ adice.toString() + " , Player "+defender.getOwner().getID() + " rolled " + ddice.toString()+"\n"; 
+		
+		int alose = 0, dlose = 0;
+		while (adice.size()!=0 && ddice.size()!=0) {
+			if(adice.remove(0) > ddice.remove(0)) {
+				defender.removeArmy(1);
+				dlose++;
+			}
+			else {
+				attacker.removeArmy(1);
+				alose++;
+			}
+		}
+		outcome += "Attacker lost "+alose+ " , Defender lose "+dlose;
+		
+		
+		alertObservers(1);
+		
+		
+		
+	}
+	
+	
+	
+	
+	public Country getDefender() {
+		return this.defender;
 	}
 	
     /**

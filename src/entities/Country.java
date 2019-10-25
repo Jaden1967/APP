@@ -21,11 +21,13 @@ public class Country extends Observable{
 		private CountryObsLabel label;
 		private Border border; //Continent's border, constant throughout the game
 
+
 		public Country() {
 			this.countryName = "DNE";
 			this.owner = new Player();
 		}
 	
+		
 		/**
 		 * Initialize Country Object given parameters of id, name, map attributes
 		 * Creates a corresponding CountryObsLabel to be fetched later 
@@ -72,6 +74,7 @@ public class Country extends Observable{
 			alertObservers();
 
 		}
+		
 		
 		/**
 		 * Adds Country object in argument to linkedCountries Vector as a neighbor
