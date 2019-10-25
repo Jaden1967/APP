@@ -3,10 +3,11 @@ package ui;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Observable;
 import java.util.Vector;
 import java.text.SimpleDateFormat;
 
-public class test {
+public class test extends Observable{
 
 	
 	public static void main (String args[] ) {

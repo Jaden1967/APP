@@ -10,6 +10,7 @@ public class Player {
 	private Vector<Card> ownedCard = new Vector<Card>(); 
 	private Color color;
 	private int army_to_place;
+	private int dice = 0;
 	
 	/**
 	 * Empty constructor for Player
@@ -17,6 +18,14 @@ public class Player {
 	 */
 	public Player () {
 		this.id = "DNE";
+	}
+	
+	public void setDice (int i) {
+		this.dice = i;
+	}
+	
+	public int getDice() {
+		return dice;
 	}
 	
 	/**

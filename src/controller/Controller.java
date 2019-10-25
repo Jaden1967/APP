@@ -1,6 +1,7 @@
 package controller;
 
 import entities.*;
+import ui.Trade;
 import ui.labels.CountryObsLabel;
 
 import java.awt.Color;
@@ -21,6 +22,7 @@ import java.text.SimpleDateFormat;
 
 
 public class Controller {
+	
 	GamePlay game;
 	Vector <String> files_load = new Vector <String>();
 	String map_file_name = "";
@@ -198,11 +200,17 @@ public class Controller {
 			else if(game.getPhase().equals("Reinforcement Phase")) {
 				out.write("1");
 			}
-			else if(game.getPhase().equals("Attack Phase")) {
+			else if(game.getPhase().equals("Attack Phase 1")) {
 				out.write("2");
 			}
-			else if(game.getPhase().equals("Fortification Phase")) {
+			else if(game.getPhase().equals("Attack Phase 2")) {
 				out.write("3");
+			}
+			else if(game.getPhase().equals("Attack Phase 3")) {
+				out.write("4");
+			}
+			else if(game.getPhase().equals("Fortification Phase")) {
+				out.write("5");
 			}
 			out.flush();
 			out.close();
@@ -215,7 +223,7 @@ public class Controller {
 	public boolean loadFile(String name) {
 		loaded_game = true;
 		Vector<Player> players = new Vector<>();
-
+		
 		try {
 			String pathname = "save\\"+name+".save";
 			File filename = new File(pathname);
@@ -269,17 +277,22 @@ public class Controller {
 			}while(!line.trim().equals("[status]"));
 			line = br.readLine();
 			String[] split = line.split("\\s+");
-			game.setPlayerIndex(Integer.parseInt(split[0]));
-			game.setPhase(split[1]);
-			line = br.readLine();
-			
-		}catch(IOException e) {
+			if(Integer.parseInt(split[0])>=game.getPlayers().size()||Integer.parseInt(split[1])>3) {
+				game.clearData();
+				br.close();
+				return false;
+			}
+			else {
+				game.setPlayerIndex(Integer.parseInt(split[0]));
+				game.setPhase(split[1]);
+				line = br.readLine();
+				br.close();
+				return true;
+			}
+		}catch(Exception e) {
 			e.printStackTrace();
 			return false;
-		}
-		
-		
-		return true;
+		}	
 	}
 	
 	private String cardType(String c) {
@@ -408,11 +421,14 @@ public class Controller {
 	        	return new String [] {"F","Not in Reinforcement Phase!"};
 			}
 		}
+		//Command attack fromcountry tocountry numdice -allout -noattack
+		
+		
 		//Command fortify none
 		//Command fortify fromcountry tocountry num
 		else if(splitted[0].equals("fortify")) {
 			if (game.getPhase().equals("Fortification Phase")) {
-				if(splitted[1].equals("none")){
+				if(splitted[1].equals("-none")){
 					game.nextPlayer();
 				}
 				else {
@@ -467,11 +483,28 @@ public class Controller {
 	        	return new String [] {"F","Not in Fortification Phase!"};
 			}
 		}
-			return new String [] {"S"};
+		else if(splitted[0].equals("cheat")) {
+			if(game.getPhase().equals("Reinforcement Phase")) {
+				game.cheatAddCard();	
+			}
+			else {
+				return new String [] {"F","Not in Reinforcement Phase!"};
+			}
+		}
+		else if(splitted[0].equals("trade")) {
+			if(game.getPhase().equals("Reinforcement Phase")) {
+				Trade t = new Trade(game);
+				t.setVisible(true);
+			}
+			else {
+				return new String [] {"F","Not in Reinforcement Phase!"};
+			}
+		}
+		return new String [] {"S"};
 	}
 	
 	public void refresh() {
-		for(Country cl: countries_list) {
+		for(Country cl:countries_list) {
 			cl.alertObservers();
 		}
 		game.alertObservers(1);

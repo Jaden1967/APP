@@ -100,6 +100,15 @@ public class Country extends Observable{
 			return false;
 		}
 		
+		public boolean hasEnemyNeighbour() {
+			for (Country c: this.linked_countries) {
+				if (!c.getOwner().getID().equals(this.owner.getID())) {
+					return true;
+				}
+			}
+			return false;
+		}
+		
 		/**
 		 * Depth-first recursive search to determine if there's a linked path owned by same player to the destination Country
 		 * with countryId
