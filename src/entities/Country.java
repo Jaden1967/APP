@@ -27,7 +27,7 @@ public class Country extends Observable{
 			this.owner = new Player();
 		}
 	
-		
+
 		/**
 		 * Initialize Country Object given parameters of id, name, map attributes
 		 * Creates a corresponding CountryObsLabel to be fetched later 
@@ -75,7 +75,7 @@ public class Country extends Observable{
 
 		}
 		
-		
+
 		/**
 		 * Adds Country object in argument to linkedCountries Vector as a neighbor
 		 * does't need to add this to neighbour's linkedCountries the same function will be called for them too
@@ -103,6 +103,7 @@ public class Country extends Observable{
 			return false;
 		}
 		
+
 		public boolean hasEnemyNeighbour() {
 			for (Country c: this.linked_countries) {
 				if (!c.getOwner().getID().equals(this.owner.getID())) {
@@ -112,6 +113,7 @@ public class Country extends Observable{
 			return false;
 		}
 		
+
 		/**
 		 * Depth-first recursive search to determine if there's a linked path owned by same player to the destination Country
 		 * with countryId
