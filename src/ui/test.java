@@ -1,13 +1,29 @@
 package ui;
 
-import java.util.regex.Pattern;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Date;
+import java.util.Observable;
+import java.util.Vector;
+import java.text.SimpleDateFormat;
 
-public class test {
+public class test extends Observable{
 
 	
 	public static void main (String args[] ) {
-		String pattern = "attack \\w*(\\-\\w+)* \\w*(\\-\\w+)* [1-3]( \\-allout)?|"
-				+ "\\-noattack|defence [1-2]|attackmove [1-9][0-9]*";
-		System.out.println(Pattern.matches(pattern, "attackmove 23"));
+		Vector<String> v = new Vector<String>();
+		for(String s:v) {
+			System.out.println(s);
+		}
+		try {
+			FileWriter out=new FileWriter(".\\save\\test.save",true);
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			out.write(df.format(new Date())+"\r\n");
+			out.flush();
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 }
