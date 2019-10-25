@@ -181,6 +181,9 @@ public class GamePlay extends Observable{
      */
 	private void phaseOne() {
 		JOptionPane.showMessageDialog(null, "Reinforcement Phase for player "+player.getID(), "Information", JOptionPane.INFORMATION_MESSAGE);
+		if(player.getOwnCard().size()==5) {
+			JOptionPane.showMessageDialog(null, "You have reached the maximum number of cards, please trade!", "Information", JOptionPane.INFORMATION_MESSAGE);
+		}
 		phase = "Reinforcement Phase";
 		army_to_place = player.getArmyToPlace();
 		alertObservers(1);
@@ -341,6 +344,14 @@ public class GamePlay extends Observable{
 		notifyObservers(this);
 		outcome = "";
 		alert_type = 0;
+	}
+	
+	public void cheatAddCard() {
+		String tmp[] = {"Infantry","Cavalry","Artillery"};
+		int r = (int)(Math.random()*3);
+		player.addCard(tmp[r]);
+		outcome = "add one random card to current player (cheat)";
+		alertObservers(2);
 	}
 	
 	/**

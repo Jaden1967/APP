@@ -15,6 +15,8 @@ import java.awt.Font;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class LoadPrompt extends JFrame {
 
@@ -35,6 +37,24 @@ public class LoadPrompt extends JFrame {
 		setContentPane(contentPane);
 		
 		textField = new JTextField();
+		textField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					String address = textField.getText();
+					Controller control = new Controller(new GamePlay());
+					if(control.loadFile(address)) {
+						MapUI map_ui = new MapUI (control);
+						JOptionPane.showMessageDialog(null, "Successfully loaded!", "Save file", JOptionPane.INFORMATION_MESSAGE);
+						dispose();
+						menuFrame.dispose();
+					}
+					else {
+						JOptionPane.showMessageDialog(null, "Load fail!", "Warning", JOptionPane.ERROR_MESSAGE);
+					}
+				}
+			}
+		});
 		textField.setBounds(14, 47, 401, 24);
 		contentPane.add(textField);
 		textField.setColumns(10);

@@ -1,6 +1,7 @@
 package controller;
 
 import entities.*;
+import ui.Trade;
 import ui.labels.CountryObsLabel;
 
 import java.awt.Color;
@@ -21,6 +22,7 @@ import java.text.SimpleDateFormat;
 
 
 public class Controller {
+	
 	GamePlay game;
 	Vector <String> files_load = new Vector <String>();
 	String map_file_name = "";
@@ -472,7 +474,24 @@ public class Controller {
 	        	return new String [] {"F","Not in Fortification Phase!"};
 			}
 		}
-			return new String [] {"S"};
+		else if(splitted[0].equals("cheat")) {
+			if(game.getPhase().equals("Reinforcement Phase")) {
+				game.cheatAddCard();	
+			}
+			else {
+				return new String [] {"F","Not in Reinforcement Phase!"};
+			}
+		}
+		else if(splitted[0].equals("trade")) {
+			if(game.getPhase().equals("Reinforcement Phase")) {
+				Trade t = new Trade(game);
+				t.setVisible(true);
+			}
+			else {
+				return new String [] {"F","Not in Reinforcement Phase!"};
+			}
+		}
+		return new String [] {"S"};
 	}
 	
 	public void refresh() {

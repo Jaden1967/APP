@@ -35,7 +35,10 @@ public class MapUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField textField;
-	private String isCommandPattern = "(placearmy \\w*(\\-\\w+)*|placeall|reinforce \\w*(\\-\\w+)* [1-9][0-9]*|fortify (\\w*(\\-\\w+)*\\ \\w*(\\-\\w+)*\\ [1-9][0-9]*|none))";
+	private String isCommandPattern = "(placearmy \\w*(\\-\\w+)*|placeall|"
+			+ "reinforce \\w*(\\-\\w+)* [1-9][0-9]*|"
+			+ "fortify (\\w*(\\-\\w+)*\\ \\w*(\\-\\w+)*\\ [1-9][0-9]*|none))|"
+			+ "cheat|trade";
 	private Controller control;
 	
 	public static void main(String[] args) {

@@ -1,14 +1,12 @@
 package entities;
 
-import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 
 public class Card {
 	private String type;
-	private Image image;
+	private ImageIcon icon;
+	
+	public Card() {}
 	
 	public Card(String type) {
 		this.type = type;
@@ -16,25 +14,25 @@ public class Card {
 	}
 	 
 	public boolean loadImage (String type) {
-		try {
-			switch (type) {
-				case "Infantry":
-					this.image = ImageIO.read (new File ("Infantry.jpg"));
-					return true;
-				case "Cavalry":
-					this.image = ImageIO.read (new File ("Cavalry.jpg"));
-					return true;
-				case "Artillery":
-					this.image = ImageIO.read (new File ("Artilery.jpg"));
-					return true;
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+		switch (type) {
+			case "Infantry":
+				this.icon = new ImageIcon("source\\Infantry.jpg");
+				return true;
+			case "Cavalry":
+				this.icon = new ImageIcon("source\\Cavalry.jpg");
+				return true;
+			case "Artillery":
+				this.icon = new ImageIcon("source\\Artillery.jpg");
+				return true;
 		}
 		return false;
 	}
 	
 	public String getType() {
 		return this.type;
+	}
+	
+	public ImageIcon getImage() {
+		return this.icon;
 	}
 }
