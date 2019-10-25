@@ -1,19 +1,12 @@
 package entities;
 
-import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.HashSet;
 import java.util.Observable;
 import java.util.Vector;
-
 import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
-
 import ui.labels.CountryObsLabel;
 
 public class Country extends Observable{
@@ -21,18 +14,13 @@ public class Country extends Observable{
 		private Player owner;
 		private int countryId;
 		private Vector <Country> linked_countries = new Vector<Country>();
-		private int army_to_place = 0;
+		private int armyNum = 0;
 		private Continent continent;
 		private int x;
 		private int y;
-		private boolean owned;
 		private CountryObsLabel label;
 		private Border border; //Continent's border, constant throughout the game
 
-		/**
-		* Default contructor for Country
-		* Creates empty Country object with name "DNE"
-		*/
 		public Country() {
 			this.countryName = "DNE";
 			this.owner = new Player();
@@ -55,20 +43,14 @@ public class Country extends Observable{
 			this.countryName = name;
 			this.x = horizontal;
 			this.y = vertical;
-			this.owned = false;
 			this.owner = new Player();
-			label = new CountryObsLabel(String.valueOf(army_to_place));
+			label = new CountryObsLabel(String.valueOf(armyNum));
 			x = (int)((float)plotX/imageX*x);
 			y = (int)((float)plotY/imageY*y);
-			label.setBounds(x-10, y-10, 20, 20);
+			label.setBounds(x-15, y-15, 30, 30);
 			label.setFont(new Font("SimSun", Font.BOLD, 15));
 			label.setHorizontalAlignment(SwingConstants.CENTER);
-			label.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent arg0) {
-					JOptionPane.showMessageDialog(null, "Country name: "+countryName+"\nOwner: "+owner.getID()+"\nArmy number"+army_to_place, "Country information", JOptionPane.INFORMATION_MESSAGE);
-				}
-			});
+			this.addObserver(label);
 		}
 		
 		/**
@@ -80,23 +62,12 @@ public class Country extends Observable{
 		}
 		
 		/**
-		 * Boolean of whether country's currently owned by a player
-		 * @return
-		 */
-		public boolean hasOwner() {
-			return owned;
-		}
-		
-		/**
 		 * Setter for owned player
 		 * Alerts observer to change color to that of the new player
 		 * @param p
 		 */
 		public void setOwner(Player p) {
-			owned = true;
-			owner = p;
-			
-			if (army_to_place==0) army_to_place++;
+			owner = p;	
 			label.setBackground(owner.getColor());
 			alertObservers();
 
@@ -154,7 +125,7 @@ public class Country extends Observable{
 		 * @param playerID
 		 */
 		public void addArmy(int amount) {
-			army_to_place += amount;
+			armyNum += amount;
 			alertObservers();
 		}
 		
@@ -163,7 +134,7 @@ public class Country extends Observable{
 		 * @param amount
 		 */
 		public void removeArmy(int amount) {
-			army_to_place -= amount;
+			armyNum -= amount;
 			alertObservers();
 		}
 		
@@ -176,7 +147,7 @@ public class Country extends Observable{
 		 * @return whether or not moving is successful
 		 */
 		public boolean moveArmy(int toID, int armyNum) {
-			if (this.army_to_place < armyNum+1) return false;
+			if (this.armyNum < armyNum+1) return false;
 			boolean neighBourExists = false;
 			for(Country c: this.linked_countries) {
 				if (c.getID() == toID) {
@@ -209,7 +180,11 @@ public class Country extends Observable{
 		 * @return
 		 */
 		public int getArmyNum() {
-			return this.army_to_place;
+			return this.armyNum;
+		}
+		
+		public void setArmy(int i) {
+			this.armyNum =i;
 		}
 		
 		/**
@@ -239,7 +214,7 @@ public class Country extends Observable{
 		}
 		
 		/**
-		 * Getter of neigbouring Country Vector
+		 * Getter of surrounding Country Vector
 		 * @return
 		 */
 		public Vector<Country> getLinkCountries() {
@@ -255,7 +230,7 @@ public class Country extends Observable{
 		}
 		
 		/**
-		 * Print all neighbours' name
+		 * Print all neighbors' name
 		 */
 		public void printLinkedCountries() {
 			for(Country c:linked_countries) {
@@ -264,7 +239,7 @@ public class Country extends Observable{
 		}
 		
 		/**
-		 * Print number of neighbours this Country has 
+		 * Print number of neighbors this Country has 
 		 */
 		public void printLinkedCountriesNum() {
 			System.out.println(linked_countries.size());

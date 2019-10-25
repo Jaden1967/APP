@@ -1,14 +1,15 @@
 package entities;
 
 import java.awt.Color;
-import java.util.Vector;;
+import java.util.Vector;
 
 public class Player {
 	private String id;
 	private int total_country_number;
-	private Vector <Continent> ownedContinent = new Vector<Continent>();
+	private Vector<Continent> ownedContinent = new Vector<Continent>();
+	private Vector<Card> ownedCard = new Vector<Card>(); 
 	private Color color;
-	private int armyToPlace;
+	private int army_to_place;
 	
 	/**
 	 * Empty constructor for Player
@@ -28,7 +29,7 @@ public class Player {
 		this.id = id;
 		this.color = color;
 		this.ownedContinent = new Vector<>();
-		this.armyToPlace = 0;
+		this.army_to_place = 0;
 	}
 	
 	/**
@@ -49,10 +50,10 @@ public class Player {
 	 * @param i number of army to be rewarded
 	 */
 	public void rewardArmy(int i) {
-		this.armyToPlace += i;
+		this.army_to_place += i;
 	}
 	
-	/**
+   /**
 	* At the start of startup phase, this method is called to give players an initial amount of army
 	* To place one at a time in round-robin fashion
 	*/
@@ -72,26 +73,20 @@ public class Player {
 	}
 	
 	/**
-	 * Reward army to place during recruitment phase
+	 * Reward army to place during reinforcement phase
 	 */
 	public void rewardInitialArmy() {
-		this.armyToPlace += calculateArmy() + extraArmyToAdd();
+		this.army_to_place += calculateArmy() + extraArmyToAdd();
 	}
 	
-	/**
-	 * Getter for army to place
-	 * @return armyToPlace as int
-	 */
-	public int getArmyToPlace() {
-		return this.armyToPlace;
-	}
+	
 	
 	/**
 	 * Decreases army to place by a certain amount after deployment or mobilization
 	 * @param i amount of army to be deployed 
 	 */
 	public void deployArmy(int i) {
-		this.armyToPlace -= i;
+		this.army_to_place -= i;
 	}
 	
 	/**
@@ -99,6 +94,10 @@ public class Player {
 	 */
 	public void increaseCountry () {
 		this.total_country_number++;
+	}
+	
+	public void increaseCountry(int i) {
+		this.total_country_number+=i;
 	}
 	
 	/**
@@ -134,31 +133,6 @@ public class Player {
 	}
 	
 	/**
-	 * Getter for corresponding color of input String
-	 * @param color color as String
-	 * @return Color color as Object
-	 */
-	private Color getColor(String color) {
-        switch (color) {
-            case "red": return Color.red;
-            case "yellow": return Color.yellow;
-            case "blue": return Color.blue;
-            case "green": return Color.green;
-            case "lightyellow": return new Color(107,142,35);
-            case "grey": return Color.gray;
-            case "magenta": return Color.magenta;
-            case "orange": return Color.orange;
-            case "pink": return Color.pink;
-            case "cyan": return Color.cyan;
-            case "DeepPink": return new Color(255,20,147);
-            case "skyblue": return new Color(176, 196, 222);
-            case "white": return Color.white;
-            case "purple": return new Color(128, 0, 128);
-            default: return Color.white;
-        }
-    }
-	
-	/**
 	 * Verifies if the player has won the game by owning all continents available in the game
 	 * @param totalContinents
 	 * @return
@@ -180,7 +154,7 @@ public class Player {
 	 * @return color as String
 	 */
 	public String getColorStr() {
-		return this.color.toString();
+		return String.valueOf(Integer.toString(this.color.getRGB()));
 	}
 	
 	/**
@@ -207,10 +181,54 @@ public class Player {
 		if(counter >= this.ownedContinent.size()) return false;
 		ownedContinent.remove(counter);
 		return true;
-		
+	}
+	
+	/**
+	 * Getter of total countries number
+	 * @return number
+	 */
+	public int getTotalCountriesNumber() {
+		return this.total_country_number;
+	}
+	
+	/**
+	 * Getter of owned card
+	 * @return vector of card
+	 */
+	public Vector<Card> getOwnCard(){
+		return this.ownedCard;
+	}
+	
+	/**
+	 * Adds a card to the player's arsenal
+	 * @param type Type of the card (Infantry, Calvary, Artillery)
+	 */
+	public void addCard(String type) {
+		ownedCard.add(new Card(type));
+	}
+	
+	/**
+	 * Getter for vector of owned continent
+	 * @return owned continent
+	 */
+	public Vector<Continent> getOwnContinent(){
+		return this.ownedContinent;
+	}
+	
+	/**
+	 * Setter for army to place
+	 * @param i Value to set
+	 */
+	public void setArmyToPlace(int i) {
+		this.army_to_place = i;
 	}
 	
 	
-	
-	
+	/**
+	 * Getter for army to place
+	 * @return armyToPlace as int
+	 */
+	public int getArmyToPlace() {
+		return this.army_to_place;
+	}
 }

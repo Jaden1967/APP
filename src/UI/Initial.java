@@ -1,46 +1,28 @@
 package ui;
 
-import java.awt.EventQueue;
-
+import controller.Controller;
+import entities.*;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
-
-import controller.Controller;
-import entities.Continent;
-import entities.Country;
-import entities.GamePlay;
-import entities.Player;
-
 import java.awt.Color;
 import javax.swing.JButton;
 import java.awt.Font;
-import javax.swing.JTextPane;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
-import javax.swing.JComboBox;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
-
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.util.Random;
 import java.util.Vector;
 import java.awt.event.ActionEvent;
 import java.util.regex.*;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-/**
- * Creating the JFrame
- */
 
 public class Initial extends JFrame {
 
@@ -95,10 +77,10 @@ public class Initial extends JFrame {
 				}
 				else {
 					JOptionPane.showMessageDialog(null, "Game start!", "Good luck!", JOptionPane.INFORMATION_MESSAGE);
-					setVisible(false);
 					control.addPlayers(player_str_list);
-					MapUI g = new MapUI(game.getCountries(), control);
+					MapUI g = new MapUI(control);
 					g.setVisible(true);
+					dispose();
 				}
 			}
 			else if(command[0].equals("gameplayer")) {
@@ -127,7 +109,7 @@ public class Initial extends JFrame {
 					}
 				}
 				else if(type.equals("-remove")) {
-					if(game.getPlayers().size()==0) {
+					if(player_str_list.size()==0) {
 						JOptionPane.showMessageDialog(null, "Invalid removal!", "Warning", JOptionPane.ERROR_MESSAGE);
 						output_text.append("Fail to remove player "+name+"\n");
 					}
@@ -148,7 +130,7 @@ public class Initial extends JFrame {
 				}
 			}
 			else if(command[0].equals("loadmap")) {
-				if(control.readFile(command[1])) {
+				if(control.loadMap(command[1])) {
 					output_text.append("Loading map "+command[1]+" success!\n");
 					input_text.setText("");
 					if(control.getFilesLoad().size()>=3) {
@@ -169,8 +151,6 @@ public class Initial extends JFrame {
 			for(String [] s:player_str_list) {
 				player_text.append("Name: "+s[0]+"    Color: "+s[1]+"\n");
 			}
-
-			
 		}
 		else {
 			JOptionPane.showMessageDialog(null, "Command invalid!", "Warning", JOptionPane.ERROR_MESSAGE);
@@ -211,8 +191,6 @@ public class Initial extends JFrame {
 		contentPane.add(input_text);
 		input_text.setColumns(10);
 		
-		
-		
 		JTextArea output_text = new JTextArea();
 		output_text.setEditable(false);
 		output_text.setBounds(14, 380, 754, 160);
@@ -244,6 +222,5 @@ public class Initial extends JFrame {
 		});
 		btnRun.setBounds(655, 302, 113, 27);
 		contentPane.add(btnRun);
-		
 	}
 }
