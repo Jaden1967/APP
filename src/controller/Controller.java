@@ -511,6 +511,22 @@ public class Controller {
 
 		}
 		
+		//Command attackmove num
+		else if (splitted[0].equals("attackmove")) {
+			if(game.getPhase().equals("Attack Phase 3")) {
+				int numToSend = Integer.parseInt(splitted[1]);
+				if(numToSend>=game.getAttacker().getArmyNum()) {
+					return new String[] {"F","Number of the army to send cannot be great or equal than the army you own"};
+					
+				}else {
+					
+					game.moveArmyTo(numToSend);
+					game.reSetOwner();
+				}
+			}
+				
+		}
+		
 		
 		//Command fortify none
 		//Command fortify fromcountry tocountry num

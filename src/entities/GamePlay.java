@@ -273,6 +273,10 @@ public class GamePlay extends Observable{
 		return this.defender;
 	}
 	
+	public Country getAttacker() {
+		return this.attacker;
+	}
+	
     /**
      * Fortify Phase
      * Set phase to "Fortification Phase"
@@ -459,4 +463,21 @@ public class GamePlay extends Observable{
 	public void setPlayerIndex(int i) {
 		this.player_index = i;
 	}
+	/**
+	 * Send army to the target contry
+	 */
+	
+	public void moveArmyTo(int number) {
+		this.attacker.removeArmy(number);
+		this.defender.addArmy(number);	
+		
+	}
+	/**
+	 * Reset the owner
+	 */
+	public void reSetOwner() {
+		Player pla = this.player;
+		this.defender.setOwner(pla);
+	}
+	
 }
