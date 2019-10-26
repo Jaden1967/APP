@@ -609,7 +609,7 @@ public class Controller {
 		}
 		else if(splitted[0].equals("cheat")) {
 			if(game.getPhase().equals("Reinforcement Phase")) {
-				game.cheatAddCard();	
+				game.addCard();	
 			}
 			else {
 				return new String [] {"F","Not in Reinforcement Phase!"};

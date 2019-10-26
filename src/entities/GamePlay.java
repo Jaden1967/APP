@@ -325,8 +325,9 @@ public class GamePlay extends Observable{
 		outcome += "Attacker lost "+alose+ " , Defender lose "+dlose+"\n";
 		if(defender.getArmyNum()==0) {
 			outcome += "Successfully conquered "+defender.getName()+" with "+attacker.getArmyNum()+" armies remaining\n";
-			outcome += "Choose the number of army to be moved to "+defender.getName();
+			outcome += "Choose the number of army to be moved to "+defender.getName()+"/n";
 			phase = "Attack Phase 3";
+			addCard();
 			alertObservers();
 			return true;
 		}
@@ -566,12 +567,11 @@ public class GamePlay extends Observable{
 		alert_type = 0;
 	}
 	
-	public void cheatAddCard() {
+	public void addCard() {
 		String tmp[] = {"Infantry","Cavalry","Artillery"};
 		int r = (int)(Math.random()*3);
 		player.addCard(tmp[r]);
-		outcome = "add one random card to current player (cheat)";
-		alertObservers();
+		outcome += "added one random card to current player";
 	}
 	
 	/**
