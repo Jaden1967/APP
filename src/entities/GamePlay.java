@@ -255,7 +255,6 @@ public class GamePlay extends Observable{
 		maxDiceNum(from,to);
 		boolean conquered = false;
 		while (attacker.getArmyNum()!=0 && defender.getArmyNum()!=0) {
-			System.out.println("attacker num: "+attacker.getArmyNum()+"\ndef: "+defender.getArmyNum());
 			conquered = attackRound(true);
 		}
 		if (conquered) {
@@ -379,12 +378,18 @@ public class GamePlay extends Observable{
 	public void moveArmyTo(int number) {
 		this.attacker.removeArmy(number);
 		this.defender.addArmy(number);	
+		this.outcome = "Moved "+number+" to "+defender.getName()+"\n";
+		this.phase = "Attack Phase 1";
+
 		if (checkIfCanAttack(player)) {
 			phase = "Attack Phase 1";
+			outcome += "Continue Attacking.\n";
 		}
 		else {
 			phaseFortify();
 		}
+		alertObservers();
+
 	}
 	/**
 	 * Reset the owner
@@ -392,7 +397,7 @@ public class GamePlay extends Observable{
 	public void reSetOwner() {
 		Player pla = this.player;
 		this.defender.setOwner(pla);
-		notifyObservers();
+
 	}
 	
     /**
