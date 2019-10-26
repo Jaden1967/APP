@@ -263,12 +263,12 @@ public class GamePlay extends Observable{
 		else {
 			if (checkIfCanAttack(player)) {
 				phase = "Attack Phase 1";
+				alertObservers();
 			}
 			else {
 				phaseFortify();
 			}
 		}
-		notifyObservers();
 		return conquered;
 	}
 	
@@ -325,9 +325,9 @@ public class GamePlay extends Observable{
 		outcome += "Attacker lost "+alose+ " , Defender lose "+dlose+"\n";
 		if(defender.getArmyNum()==0) {
 			outcome += "Successfully conquered "+defender.getName()+" with "+attacker.getArmyNum()+" armies remaining\n";
+			addCard();
 			outcome += "Choose the number of army to be moved to "+defender.getName()+"/n";
 			phase = "Attack Phase 3";
-			addCard();
 			alertObservers();
 			return true;
 		}
@@ -571,7 +571,7 @@ public class GamePlay extends Observable{
 		String tmp[] = {"Infantry","Cavalry","Artillery"};
 		int r = (int)(Math.random()*3);
 		player.addCard(tmp[r]);
-		outcome += "added one random card to current player";
+		outcome += "Added "+tmp[r]+" card to current player";
 	}
 	
 	/**
