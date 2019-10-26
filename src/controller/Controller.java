@@ -422,12 +422,21 @@ public class Controller {
 			}
 		}
 		
+		//Command -noattack
+		else if(splitted[0].equals("-noattack")) {
+			if (game.getPhase().equals("Attack Phase 1")) {
+				game.noAttack();
+			}
+			else {
+	        	return new String [] {"F","Not in Attack Phase 1!"};
+			}
+		}
+		
 		//Command attack fromcountry tocountry numdice -allout -noattack
 		else if(splitted[0].equals("attack")) {
 			if (game.getPhase().equals("Attack Phase 1")) {
 				String fromCountry = splitted[1];
-				String toCountry = splitted[2];
-				int number = Integer.parseInt(splitted[3]);
+				String toCountry = splitted[2];			
 				boolean f_exists = false;
 				boolean t_exists = false;
 				Country tempFrom = new Country();
@@ -449,37 +458,47 @@ public class Controller {
 				
 				//if both countries exist
 				if(f_exists && t_exists) {
-					//if the countries are not owned by the same player
-					if(!tempFrom.getOwner().getID().equals(tempTo.getOwner().getID())) {
-						//if the countries are neighbors
-						if(tempFrom.hasNeighbour(toCountry)) {
-							//if attacking country has at least 2 army count
-							if(tempFrom.getArmyNum()>=2) {
-								//if number of dice does not exceed attacking army (country army -1)
-								if(!(number > tempFrom.getArmyNum()-1)) {
-									//if only want to attack once
-									if(splitted.length == 4) {
-										game.setAttack (tempFrom, tempTo, number);
+					//if the attacking country belongs to the current player
+					if(tempFrom.getOwner().getID().equals(game.getPlayer().getID())) {
+						//if the countries are not owned by the same player
+						if(!tempFrom.getOwner().getID().equals(tempTo.getOwner().getID())) {
+							//if the countries are neighbors
+							if(tempFrom.hasNeighbour(toCountry)) {
+								//if attacking country has at least 2 army count
+								if(tempFrom.getArmyNum()>=2) {
+									//if player is going all out on the attack
+									if(splitted[3].equals("-allout")) {
+										if(game.allOutAttack(tempFrom, tempTo)) {
+								        	return new String [] {"S","Country successfully conquered, Move army to conquered city!"};
+										}
 									}
-									//if want to attack all out
+									//if the player is only attacking once
 									else {
-										
+										int number = Integer.parseInt(splitted[3]);
+										//if number of dice does not exceed attacking army (country army -1)
+										if(!(number > tempFrom.getArmyNum()-1)) {
+											//if only want to attack once
+											game.setAttack (tempFrom, tempTo, number);
+										}
+										else {
+								        	return new String [] {"F","Number of dice exceeds limit!"};
+										}
 									}
 								}
 								else {
-						        	return new String [] {"F","Number of dice exceeds limit!"};
+						        	return new String [] {"F","Must have at least 2 armies to attack!"};
 								}
 							}
 							else {
-					        	return new String [] {"F","Must have at least 2 armies to attack!"};
+					        	return new String [] {"F", fromCountry+" does not neighbor "+toCountry+"!"};
 							}
 						}
 						else {
-				        	return new String [] {"F", fromCountry+" does not neighbor "+toCountry+"!"};
+				        	return new String [] {"F","Countries owned by the same player!"};
 						}
 					}
 					else {
-			        	return new String [] {"F","Countries owned by the same player!"};
+			        	return new String [] {"F",fromCountry+" does not belong to player "+game.getPlayerID()+"!"};
 					}
 				}
 				else {
@@ -498,7 +517,9 @@ public class Controller {
 			if (game.getPhase().equals("Attack Phase 2")) {
 				int num = Integer.parseInt(splitted[1]);
 				if(game.getDefender().getArmyNum() >= num) {
-					game.commenceAttack(num);
+					if(game.commenceAttack(num)) {
+						return new String [] {"S","Country successfully conquered, Move army to conquered city!"};
+					}
 				}
 				else {
 		        	return new String [] {"F","Number of dice exceeds maximum number defender army!"};
@@ -511,6 +532,21 @@ public class Controller {
 
 		}
 		
+		//Command attackmove num
+		else if (splitted[0].equals("attackmove")) {
+			if(game.getPhase().equals("Attack Phase 3")) {
+				int numToSend = Integer.parseInt(splitted[1]);
+				if(numToSend < game.getAttacker().getArmyNum()) {
+					game.moveArmyTo(numToSend);
+					game.reSetOwner();
+				}else {
+					return new String[] {"F","Number of the army to send cannot be great or equal than the army you own"};
+				}
+			}
+			else {
+	        	return new String [] {"F","Not in Attack Phase 3!"};
+			}
+		}
 		
 		//Command fortify none
 		//Command fortify fromcountry tocountry num
@@ -595,7 +631,7 @@ public class Controller {
 		for(Country cl:countries_list) {
 			cl.alertObservers();
 		}
-		game.alertObservers(1);
+		game.alertObservers();
 	}
 	
 	public boolean loadedGame() {
