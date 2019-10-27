@@ -396,6 +396,9 @@ public class GamePlay extends Observable{
 		phase = "Attack Phase 1";
 		attacker.getOwner().increaseCountry();
 		defender.getOwner().decreaseCountry();
+		if(defender.getOwner().getTotalCountriesNumber()==0) {
+			player_list.remove(defender.getOwner());
+		}
 		if (checkIfCanAttack(player)) {
 			phase = "Attack Phase 1";
 			outcome += "Continue Attacking.\n";
@@ -410,15 +413,25 @@ public class GamePlay extends Observable{
 	 */
 	public void reSetOwner() {
 		defender.setOwner(player);
-		System.out.println(defender.getOwner().getOwnContinent().size());
 		defender.getContinent().checkIfConquered();
-		System.out.println(defender.getOwner().getOwnContinent().size());
 		if(defender.getOwner().checkWin(continents_list.size())) {
 			JOptionPane.showMessageDialog(null, "Player "+attacker.getOwner().getID()+", you win!", "Congratulation", JOptionPane.INFORMATION_MESSAGE);
 			mapui.dispose();
 			Menu m = new Menu();
 			m.setVisible(true);
 		}
+	}
+	
+	public boolean checkIfCanFortify(Player p) {
+		if(p.getTotalCountriesNumber()==1) {
+			return false;
+		}
+		for (Country c:countries_list) {
+			if ((c.getOwner().getID().equals(p.getID()) && c.getArmyNum()>=2)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
     /**
@@ -428,8 +441,13 @@ public class GamePlay extends Observable{
      */
 	private void phaseFortify() {
 		JOptionPane.showMessageDialog(null, "Fortification Phase for player "+player.getID(), "Information", JOptionPane.INFORMATION_MESSAGE);
-		phase = "Fortification Phase";
-		alertObservers();
+		if(checkIfCanFortify(player)) {
+			phase = "Fortification Phase";
+			alertObservers();
+		}
+		else {
+			nextPlayer();
+		}
 	}
 	
 	/**
@@ -590,6 +608,9 @@ public class GamePlay extends Observable{
 	public void addCard() {
 		String tmp[] = {"Infantry","Cavalry","Artillery"};
 		int r = (int)(Math.random()*3);
+		if(player.getOwnCard().size()>=5) {
+			player.getOwnCard().remove(0);
+		}
 		player.addCard(tmp[r]);
 		outcome += "Added "+tmp[r]+" card to current player";
 	}

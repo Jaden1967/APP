@@ -223,7 +223,7 @@ public class MapUI extends JFrame {
 					JOptionPane.showMessageDialog(null, result[1], "Warning", JOptionPane.ERROR_MESSAGE);
 				}
 				else {
-					JOptionPane.showMessageDialog(null, result[1], "Alert", JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(null, result[1], "Information", JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 		}
@@ -235,6 +235,7 @@ public class MapUI extends JFrame {
 	
 	public MapUI(Controller control) {
 		this.control = control;
+		MapUI m = this;
 		control.getGame().setJFrame(this);
 		setTitle("Risk");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -306,14 +307,31 @@ public class MapUI extends JFrame {
 		JMenuItem mntmSaveGame = new JMenuItem("save game");
 		mntmSaveGame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				SavePrompt s = new SavePrompt(control);
-				s.setVisible(true);
+				if(!control.getGame().getPhase().equals("Attack Phase 2")&&!control.getGame().getPhase().equals("Attack Phase 3")) {
+					SavePrompt s = new SavePrompt(control);
+					s.setVisible(true);
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "You cannot save in the middle of the attack!", "Warning", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 		mntmSaveGame.setHorizontalAlignment(SwingConstants.LEFT);
 		mntmSaveGame.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 18));
 		mntmSaveGame.setPreferredSize(new Dimension(150,35));
 		Menu.add(mntmSaveGame);
+		
+		JMenuItem mntmLoadGame = new JMenuItem("load game");
+		mntmLoadGame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				LoadPrompt lp = new LoadPrompt(m);
+				lp.setVisible(true);
+			}
+		});
+		mntmLoadGame.setHorizontalAlignment(SwingConstants.LEFT);
+		mntmLoadGame.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 18));
+		mntmLoadGame.setPreferredSize(new Dimension(150,35));
+		Menu.add(mntmLoadGame);
 		
 		JMenuItem mntmExit = new JMenuItem("exit");
 		mntmExit.addActionListener(new ActionListener() {
