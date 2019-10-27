@@ -9,6 +9,10 @@ map
 /.vscode/
 /node/
 /node_modules/
+/target/
+/.classpath
+/*.project
+/.settings
 
 # Compiled class file
 *.class
