@@ -102,6 +102,7 @@ public class Trade extends JFrame{
 		
 		for(int i = 0;i<game.getPlayer().getOwnCard().size();i++) {
 			CardView l = game.getPlayer().getOwnCard().get(i).getCardView();
+			l.reSetCount();
 			l.setBounds(50+130*i, 50, 120, 200);
 			l.addMouseListener(new MouseAdapter() {
 				@Override
@@ -113,6 +114,7 @@ public class Trade extends JFrame{
 					else {
 						chosen_cards_list.remove(l.getRepresent());
 					}
+					System.out.println(chosen_cards_list.size());
 				}
 			});
 			contentPane.add(l);

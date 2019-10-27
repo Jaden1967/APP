@@ -396,8 +396,13 @@ public class GamePlay extends Observable{
 		phase = "Attack Phase 1";
 		attacker.getOwner().increaseCountry();
 		defender.getOwner().decreaseCountry();
+		defender.getOwner().getOwnContinent().remove(defender.getContinent());
 		if(defender.getOwner().getTotalCountriesNumber()==0) {
 			player_list.remove(defender.getOwner());
+			JOptionPane.showMessageDialog(null, "Player "+defender.getOwner().getID()+" is out!", "Information", JOptionPane.INFORMATION_MESSAGE);
+			if(player_index>=player_list.size()) {
+				player_index--;
+			}
 		}
 		if (checkIfCanAttack(player)) {
 			phase = "Attack Phase 1";

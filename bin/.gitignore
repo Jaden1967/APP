@@ -1,5 +1,5 @@
-/ui/
+/controller/
+/entities/
 /main/
 /testing/
-/entities/
-/controller/
+/ui/

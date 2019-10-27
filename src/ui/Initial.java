@@ -222,5 +222,16 @@ public class Initial extends JFrame {
 		});
 		btnRun.setBounds(655, 302, 113, 27);
 		contentPane.add(btnRun);
+		
+		JButton btnBack = new JButton("Back");
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Menu m = new Menu();
+				m.setVisible(true);
+				dispose();
+			}
+		});
+		btnBack.setBounds(655, 340, 113, 27);
+		contentPane.add(btnBack);
 	}
 }
