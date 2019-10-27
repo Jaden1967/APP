@@ -15,7 +15,7 @@ public class Country extends Observable{
 		private int countryId;
 		private Vector <Country> linked_countries = new Vector<Country>();
 		private int armyNum = 0;
-		private Continent continent;
+		private Continent belong_to_continent;
 		private int x;
 		private int y;
 		private CountryObsLabel label;
@@ -214,7 +214,7 @@ public class Country extends Observable{
 		 * @return Continent object
 		 */
 		public Continent getContinent() {
-			return this.continent;
+			return this.belong_to_continent;
 		}
 		
 		/**
@@ -222,7 +222,7 @@ public class Country extends Observable{
 		 * @param c
 		 */
 		public void setContinent(Continent c) {
-			continent = c;
+			belong_to_continent = c;
 			border = BorderFactory.createLineBorder(c.getColor(), 3);
 			label.setBorder(border);
 		}

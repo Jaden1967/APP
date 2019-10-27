@@ -39,11 +39,11 @@ public class Player {
 	 * @return rew number of armies to place as int
 	 */
 	public int calculateArmy() {
-        int rew = total_country_number/3;
-        if(rew<3) {
-            rew=3;
+        int raw = total_country_number/3;
+        if(raw<3) {
+            raw=3;
         }
-        return rew;
+        return raw;
     }
 	
 	/**
@@ -80,6 +80,9 @@ public class Player {
 		this.army_to_place += calculateArmy() + extraArmyToAdd();
 	}
 	
+	public void reSetArmy() {
+		army_to_place = 0;
+	}
 	
 	
 	/**
@@ -94,11 +97,11 @@ public class Player {
 	 * When the player successfully conquers a new country, increment the totalaCountryNum this player has
 	 */
 	public void increaseCountry () {
-		this.total_country_number++;
+		total_country_number++;
 	}
 	
 	public void increaseCountry(int i) {
-		this.total_country_number+=i;
+		total_country_number+=i;
 	}
 	
 	/**
@@ -107,8 +110,8 @@ public class Player {
 	 * @return true if player lost, false if player still has at least 1 country remaining
 	 */
 	public boolean decreaseCountry()  {
-		this.total_country_number--;
-		if (this.total_country_number >0 ) return false;
+		total_country_number--;
+		if (total_country_number >0 ) return false;
 		return true;
 	}
 	
@@ -189,7 +192,7 @@ public class Player {
 	 * @return number
 	 */
 	public int getTotalCountriesNumber() {
-		return this.total_country_number;
+		return total_country_number;
 	}
 	
 	/**

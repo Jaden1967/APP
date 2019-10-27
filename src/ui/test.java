@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Observable;
 import java.util.Vector;
+
+import entities.GamePlay;
+
 import java.text.SimpleDateFormat;
 
 public class test extends Observable{
@@ -16,9 +19,9 @@ public class test extends Observable{
 			System.out.println(s);
 		}
 		try {
+			GamePlay g = new GamePlay();
 			FileWriter out=new FileWriter(".\\save\\test.save",true);
-			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			out.write(df.format(new Date())+"\r\n");
+			out.write(Integer.toString(g.getPlayerIndex()));
 			out.flush();
 			out.close();
 		} catch (IOException e) {

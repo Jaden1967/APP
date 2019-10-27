@@ -40,7 +40,7 @@ public class MapUI extends JFrame {
 			+ "fortify (\\w*(\\-\\w+)* \\w*(\\-\\w+)* [1-9][0-9]*|\\-none))|"
 			+ "cheat|trade|"
 			+ "attack \\w*(\\-\\w+)* \\w*(\\-\\w+)* ([1-3]|\\-allout)|"
-			+ "\\-noattack|defence [1-2]|attackmove [1-9][0-9]*";
+			+ "\\-noattack|defend [1-2]|attackmove [1-9][0-9]*";
 	private Controller control;
 	
 	public static void main(String[] args) {
@@ -218,9 +218,14 @@ public class MapUI extends JFrame {
 	public void run() {
 		if(Pattern.matches(isCommandPattern, textField.getText())) {
 			String [] result = control.processInput(textField.getText());
-			if(result[0].equals("F")) {
-				JOptionPane.showMessageDialog(null, result[1], "Warning", JOptionPane.ERROR_MESSAGE);
-			}	
+			if(result.length>1) {
+				if(result[0].equals("F")) {
+					JOptionPane.showMessageDialog(null, result[1], "Warning", JOptionPane.ERROR_MESSAGE);
+				}
+				else {
+					JOptionPane.showMessageDialog(null, result[1], "Alert", JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
 		}
 		else {
 			JOptionPane.showMessageDialog(null, "Command invalid!", "Warning", JOptionPane.ERROR_MESSAGE);
@@ -230,7 +235,7 @@ public class MapUI extends JFrame {
 	
 	public MapUI(Controller control) {
 		this.control = control;
-		
+		control.getGame().setJFrame(this);
 		setTitle("Risk");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1262, 800);
@@ -258,6 +263,7 @@ public class MapUI extends JFrame {
 		OutcomeObsLabel outcome_label = new OutcomeObsLabel();
 		outcome_label.setBounds(974, 50, 256, 585);
 		outcome_label.setEditable(false);
+		outcome_label.setLineWrap(true);
 		contentPane.add(outcome_label);
 		
 		PlayerTurnObsLabel turn_label = new PlayerTurnObsLabel();

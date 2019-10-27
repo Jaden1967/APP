@@ -1,9 +1,11 @@
 package entities;
 
 import java.util.Vector;
+
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import java.util.Arrays;
+import ui.Menu;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -27,10 +29,19 @@ public class GamePlay extends Observable{
 	private Country defender = null;
 	private int att_dice=0;
 	private int def_dice=0;
+	private int add_flag = 0;
+	private JFrame mapui = null;
 	
 	public GamePlay() {
 	}
 	
+	public void setJFrame(JFrame m) {
+		mapui = m;
+	}
+	
+	/**
+	 * Clear all existing lists of Continents, Countries and Players
+	 */
 	public void clearData() {
 		countries_list.clear();
 		player_list.clear();
@@ -63,7 +74,7 @@ public class GamePlay extends Observable{
 			}
 		}
 		outcome = "Randomly assigned countries to all players";
-		alertObservers(2);
+		alertObservers();
 		for(int i = 0;i<continents_list.size();i++) {
 			continents_list.get(i).checkIfConquered();
 		}
@@ -81,8 +92,7 @@ public class GamePlay extends Observable{
 
 		player = player_list.get(player_index);
 		army_to_place = player.getArmyToPlace();
-		
-		alertObservers(1);
+		alertObservers();
 	}
 	
 	/**
@@ -103,7 +113,6 @@ public class GamePlay extends Observable{
      */
 
     public void placeAll() {
-        System.out.println("placing all for player "+player.getID());
         for (Player p: player_list) {
             player = p;
             Vector <Country> toAdd = new Vector <>();
@@ -126,7 +135,6 @@ public class GamePlay extends Observable{
         player.rewardInitialArmy();
         outcome = "Randomly assigned armies to owned countries";
         phaseRecruit();
-        alertObservers(2);   	
     }
     
 	
@@ -143,8 +151,7 @@ public class GamePlay extends Observable{
 		player = player_list.get(player_index);
 		army_to_place = player.getArmyToPlace();
 		outcome += "Next player's turn";
-		alertObservers(1);
-		alertObservers(2);
+		alertObservers();
 		if(army_to_place==0) {
 			player.rewardInitialArmy();
 			phaseRecruit();
@@ -160,12 +167,15 @@ public class GamePlay extends Observable{
      */
 	private void phaseRecruit() {
 		JOptionPane.showMessageDialog(null, "Reinforcement Phase for player "+player.getID(), "Information", JOptionPane.INFORMATION_MESSAGE);
+		add_flag = 0;
 		if(player.getOwnCard().size()==5) {
 			JOptionPane.showMessageDialog(null, "You have reached the maximum number of cards, please trade!", "Information", JOptionPane.INFORMATION_MESSAGE);
 		}
 		phase = "Reinforcement Phase";
+		player.reSetArmy();
+		player.rewardInitialArmy();
 		army_to_place = player.getArmyToPlace();
-		alertObservers(1);
+		alertObservers();
 	}
 	
 	/**
@@ -175,11 +185,10 @@ public class GamePlay extends Observable{
      * @param num amount of army to assign
      */
 	public void reinforceArmy (Country c, int num) {
-		System.out.println("placing army on "+c.getName());
 		c.addArmy(num);
 		player.deployArmy(num);
 		outcome = "Reinforced "+c.getName()+" with "+num+" armies";
-		alertObservers(1);
+		alertObservers();
 		if(army_to_place==0) {
 			phaseAttack();
 		}
@@ -210,44 +219,110 @@ public class GamePlay extends Observable{
 		JOptionPane.showMessageDialog(null, "Attack Phase for player "+player.getID(), "Information", JOptionPane.INFORMATION_MESSAGE);
 		if(checkIfCanAttack(player)) {
 			phase = "Attack Phase 1";
-			alertObservers(1);
+			alertObservers();
 		}else {
 			phaseFortify();
 		}
 		
 	}
 	
+	/**
+	 * From player command: -noattack
+	 * During attack phase 1, player chooses not to attack any countries
+	 * Goes directly into Fortification Phase
+	 */
+	public void noAttack() {
+		phaseFortify();
+	}
+	
+	/**
+	 * Set the attacker and the defender country for one round of attack
+	 * Set the number of dice to be rolled by the attacker
+	 * @param from Attacking country
+	 * @param to Defending country
+	 * @param dicenum Number of dice to be rolled by the attacking country
+	 */
 	public void setAttack(Country from, Country to, int dicenum) {
 		attacker = from;
 		defender = to;
 		att_dice = dicenum;
 		phase = "Attack Phase 2";
-		alertObservers(1);
+		outcome += "Attacking from "+from.getName()+" to "+to.getName()+" \nChoose defender's number of dice to be rolled\n";
+		alertObservers();
 	}
 	
-	public void commenceAttack(int defenderDice) {
+	/**
+	 * From player command: attack countryfrom countryto numdice -allout
+	 * Commence a loop of attack rounds until one of the countries run out of army to attack/defend
+	 * Always choose the maximum number of dice on both sides
+	 * @param from Attacking Country
+	 * @param to Defending Country
+	 * @return true if the Country is successfully conquered during the all out attack
+	 */
+	public boolean allOutAttack (Country from, Country to) {
+		attacker = from;
+		defender = to;
+		boolean conquered = false;
+		while (attacker.getArmyNum()!=1 && defender.getArmyNum()!=0) {
+			maxDiceNum(from,to);
+			conquered = attackRound(true);
+		}
+		if (conquered) {
+			phase = "Attack Phase 3";
+		}
+		else {
+			if (checkIfCanAttack(player)) {
+				phase = "Attack Phase 1";
+				alertObservers();
+			}
+			else {
+				phaseFortify();
+			}
+		}
+		return conquered;
+	}
+	
+	/**
+	 * Begins a round of attack after the defender has chosen the number of dice to be rolled
+	 * @param defenderDice Number of dice to be rolled by the defender
+	 * @return true if the Attacker successfully conquered the defending country
+	 */
+	public boolean commenceAttack(int defenderDice) {
 		def_dice = defenderDice;
-		attackRound();
+		return attackRound(false);
 	}
 	
-	private void attackRound() {
+	/**
+	 * One round of attack during attack phase 2
+	 * Random dice roll is performed on both the attacker and the defender
+	 * The number of rolls is dependent on the amount of dice possessed by each side
+	 * Multiple comparisons is performed depending on amount of dice rolled
+	 * The largest dice value on both sides is compared first, then the second largest
+	 * If the attacker rolled a larger value than the defender, the attacker wins the comparison, or else the defender wins
+	 * When one side loses a comparison, 1 army number is subtracted from the losing side's country
+	 * Set game phase back to attack phase 1 after the attack is performed and the defender still has armies
+	 * Set game phase to attack phase 3 if the defender loses all armies after the attack
+	 * @param allout If the call comes from an all out attack
+	 * @return true if the defender no longer has any more armies to defend the attack
+	 */
+	private boolean attackRound(boolean allout) {
 		Vector<Integer> adice = new Vector<>();
 		Vector<Integer> ddice = new Vector<>();
 		Random rand = new Random();
 		for (int i=0;i<att_dice;i++) {
 			adice.add(rand.nextInt(6)+1);
 		}
-		for (int i=0;i<att_dice;i++) {
-			adice.add(rand.nextInt(6)+1);
+		for (int i=0;i<def_dice;i++) {
+			ddice.add(rand.nextInt(6)+1);
 		}
-		Comparator comparator = Collections.reverseOrder();
+		Comparator<Integer> comparator = Collections.reverseOrder();
 		Collections.sort(adice,comparator);
 		Collections.sort(ddice,comparator);
-		outcome = "Player "+attacker.getOwner().getID()+" rolled "
-		+ adice.toString() + " , Player "+defender.getOwner().getID() + " rolled " + ddice.toString()+"\n"; 
+		outcome += "Player "+attacker.getOwner().getID()+" rolled "
+		+ adice.toString() + "\nPlayer "+defender.getOwner().getID() + " rolled " + ddice.toString()+"\n"; 
 		
 		int alose = 0, dlose = 0;
-		while (adice.size()!=0 && ddice.size()!=0) {
+		while (adice.size()!=0 && ddice.size()!=0 && attacker.getArmyNum()!=0 && defender.getArmyNum()!=0) {
 			if(adice.remove(0) > ddice.remove(0)) {
 				defender.removeArmy(1);
 				dlose++;
@@ -257,20 +332,93 @@ public class GamePlay extends Observable{
 				alose++;
 			}
 		}
-		outcome += "Attacker lost "+alose+ " , Defender lose "+dlose;
-		
-		
-		alertObservers(1);
-		
-		
-		
+		outcome += "Attacker lost "+alose+ " , Defender lose "+dlose+"\n";
+		if(defender.getArmyNum()==0) {
+			outcome += "Successfully conquered "+defender.getName()+" with "+attacker.getArmyNum()+" armies remaining\n";
+			if(add_flag==0) {
+				addCard();
+				add_flag++;
+			}
+			outcome += "Choose the number of army to be moved to "+defender.getName()+"\n";
+			phase = "Attack Phase 3";
+			alertObservers();
+			return true;
+		}
+		if(!allout) {
+			if(checkIfCanAttack(player)) {
+				outcome += "Choose next attack move";
+				phase = "Attack Phase 1";
+			}
+			else {
+				outcome += "No more countries is able to attack";
+				phaseFortify();
+			}
+			alertObservers();
+		}
+		return false;
 	}
 	
+	/**
+	 * Set the maximum possible dice number for both attacking and defending sides during an all-out attack
+	 * @param from Attacking country
+	 * @param to Defending country
+	 */
+	private void maxDiceNum(Country from, Country to) {
+		att_dice = from.getArmyNum()-1;
+		if (att_dice>3) att_dice =3;
+		def_dice = to.getArmyNum();
+		if (def_dice>2) def_dice =2;
+	}
 	
+	/**
+	 * Getter for the current attacking country
+	 * @return Attacking Country
+	 */
+	public Country getAttacker() {
+		return attacker;
+	}
 	
-	
+	/**
+	 * Getter for the current defending country
+	 * @return Defending Country
+	 */
 	public Country getDefender() {
-		return this.defender;
+		return defender;
+	}
+	
+	/**
+	 * Send army to the target country
+	 */
+	public void moveArmyTo(int number) {
+		attacker.removeArmy(number);
+		defender.addArmy(number);
+		outcome = "Moved "+number+" to "+defender.getName()+"\n";
+		phase = "Attack Phase 1";
+		attacker.getOwner().increaseCountry();
+		defender.getOwner().decreaseCountry();
+		if (checkIfCanAttack(player)) {
+			phase = "Attack Phase 1";
+			outcome += "Continue Attacking.\n";
+		}
+		else {
+			phaseFortify();
+		}
+		alertObservers();
+	}
+	/**
+	 * Reset the owner
+	 */
+	public void reSetOwner() {
+		defender.setOwner(player);
+		System.out.println(defender.getOwner().getOwnContinent().size());
+		defender.getContinent().checkIfConquered();
+		System.out.println(defender.getOwner().getOwnContinent().size());
+		if(defender.getOwner().checkWin(continents_list.size())) {
+			JOptionPane.showMessageDialog(null, "Player "+attacker.getOwner().getID()+", you win!", "Congratulation", JOptionPane.INFORMATION_MESSAGE);
+			mapui.dispose();
+			Menu m = new Menu();
+			m.setVisible(true);
+		}
 	}
 	
     /**
@@ -281,7 +429,7 @@ public class GamePlay extends Observable{
 	private void phaseFortify() {
 		JOptionPane.showMessageDialog(null, "Fortification Phase for player "+player.getID(), "Information", JOptionPane.INFORMATION_MESSAGE);
 		phase = "Fortification Phase";
-		alertObservers(1);
+		alertObservers();
 	}
 	
 	/**
@@ -312,7 +460,7 @@ public class GamePlay extends Observable{
 		player.rewardInitialArmy();
 		army_to_place = player.getArmyToPlace();
 		outcome += "\tNext player's turn";
-		alertObservers(2);
+		alertObservers();
 		
 		phaseRecruit();
 	}
@@ -322,7 +470,7 @@ public class GamePlay extends Observable{
      * @return phase as String
      */
     public String getPhase() {
-        return this.phase;
+        return phase;
     }
     
     public void setPhase(String s) {
@@ -341,7 +489,7 @@ public class GamePlay extends Observable{
      * @return player id as String
      */
     public String getPlayerID() {
-        return this.player.getID();
+        return player.getID();
     }
     
     /**
@@ -349,7 +497,7 @@ public class GamePlay extends Observable{
      * @return player as Player object
      */
     public Player getPlayer() {
-        return this.player;
+        return player;
     }
     
     /**
@@ -357,7 +505,7 @@ public class GamePlay extends Observable{
      * @return armyToPlace as String
      */
     public int getArmyToPlace() {
-        return this.army_to_place;
+        return army_to_place;
     }
     
     /**
@@ -365,7 +513,7 @@ public class GamePlay extends Observable{
      * @return type as int
      */
     public int getAlertType() {
-        return this.alert_type;
+        return alert_type;
     }
     
     /**
@@ -373,7 +521,7 @@ public class GamePlay extends Observable{
      * @return outcome as String
      */
     public String getOutcome() {
-        return this.outcome;
+        return outcome;
     }
     
     /**
@@ -389,7 +537,7 @@ public class GamePlay extends Observable{
      * @param continentsList
      */
     public void setContinents(Vector<Continent> continentsList) {
-		this.continents_list = continentsList;
+		continents_list = continentsList;
 	}
 	
     /**
@@ -405,7 +553,7 @@ public class GamePlay extends Observable{
 	 * @param countriesList
 	 */
 	public void setCountries(Vector<Country> countriesList) {
-		this.countries_list = countriesList;
+		countries_list = countriesList;
 	}
 	
     /**
@@ -421,31 +569,29 @@ public class GamePlay extends Observable{
 	 * @param playerList
 	 */
 	public void setPlayers(Vector<Player> playerList) {
-		this.player_list = playerList;
-		this.player = playerList.get(0);
+		player_list = playerList;
+		player = playerList.get(0);
 	}
     
     /**
 	 * After change of game state, alert concerned Observers
 	 * @param x type of Observer to alert: 1 = InfoObsLabel, 2 = OutcomeObsLabel
 	 */
-	public void alertObservers(int x) {
-		this.player = player_list.get(player_index);
-		this.army_to_place = player.getArmyToPlace();
+	public void alertObservers() {
+		player = player_list.get(player_index);
+		army_to_place = player.getArmyToPlace();
 
-		alert_type = x;
 		setChanged();
 		notifyObservers(this);
 		outcome = "";
 		alert_type = 0;
 	}
 	
-	public void cheatAddCard() {
+	public void addCard() {
 		String tmp[] = {"Infantry","Cavalry","Artillery"};
 		int r = (int)(Math.random()*3);
 		player.addCard(tmp[r]);
-		outcome = "add one random card to current player (cheat)";
-		alertObservers(2);
+		outcome += "Added "+tmp[r]+" card to current player";
 	}
 	
 	/**
@@ -453,10 +599,22 @@ public class GamePlay extends Observable{
 	 * @return integer of player index
 	 */
 	public int getPlayerIndex() {
-		return this.player_index;
+		return player_index;
 	}
 	
 	public void setPlayerIndex(int i) {
-		this.player_index = i;
+		player_index = i;
+	}
+	
+	public int getAttackDice() {
+		return att_dice;
+	}
+	
+	public void setAddFlag(int f) {
+		add_flag = f;
+	}
+	
+	public int getAddFlag() {
+		return add_flag;
 	}
 }

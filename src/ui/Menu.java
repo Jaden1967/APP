@@ -1,18 +1,20 @@
 package ui;
 
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import java.awt.Font;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
-public class Menu {
+public class Menu extends JFrame {
 
-	private JFrame frmRisk;
+
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Launch the application.
@@ -21,8 +23,8 @@ public class Menu {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Menu window = new Menu();
-					window.frmRisk.setVisible(true);
+					Menu frame = new Menu();
+					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -31,53 +33,53 @@ public class Menu {
 	}
 
 	/**
-	 * Create the application.
+	 * Create the frame.
 	 */
 	public Menu() {
-		frmRisk = new JFrame();
-		frmRisk.setTitle("Risk");
-		frmRisk.setBounds(100, 100, 800, 600);
-		frmRisk.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frmRisk.getContentPane().setLayout(null);
+		Menu m = this;
+		setTitle("Risk");
+		setBounds(100, 100, 800, 600);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		getContentPane().setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel("Risk");
 		lblNewLabel.setBounds(250, 50, 250, 100);
 		lblNewLabel.setFont(new Font("SimSun", Font.BOLD, 79));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		frmRisk.getContentPane().add(lblNewLabel);
+		getContentPane().add(lblNewLabel);
 		
 		JButton btnPlay = new JButton("Play");
 		btnPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Initial i = new Initial();
 				i.setVisible(true);
-				frmRisk.dispose();
+				dispose();
 			}
 		});
 		btnPlay.setFont(new Font("SimSun", Font.BOLD, 30));
 		btnPlay.setBounds(250, 223, 250, 45);
-		frmRisk.getContentPane().add(btnPlay);
+		getContentPane().add(btnPlay);
 		
 		JButton btnLoadGame = new JButton("Load Game");
 		btnLoadGame.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
-				LoadPrompt lp = new LoadPrompt(frmRisk);
+				LoadPrompt lp = new LoadPrompt(m);
 				lp.setVisible(true);
 			}
 		});
 		btnLoadGame.setFont(new Font("SimSun", Font.BOLD, 30));
 		btnLoadGame.setBounds(250, 319, 250, 45);
-		frmRisk.getContentPane().add(btnLoadGame);
+		getContentPane().add(btnLoadGame);
 		
 		JButton btnExit = new JButton("Exit");
 		btnExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frmRisk.dispose();
+				dispose();
 			}
 		});
 		btnExit.setFont(new Font("SimSun", Font.BOLD, 30));
 		btnExit.setBounds(250, 415, 250, 45);
-		frmRisk.getContentPane().add(btnExit);	
+		getContentPane().add(btnExit);	
 	}
 
 }
