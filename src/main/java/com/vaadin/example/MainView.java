@@ -69,34 +69,31 @@ public class MainView extends VerticalLayout {
     // if value == true, this color could be used in a new continent
     private HashMap<String, Boolean> colorAvailable = new HashMap<>();
 
-    private Canvas canvas = new Canvas(600, 400);
+    private Canvas canvas = new Canvas(700, 400);
+    CanvasRenderingContext2D ctx = canvas.getContext();
 
     private void init() {
-
-
-        CanvasRenderingContext2D ctx = canvas.getContext();
-
         // Draw an image located in src/main/webapp/resources:
         // ctx.drawImage("https://dummyimage.com/600x400/FCFAF2/000000&text=+", 0, 0);
         ctx.setStrokeStyle("#373C38");
-        ctx.strokeRect(1, 1, 599, 399);
+        ctx.strokeRect(1, 1, 699, 399);
 
-        for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 6; j++) {
-                ctx.setFillStyle(String.format("rgb(%s, %s, 0)", i * 50, j * 50));
-                ctx.fillRect(j * 25, i * 25, 25, 25);
-            }
-        }
-        ctx.setFillStyle(String.format("rgb(%s, %s, %s)", 100, 111, 99));
-        ctx.fillRect(200, 200, 100, 100);
+        // for (int i = 0; i < 6; i++) {
+        //     for (int j = 0; j < 6; j++) {
+        //         ctx.setFillStyle(String.format("rgb(%s, %s, 0)", i * 50, j * 50));
+        //         ctx.fillRect(j * 25, i * 25, 25, 25);
+        //     }
+        // }
+        // ctx.setFillStyle(String.format("rgb(%s, %s, %s)", 100, 111, 99));
+        // ctx.fillRect(200, 200, 100, 100);
 
-        // Draw a red line from point (10,10) to (100,100):
-        ctx.setStrokeStyle("red");
-        ctx.beginPath();
-        ctx.moveTo(10, 10);
-        ctx.lineTo(100, 100);
-        ctx.closePath();
-        ctx.stroke();
+        // // Draw a red line from point (10,10) to (100,100):
+        // ctx.setStrokeStyle("red");
+        // ctx.beginPath();
+        // ctx.moveTo(10, 10);
+        // ctx.lineTo(100, 100);
+        // ctx.closePath();
+        // ctx.stroke();
 
         // continents color set
         colorAvailable.put("yellow", true);
@@ -158,7 +155,45 @@ public class MainView extends VerticalLayout {
     }
 
     // TODO:
-    // This method generates the stream contents
+    // DrawMap
+    public void drawMap() {
+        // countries
+        for (ArrayList<String> arrList : countriesData) {
+            String countryName = arrList.get(0);
+            String continentName = arrList.get(1);
+            int coordinate_x = Integer.valueOf(arrList.get(2));
+            int coordinate_y = Integer.valueOf(arrList.get(3));
+            ctx.setFillStyle(String.format("rgb(%s, %s, %s)", 100, 111, 99));
+            ctx.fillRect(coordinate_x - 10, coordinate_y - 10, 20, 20);
+            ctx.setFillStyle(String.format("BLACK"));
+            ctx.fillText(countryName, coordinate_x - 30, coordinate_y - 15);
+        }
+
+        for (ArrayList<String> neighborList : neighborsData) {
+            String currCountryName = neighborList.get(0);
+            int coordinate_x = Integer.valueOf(getCountryCoordinates(currCountryName).split(",")[0]);
+            int coordinate_y = Integer.valueOf(getCountryCoordinates(currCountryName).split(",")[1]);
+            for (int i = 1; i < neighborList.size(); i++) {
+                int neighbor_x = Integer.valueOf(getCountryCoordinates(neighborList.get(i)).split(",")[0]);
+                int neighbor_y = Integer.valueOf(getCountryCoordinates(neighborList.get(i)).split(",")[1]);
+                ctx.setStrokeStyle("red");
+                ctx.beginPath();
+                ctx.moveTo(coordinate_x, coordinate_y);
+                ctx.lineTo(neighbor_x, neighbor_y);
+                ctx.closePath();
+                ctx.stroke();
+            }
+        }
+    }
+
+    private String getCountryCoordinates(String country_name) {
+        for (ArrayList<String> arrList : countriesData) {
+            if (arrList.get(0).equals(country_name)) {
+                return arrList.get(2) + "," + arrList.get(3);
+            }
+        }
+        return "0,0";
+    }
 
     public void coordinatesDialog(String countryname, String continentname) {
         Dialog dialog = new Dialog();
@@ -848,8 +883,10 @@ public class MainView extends VerticalLayout {
         // Files.read(Paths.get(path), content);
 
         addOutputLog("Map loaded from: " + path);
+        drawMap();
     }
 
+    // TODO:
     /**
      * Validation of map construction bind to command 'validatemap'
      * 
