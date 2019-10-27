@@ -15,6 +15,8 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -70,14 +72,24 @@ public class MainView extends VerticalLayout {
     private Canvas canvas = new Canvas(600, 400);
 
     private void init() {
+
+
         CanvasRenderingContext2D ctx = canvas.getContext();
+
+        // Draw an image located in src/main/webapp/resources:
+        // ctx.drawImage("https://dummyimage.com/600x400/FCFAF2/000000&text=+", 0, 0);
+        ctx.setStrokeStyle("#373C38");
+        ctx.strokeRect(1, 1, 599, 399);
 
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 6; j++) {
-              ctx.setFillStyle(String.format("rgb(%s, %s, 0)", i * 50, j * 50));
-              ctx.fillRect(j * 25, i * 25, 25, 25);
+                ctx.setFillStyle(String.format("rgb(%s, %s, 0)", i * 50, j * 50));
+                ctx.fillRect(j * 25, i * 25, 25, 25);
             }
-          }
+        }
+        ctx.setFillStyle(String.format("rgb(%s, %s, %s)", 100, 111, 99));
+        ctx.fillRect(200, 200, 100, 100);
+
         // Draw a red line from point (10,10) to (100,100):
         ctx.setStrokeStyle("red");
         ctx.beginPath();
@@ -85,9 +97,6 @@ public class MainView extends VerticalLayout {
         ctx.lineTo(100, 100);
         ctx.closePath();
         ctx.stroke();
-
-        // Draw an image located in src/main/webapp/resources:
-        ctx.drawImage("resources/vaadin-logo.svg", 0, 0);
 
         // continents color set
         colorAvailable.put("yellow", true);
@@ -144,6 +153,8 @@ public class MainView extends VerticalLayout {
 
     public void addOutputLog(String addtext) {
         outputLog.setValue(outputLog.getValue() + addtext + "\n");
+        Notification notification = new Notification(addtext, 3000, Position.TOP_START);
+        notification.open();
     }
 
     // TODO:
