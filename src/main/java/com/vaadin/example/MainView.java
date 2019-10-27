@@ -67,11 +67,17 @@ public class MainView extends VerticalLayout {
     // if value == true, this color could be used in a new continent
     private HashMap<String, Boolean> colorAvailable = new HashMap<>();
 
-    private Canvas canvas = new Canvas(800, 500);
+    private Canvas canvas = new Canvas(600, 400);
 
     private void init() {
         CanvasRenderingContext2D ctx = canvas.getContext();
 
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 6; j++) {
+              ctx.setFillStyle(String.format("rgb(%s, %s, 0)", i * 50, j * 50));
+              ctx.fillRect(j * 25, i * 25, 25, 25);
+            }
+          }
         // Draw a red line from point (10,10) to (100,100):
         ctx.setStrokeStyle("red");
         ctx.beginPath();
