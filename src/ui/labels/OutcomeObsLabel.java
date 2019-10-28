@@ -3,11 +3,11 @@ package ui.labels;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.JTextArea;
+import javax.swing.JLabel;
 
 import entities.GamePlay;
 
-public class OutcomeObsLabel extends JTextArea implements Observer{
+public class OutcomeObsLabel extends JLabel implements Observer{
 
 	private static final long serialVersionUID = 1L;
 	

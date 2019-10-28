@@ -151,7 +151,7 @@ public class Trade extends JFrame{
 						for(Card c:chosen_cards_list) {
 							game.getPlayer().getOwnCard().remove(c);
 						}
-						game.alertObservers();
+						game.alertObservers(1);
 						JOptionPane.showMessageDialog(null, "Trade success! You have "+flag+" extra armies!", "Good luck", JOptionPane.INFORMATION_MESSAGE);
 						dispose();
 					}

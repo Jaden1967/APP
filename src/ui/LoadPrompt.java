@@ -45,7 +45,7 @@ public class LoadPrompt extends JFrame {
 					Controller control = new Controller(new GamePlay());
 					if(control.loadFile(address)) {
 						MapUI map_ui = new MapUI (control);
-						JOptionPane.showMessageDialog(null, "Successfully loaded!", "Load file", JOptionPane.INFORMATION_MESSAGE);
+						JOptionPane.showMessageDialog(null, "Successfully loaded!", "Save file", JOptionPane.INFORMATION_MESSAGE);
 						dispose();
 						menuFrame.dispose();
 					}
@@ -71,7 +71,7 @@ public class LoadPrompt extends JFrame {
 				Controller control = new Controller(new GamePlay());
 				if(control.loadFile(address)) {
 					MapUI map_ui = new MapUI (control);
-					JOptionPane.showMessageDialog(null, "Successfully loaded!", "Load file", JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Successfully loaded!", "Save file", JOptionPane.INFORMATION_MESSAGE);
 					dispose();
 					menuFrame.dispose();
 				}
