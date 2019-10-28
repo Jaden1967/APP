@@ -184,7 +184,7 @@ public class Controller {
 				for(int i = 0;i<p.getOwnCard().size();i++) {
 					out.write(p.getOwnCard().get(i).getType().substring(0,1));	
 				}
-				out.write("} "+p.getArmyToPlace()+"\r\n");
+				out.write("} "+p.getArmyToPlace()+" "+p.getTradeTimes()+"\r\n");
 			}
 			out.write("\r\n[countries]\r\n");
 			for(Country c:game.getCountries()) {
@@ -253,6 +253,7 @@ public class Controller {
 					p.addCard(cardType(String.valueOf(split[3].charAt(i))));
 				}
 				p.setArmyToPlace(Integer.parseInt(split[4]));
+				p.setTradeTimes(Integer.parseInt(split[5]));
 				line = br.readLine();
 			}
 			game.setPlayers(players);

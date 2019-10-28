@@ -6,6 +6,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import ui.Menu;
+import ui.Trade;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -170,6 +172,8 @@ public class GamePlay extends Observable{
 		add_flag = 0;
 		if(player.getOwnCard().size()==5) {
 			JOptionPane.showMessageDialog(null, "You have reached the maximum number of cards, please trade!", "Information", JOptionPane.INFORMATION_MESSAGE);
+			Trade t = new Trade(this);
+			t.setVisible(true);
 		}
 		phase = "Reinforcement Phase";
 		player.reSetArmy();

@@ -10,6 +10,7 @@ public class Player {
 	private Vector<Card> ownedCard = new Vector<Card>(); 
 	private Color color;
 	private int army_to_place;
+	private int trade_times;
 	
 	/**
 	 * Empty constructor for Player
@@ -31,6 +32,7 @@ public class Player {
 		this.color = color;
 		this.ownedContinent = new Vector<>();
 		this.army_to_place = 0;
+		this.trade_times = 0;
 	}
 	
 	/**
@@ -234,5 +236,17 @@ public class Player {
 	 */
 	public int getArmyToPlace() {
 		return this.army_to_place;
+	}
+	
+	public void addTradeTimes() {
+		trade_times++;
+	}
+	
+	public int getTradeTimes() {
+		return trade_times;
+	}
+	
+	public void setTradeTimes(int t) {
+		trade_times = t;
 	}
 }

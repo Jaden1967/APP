@@ -1,14 +1,8 @@
 package ui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.EventQueue;
-
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 import entities.Card;
@@ -21,7 +15,6 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Observer;
 import java.util.Vector;
 import java.awt.event.ActionEvent;
 
@@ -128,23 +121,15 @@ public class Trade extends JFrame{
 				}
 				else {
 					int flag = 0;
-					if(chosen_cards_list.get(0).getType().equals("Infantry")&&chosen_cards_list.get(1).getType().equals("Infantry")&&chosen_cards_list.get(2).getType().equals("Infantry")) {
-						game.getPlayer().rewardArmy(4);
-						flag = 4;
-					}
-					else if(chosen_cards_list.get(0).getType().equals("Cavalry")&&chosen_cards_list.get(1).getType().equals("Cavalry")&&chosen_cards_list.get(2).getType().equals("Cavalry")) {
-						game.getPlayer().rewardArmy(6);
-						flag = 6;
-					}
-					else if(chosen_cards_list.get(0).getType().equals("Artillery")&&chosen_cards_list.get(1).getType().equals("Artillery")&&chosen_cards_list.get(2).getType().equals("Artillery")) {
-						game.getPlayer().rewardArmy(8);
-						flag = 8;
-					}
-					else if(!chosen_cards_list.get(0).getType().equals(chosen_cards_list.get(1).getType())&&
+					if((chosen_cards_list.get(0).getType().equals("Infantry")&&chosen_cards_list.get(1).getType().equals("Infantry")&&chosen_cards_list.get(2).getType().equals("Infantry"))||
+							(chosen_cards_list.get(0).getType().equals("Cavalry")&&chosen_cards_list.get(1).getType().equals("Cavalry")&&chosen_cards_list.get(2).getType().equals("Cavalry"))||
+							(chosen_cards_list.get(0).getType().equals("Artillery")&&chosen_cards_list.get(1).getType().equals("Artillery")&&chosen_cards_list.get(2).getType().equals("Artillery"))||
+							(!chosen_cards_list.get(0).getType().equals(chosen_cards_list.get(1).getType())&&
 							!chosen_cards_list.get(0).getType().equals(chosen_cards_list.get(2).getType())&&
-							!chosen_cards_list.get(1).getType().equals(chosen_cards_list.get(2).getType())) {
-						game.getPlayer().rewardArmy(10);
-						flag = 10;
+							!chosen_cards_list.get(1).getType().equals(chosen_cards_list.get(2).getType()))) {
+						game.getPlayer().addTradeTimes();
+						flag = game.getPlayer().getTradeTimes()*5;
+						game.getPlayer().rewardArmy(flag);
 					}
 					else {
 						JOptionPane.showMessageDialog(null, "You cannot trade with these cards!", "Warning", JOptionPane.ERROR_MESSAGE);
@@ -166,7 +151,12 @@ public class Trade extends JFrame{
 		JButton btnCancel = new JButton("cancel");
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				dispose();
+				if(game.getPlayer().getOwnCard().size()>=5) {
+					JOptionPane.showMessageDialog(null, "You have reached the maximum number of cards, please trade!", "Information", JOptionPane.INFORMATION_MESSAGE);
+				}
+				else {
+					dispose();
+				}
 			}
 		});
 		btnCancel.setBounds(440, 302, 113, 30);
