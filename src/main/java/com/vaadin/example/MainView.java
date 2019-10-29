@@ -9,16 +9,26 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.tabs.Tab;
+import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
@@ -52,6 +62,16 @@ public class MainView extends VerticalLayout {
     private TextField commandLine = new TextField(); // (2)
     private TextArea mapSize = new TextArea();
 
+    private Tab tab1 = new Tab("Tab one");
+    private Tab tab2 = new Tab(new Icon(VaadinIcon.GLOBE));
+    private Tab tab3 = new Tab("Tab three");
+    Tabs tabs = new Tabs(tab1, tab2, tab3);
+
+    private Div page1 = new Div();
+    private Div page2 = new Div();
+    private Div page3 = new Div();
+    Div pages = new Div(page1, page2, page3);
+
     // private Image image = new Image("https://dummyimage.com/600x400/000/fff",
     // "DummyImage");
 
@@ -64,25 +84,51 @@ public class MainView extends VerticalLayout {
     private int map_width = 0;
     private int map_height = 0;
 
-    private boolean hasMapSize = false;
+    // private boolean hasMapSize = false;
 
     // if value == true, this color could be used in a new continent
     private HashMap<String, Boolean> colorAvailable = new HashMap<>();
 
     private Canvas canvas = new Canvas(700, 400);
-    CanvasRenderingContext2D ctx = canvas.getContext();
+    private CanvasRenderingContext2D ctx = canvas.getContext();
 
     private void init() {
+        page1.setText("Page#1");
+
+        page2.setText("Page#2");
+        page2.setVisible(false);
+
+        page3.setText("Page#3");
+        page3.setVisible(false);
+
+        Map<Tab, Component> tabsToPages = new HashMap<>();
+        tabsToPages.put(tab1, page1);
+        tabsToPages.put(tab2, page2);
+        tabsToPages.put(tab3, page3);
+        
+        Set<Component> pagesShown = Stream.of(page1).collect(Collectors.toSet());
+
+        tabs.addSelectedChangeListener(event -> {
+            pagesShown.forEach(page -> page.setVisible(false));
+            pagesShown.clear();
+            Component selectedPage = tabsToPages.get(tabs.getSelectedTab());
+            selectedPage.setVisible(true);
+            pagesShown.add(selectedPage);
+        });
+
+        tabs.setSelectedTab(tab1);
+        tab3.add(outputLog);
+
         // Draw an image located in src/main/webapp/resources:
         // ctx.drawImage("https://dummyimage.com/600x400/FCFAF2/000000&text=+", 0, 0);
         ctx.setStrokeStyle("#373C38");
         ctx.strokeRect(1, 1, 699, 399);
 
         // for (int i = 0; i < 6; i++) {
-        //     for (int j = 0; j < 6; j++) {
-        //         ctx.setFillStyle(String.format("rgb(%s, %s, 0)", i * 50, j * 50));
-        //         ctx.fillRect(j * 25, i * 25, 25, 25);
-        //     }
+        // for (int j = 0; j < 6; j++) {
+        // ctx.setFillStyle(String.format("rgb(%s, %s, 0)", i * 50, j * 50));
+        // ctx.fillRect(j * 25, i * 25, 25, 25);
+        // }
         // }
         // ctx.setFillStyle(String.format("rgb(%s, %s, %s)", 100, 111, 99));
         // ctx.fillRect(200, 200, 100, 100);
@@ -376,7 +422,7 @@ public class MainView extends VerticalLayout {
                 // map operations
                 // show map
                 if (tempArr[0].equals("showmap")) {
-                    // TODO closed
+                    // TODO：
                     // showmap();
                 }
                 // validate map
@@ -420,7 +466,7 @@ public class MainView extends VerticalLayout {
 
         add( // (5)
                 new H1("Map Editor"), new HorizontalLayout(continents, countries, neighbors),
-                new HorizontalLayout(commandLine, runButton),
+                new HorizontalLayout(commandLine, runButton), tabs,
                 new HorizontalLayout(outputLog, new VerticalLayout(mapSize, canvas)));
     }
 
@@ -890,8 +936,8 @@ public class MainView extends VerticalLayout {
     /**
      * Validation of map construction bind to command 'validatemap'
      * 
-     * @param isValidated if is true, map validation success; if is false,
-     *                    validation failed add log to output block
+     * param isValidated if is true, map validation success; if is false, validation
+     * failed add log to output block
      */
     public boolean validateMap() {
         boolean isValidated = true;
