@@ -41,4 +41,12 @@ public class CardView extends JLabel implements Observer{
 		return count;
 	}
 	
+	public void reSetCount() {
+		count = 0;
+		if(this.getMouseListeners().length>=1) {
+			this.removeMouseListener(this.getMouseListeners()[0]);
+		}
+		setBorder(null);
+	}
+	
 }

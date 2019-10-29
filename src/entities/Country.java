@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Observable;
 import java.util.Vector;
 import javax.swing.BorderFactory;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import ui.labels.CountryObsLabel;
@@ -15,7 +16,7 @@ public class Country extends Observable{
 		private int countryId;
 		private Vector <Country> linked_countries = new Vector<Country>();
 		private int armyNum = 0;
-		private Continent continent;
+		private Continent belong_to_continent;
 		private int x;
 		private int y;
 		private CountryObsLabel label;
@@ -46,7 +47,7 @@ public class Country extends Observable{
 			this.x = horizontal;
 			this.y = vertical;
 			this.owner = new Player();
-			label = new CountryObsLabel(String.valueOf(armyNum));
+			label = new CountryObsLabel(String.valueOf(armyNum),name);
 			x = (int)((float)plotX/imageX*x);
 			y = (int)((float)plotY/imageY*y);
 			label.setBounds(x-15, y-15, 30, 30);
@@ -214,7 +215,7 @@ public class Country extends Observable{
 		 * @return Continent object
 		 */
 		public Continent getContinent() {
-			return this.continent;
+			return this.belong_to_continent;
 		}
 		
 		/**
@@ -222,7 +223,7 @@ public class Country extends Observable{
 		 * @param c
 		 */
 		public void setContinent(Continent c) {
-			continent = c;
+			belong_to_continent = c;
 			border = BorderFactory.createLineBorder(c.getColor(), 3);
 			label.setBorder(border);
 		}

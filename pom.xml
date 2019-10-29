@@ -41,11 +41,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.vaadin.pekkam</groupId>
-            <artifactId>canvas-java</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-        <dependency>
             <groupId>com.vaadin</groupId>
             <!-- Replace artifactId with vaadin to include commercial components too-->
             <artifactId>vaadin-core</artifactId>

@@ -1,9 +1,14 @@
 package entities;
 
 import java.util.Vector;
+
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import java.util.Arrays;
+import ui.Menu;
+import ui.Trade;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -27,8 +32,15 @@ public class GamePlay extends Observable{
 	private Country defender = null;
 	private int att_dice=0;
 	private int def_dice=0;
+	private int add_flag = 0;
+	private JFrame mapui = null;
+	boolean is_test = false;
 	
 	public GamePlay() {
+	}
+	
+	public void setJFrame(JFrame m) {
+		mapui = m;
 	}
 	
 	/**
@@ -158,11 +170,16 @@ public class GamePlay extends Observable{
      * Alerts InfoObsLabel
      */
 	private void phaseRecruit() {
-		JOptionPane.showMessageDialog(null, "Reinforcement Phase for player "+player.getID(), "Information", JOptionPane.INFORMATION_MESSAGE);
+		showDialog("Reinforcement Phase for player "+player.getID());
+		add_flag = 0;
 		if(player.getOwnCard().size()==5) {
-			JOptionPane.showMessageDialog(null, "You have reached the maximum number of cards, please trade!", "Information", JOptionPane.INFORMATION_MESSAGE);
+			showDialog("You have reached the maximum number of cards, please trade!");
+			Trade t = new Trade(this);
+			t.setVisible(true);
 		}
 		phase = "Reinforcement Phase";
+		player.reSetArmy();
+		player.rewardInitialArmy();
 		army_to_place = player.getArmyToPlace();
 		alertObservers();
 	}
@@ -174,7 +191,6 @@ public class GamePlay extends Observable{
      * @param num amount of army to assign
      */
 	public void reinforceArmy (Country c, int num) {
-		System.out.println("placing army on "+c.getName());
 		c.addArmy(num);
 		player.deployArmy(num);
 		outcome = "Reinforced "+c.getName()+" with "+num+" armies";
@@ -206,7 +222,7 @@ public class GamePlay extends Observable{
      * Else go directly into fortify phase
      */
 	private void phaseAttack() {
-		JOptionPane.showMessageDialog(null, "Attack Phase for player "+player.getID(), "Information", JOptionPane.INFORMATION_MESSAGE);
+		showDialog("Attack Phase for player "+player.getID());
 		if(checkIfCanAttack(player)) {
 			phase = "Attack Phase 1";
 			alertObservers();
@@ -252,9 +268,9 @@ public class GamePlay extends Observable{
 	public boolean allOutAttack (Country from, Country to) {
 		attacker = from;
 		defender = to;
-		maxDiceNum(from,to);
 		boolean conquered = false;
-		while (attacker.getArmyNum()!=0 && defender.getArmyNum()!=0) {
+		while (attacker.getArmyNum()!=1 && defender.getArmyNum()!=0) {
+			maxDiceNum(from,to);
 			conquered = attackRound(true);
 		}
 		if (conquered) {
@@ -305,7 +321,7 @@ public class GamePlay extends Observable{
 		for (int i=0;i<def_dice;i++) {
 			ddice.add(rand.nextInt(6)+1);
 		}
-		Comparator comparator = Collections.reverseOrder();
+		Comparator<Integer> comparator = Collections.reverseOrder();
 		Collections.sort(adice,comparator);
 		Collections.sort(ddice,comparator);
 		outcome += "Player "+attacker.getOwner().getID()+" rolled "
@@ -325,8 +341,11 @@ public class GamePlay extends Observable{
 		outcome += "Attacker lost "+alose+ " , Defender lose "+dlose+"\n";
 		if(defender.getArmyNum()==0) {
 			outcome += "Successfully conquered "+defender.getName()+" with "+attacker.getArmyNum()+" armies remaining\n";
-			addCard();
-			outcome += "Choose the number of army to be moved to "+defender.getName()+"/n";
+			if(add_flag==0) {
+				addCard();
+				add_flag++;
+			}
+			outcome += "Choose the number of army to be moved to "+defender.getName()+"\n";
 			phase = "Attack Phase 3";
 			alertObservers();
 			return true;
@@ -362,7 +381,7 @@ public class GamePlay extends Observable{
 	 * @return Attacking Country
 	 */
 	public Country getAttacker() {
-		return this.attacker;
+		return attacker;
 	}
 	
 	/**
@@ -370,18 +389,27 @@ public class GamePlay extends Observable{
 	 * @return Defending Country
 	 */
 	public Country getDefender() {
-		return this.defender;
+		return defender;
 	}
 	
 	/**
 	 * Send army to the target country
 	 */
 	public void moveArmyTo(int number) {
-		this.attacker.removeArmy(number);
-		this.defender.addArmy(number);	
-		this.outcome = "Moved "+number+" to "+defender.getName()+"\n";
-		this.phase = "Attack Phase 1";
-
+		attacker.removeArmy(number);
+		defender.addArmy(number);
+		outcome = "Moved "+number+" to "+defender.getName()+"\n";
+		phase = "Attack Phase 1";
+		attacker.getOwner().increaseCountry();
+		defender.getOwner().decreaseCountry();
+		defender.getOwner().getOwnContinent().remove(defender.getContinent());
+		if(defender.getOwner().getTotalCountriesNumber()==0) {
+			player_list.remove(defender.getOwner());
+			showDialog("Player "+defender.getOwner().getID()+" is out!");
+			if(player_index>=player_list.size()) {
+				player_index--;
+			}
+		}
 		if (checkIfCanAttack(player)) {
 			phase = "Attack Phase 1";
 			outcome += "Continue Attacking.\n";
@@ -390,15 +418,31 @@ public class GamePlay extends Observable{
 			phaseFortify();
 		}
 		alertObservers();
-
 	}
 	/**
 	 * Reset the owner
 	 */
 	public void reSetOwner() {
-		Player pla = this.player;
-		this.defender.setOwner(pla);
-
+		defender.setOwner(player);
+		defender.getContinent().checkIfConquered();
+		if(defender.getOwner().checkWin(continents_list.size())) {
+			showDialog("Player "+attacker.getOwner().getID()+", you win!");
+			mapui.dispose();
+			Menu m = new Menu();
+			m.setVisible(true);
+		}
+	}
+	
+	public boolean checkIfCanFortify(Player p) {
+		if(p.getTotalCountriesNumber()==1) {
+			return false;
+		}
+		for (Country c:countries_list) {
+			if ((c.getOwner().getID().equals(p.getID()) && c.getArmyNum()>=2)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
     /**
@@ -407,9 +451,14 @@ public class GamePlay extends Observable{
      * alerts InfoObsLabel
      */
 	private void phaseFortify() {
-		JOptionPane.showMessageDialog(null, "Fortification Phase for player "+player.getID(), "Information", JOptionPane.INFORMATION_MESSAGE);
-		phase = "Fortification Phase";
-		alertObservers();
+		showDialog("Fortification Phase for player "+player.getID());
+		if(checkIfCanFortify(player)) {
+			phase = "Fortification Phase";
+			alertObservers();
+		}
+		else {
+			nextPlayer();
+		}
 	}
 	
 	/**
@@ -450,7 +499,7 @@ public class GamePlay extends Observable{
      * @return phase as String
      */
     public String getPhase() {
-        return this.phase;
+        return phase;
     }
     
     public void setPhase(String s) {
@@ -469,7 +518,7 @@ public class GamePlay extends Observable{
      * @return player id as String
      */
     public String getPlayerID() {
-        return this.player.getID();
+        return player.getID();
     }
     
     /**
@@ -477,7 +526,7 @@ public class GamePlay extends Observable{
      * @return player as Player object
      */
     public Player getPlayer() {
-        return this.player;
+        return player;
     }
     
     /**
@@ -485,7 +534,7 @@ public class GamePlay extends Observable{
      * @return armyToPlace as String
      */
     public int getArmyToPlace() {
-        return this.army_to_place;
+        return army_to_place;
     }
     
     /**
@@ -493,7 +542,7 @@ public class GamePlay extends Observable{
      * @return type as int
      */
     public int getAlertType() {
-        return this.alert_type;
+        return alert_type;
     }
     
     /**
@@ -501,7 +550,7 @@ public class GamePlay extends Observable{
      * @return outcome as String
      */
     public String getOutcome() {
-        return this.outcome;
+        return outcome;
     }
     
     /**
@@ -517,7 +566,7 @@ public class GamePlay extends Observable{
      * @param continentsList
      */
     public void setContinents(Vector<Continent> continentsList) {
-		this.continents_list = continentsList;
+		continents_list = continentsList;
 	}
 	
     /**
@@ -533,7 +582,7 @@ public class GamePlay extends Observable{
 	 * @param countriesList
 	 */
 	public void setCountries(Vector<Country> countriesList) {
-		this.countries_list = countriesList;
+		countries_list = countriesList;
 	}
 	
     /**
@@ -549,8 +598,8 @@ public class GamePlay extends Observable{
 	 * @param playerList
 	 */
 	public void setPlayers(Vector<Player> playerList) {
-		this.player_list = playerList;
-		this.player = playerList.get(0);
+		player_list = playerList;
+		player = playerList.get(0);
 	}
     
     /**
@@ -558,8 +607,8 @@ public class GamePlay extends Observable{
 	 * @param x type of Observer to alert: 1 = InfoObsLabel, 2 = OutcomeObsLabel
 	 */
 	public void alertObservers() {
-		this.player = player_list.get(player_index);
-		this.army_to_place = player.getArmyToPlace();
+		player = player_list.get(player_index);
+		army_to_place = player.getArmyToPlace();
 
 		setChanged();
 		notifyObservers(this);
@@ -570,6 +619,9 @@ public class GamePlay extends Observable{
 	public void addCard() {
 		String tmp[] = {"Infantry","Cavalry","Artillery"};
 		int r = (int)(Math.random()*3);
+		if(player.getOwnCard().size()>=5) {
+			player.getOwnCard().remove(0);
+		}
 		player.addCard(tmp[r]);
 		outcome += "Added "+tmp[r]+" card to current player";
 	}
@@ -579,10 +631,32 @@ public class GamePlay extends Observable{
 	 * @return integer of player index
 	 */
 	public int getPlayerIndex() {
-		return this.player_index;
+		return player_index;
 	}
 	
 	public void setPlayerIndex(int i) {
-		this.player_index = i;
+		player_index = i;
+	}
+	
+	public int getAttackDice() {
+		return att_dice;
+	}
+	
+	public void setAddFlag(int f) {
+		add_flag = f;
+	}
+	
+	public int getAddFlag() {
+		return add_flag;
+	}
+	
+	public void isTest() {
+		is_test = true;
+	}
+	
+	private void showDialog(String s) {
+		if(!is_test) {
+			JOptionPane.showMessageDialog(null, s, "Information", JOptionPane.INFORMATION_MESSAGE);
+		}
 	}
 }

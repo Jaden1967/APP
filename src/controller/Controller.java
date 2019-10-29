@@ -2,8 +2,6 @@ package controller;
 
 import entities.*;
 import ui.Trade;
-import ui.labels.CountryObsLabel;
-
 import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,7 +13,7 @@ import java.util.HashSet;
 import java.util.Observer;
 import java.util.Vector;
 
-import javax.imageio.ImageIO;
+import javax.swing.JTextField;
 
 import java.util.Date;
 import java.text.SimpleDateFormat;
@@ -154,8 +152,8 @@ public class Controller {
 				}
 				line = br.readLine();
 			}
-			this.game.setContinents(continents_list);
-			this.game.setCountries(countries_list);
+			game.setContinents(continents_list);
+			game.setCountries(countries_list);
 			br.close();
 			map_file_name = address;
 			return true;
@@ -186,7 +184,7 @@ public class Controller {
 				for(int i = 0;i<p.getOwnCard().size();i++) {
 					out.write(p.getOwnCard().get(i).getType().substring(0,1));	
 				}
-				out.write("} "+p.getArmyToPlace()+"\r\n");
+				out.write("} "+p.getArmyToPlace()+" "+p.getTradeTimes()+"\r\n");
 			}
 			out.write("\r\n[countries]\r\n");
 			for(Country c:game.getCountries()) {
@@ -195,23 +193,24 @@ public class Controller {
 			out.write("\r\n[status]\r\n");
 			out.write(game.getPlayerIndex()+" ");
 			if(game.getPhase().equals("Startup Phase")) {
-				out.write("0");
+				out.write("0 ");
 			}
 			else if(game.getPhase().equals("Reinforcement Phase")) {
-				out.write("1");
+				out.write("1 ");
 			}
 			else if(game.getPhase().equals("Attack Phase 1")) {
-				out.write("2");
+				out.write("2 ");
 			}
 			else if(game.getPhase().equals("Attack Phase 2")) {
-				out.write("3");
+				out.write("3 ");
 			}
 			else if(game.getPhase().equals("Attack Phase 3")) {
-				out.write("4");
+				out.write("4 ");
 			}
 			else if(game.getPhase().equals("Fortification Phase")) {
-				out.write("5");
+				out.write("5 ");
 			}
+			out.write(Integer.toString(game.getAddFlag()));
 			out.flush();
 			out.close();
 		} catch (IOException e) {
@@ -254,6 +253,7 @@ public class Controller {
 					p.addCard(cardType(String.valueOf(split[3].charAt(i))));
 				}
 				p.setArmyToPlace(Integer.parseInt(split[4]));
+				p.setTradeTimes(Integer.parseInt(split[5]));
 				line = br.readLine();
 			}
 			game.setPlayers(players);
@@ -277,7 +277,7 @@ public class Controller {
 			}while(!line.trim().equals("[status]"));
 			line = br.readLine();
 			String[] split = line.split("\\s+");
-			if(Integer.parseInt(split[0])>=game.getPlayers().size()||Integer.parseInt(split[1])>3) {
+			if(Integer.parseInt(split[0])>=game.getPlayers().size()||Integer.parseInt(split[1])>5) {
 				game.clearData();
 				br.close();
 				return false;
@@ -285,8 +285,12 @@ public class Controller {
 			else {
 				game.setPlayerIndex(Integer.parseInt(split[0]));
 				game.setPhase(split[1]);
+				game.setAddFlag(Integer.parseInt(split[2]));
 				line = br.readLine();
 				br.close();
+				for(Continent c:game.getContinents()) {
+					c.checkIfConquered();
+				}
 				return true;
 			}
 		}catch(Exception e) {
@@ -502,8 +506,8 @@ public class Controller {
 					}
 				}
 				else {
-		        	return new String [] {"F","Country(ies)"+ (f_exists?"":tempFrom)+
-							(t_exists?"":toCountry)+" do(es)'nt exist!"};
+		        	return new String [] {"F","Country(ies)"+ (f_exists?"":splitted[1])+
+							(t_exists?"":splitted[2])+" do(es)'nt exist!"};
 				}
 				
 			}
@@ -516,14 +520,19 @@ public class Controller {
 		else if(splitted[0].equals("defend")) {
 			if (game.getPhase().equals("Attack Phase 2")) {
 				int num = Integer.parseInt(splitted[1]);
-				if(game.getDefender().getArmyNum() >= num) {
-					if(game.commenceAttack(num)) {
-						return new String [] {"S","Country successfully conquered, Move army to conquered city!"};
+				if(num<=2) {
+					if(game.getDefender().getArmyNum() >= num) {
+						if(game.commenceAttack(num)) {
+							return new String [] {"S","Country successfully conquered, Move army to conquered city!"};
+						}
+					}
+					else {
+			        	return new String [] {"F","Number of dice exceeds maximum number defender army!"};
+	
 					}
 				}
 				else {
-		        	return new String [] {"F","Number of dice exceeds maximum number defender army!"};
-
+		        	return new String [] {"F","Number of dice defender dice limit (2)!"};
 				}
 			}
 			else {
@@ -537,8 +546,13 @@ public class Controller {
 			if(game.getPhase().equals("Attack Phase 3")) {
 				int numToSend = Integer.parseInt(splitted[1]);
 				if(numToSend < game.getAttacker().getArmyNum()) {
-					game.moveArmyTo(numToSend);
-					game.reSetOwner();
+					if(numToSend >= game.getAttackDice()||numToSend==game.getAttacker().getArmyNum()-1) {
+						game.moveArmyTo(numToSend);
+						game.reSetOwner();
+					}
+					else {
+						return new String[] {"F","Number of the army to send must equal or greater than attack dice"};
+					}
 				}else {
 					return new String[] {"F","Number of the army to send cannot be great or equal than the army you own"};
 				}
@@ -636,18 +650,20 @@ public class Controller {
 	}
 	
 	public boolean loadedGame() {
-		return this.loaded_game;
+		return loaded_game;
 	}
 	
 	public Vector<Country> getCountries() {
-		return this.countries_list;
+		return countries_list;
 	}
 	
 
 	public Vector<String> getFilesLoad() {
-		return this.files_load;
+		return files_load;
 	}
 	
-	
+	public GamePlay getGame() {
+		return game;
+	}
 	
 }
