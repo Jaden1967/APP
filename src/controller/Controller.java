@@ -520,14 +520,19 @@ public class Controller {
 		else if(splitted[0].equals("defend")) {
 			if (game.getPhase().equals("Attack Phase 2")) {
 				int num = Integer.parseInt(splitted[1]);
-				if(game.getDefender().getArmyNum() >= num) {
-					if(game.commenceAttack(num)) {
-						return new String [] {"S","Country successfully conquered, Move army to conquered city!"};
+				if(num<=2) {
+					if(game.getDefender().getArmyNum() >= num) {
+						if(game.commenceAttack(num)) {
+							return new String [] {"S","Country successfully conquered, Move army to conquered city!"};
+						}
+					}
+					else {
+			        	return new String [] {"F","Number of dice exceeds maximum number defender army!"};
+	
 					}
 				}
 				else {
-		        	return new String [] {"F","Number of dice exceeds maximum number defender army!"};
-
+		        	return new String [] {"F","Number of dice defender dice limit (2)!"};
 				}
 			}
 			else {

@@ -2,6 +2,7 @@ package entities;
 
 import java.util.Vector;
 
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -33,6 +34,7 @@ public class GamePlay extends Observable{
 	private int def_dice=0;
 	private int add_flag = 0;
 	private JFrame mapui = null;
+	boolean is_test = false;
 	
 	public GamePlay() {
 	}
@@ -168,10 +170,10 @@ public class GamePlay extends Observable{
      * Alerts InfoObsLabel
      */
 	private void phaseRecruit() {
-		JOptionPane.showMessageDialog(null, "Reinforcement Phase for player "+player.getID(), "Information", JOptionPane.INFORMATION_MESSAGE);
+		showDialog("Reinforcement Phase for player "+player.getID());
 		add_flag = 0;
 		if(player.getOwnCard().size()==5) {
-			JOptionPane.showMessageDialog(null, "You have reached the maximum number of cards, please trade!", "Information", JOptionPane.INFORMATION_MESSAGE);
+			showDialog("You have reached the maximum number of cards, please trade!");
 			Trade t = new Trade(this);
 			t.setVisible(true);
 		}
@@ -220,7 +222,7 @@ public class GamePlay extends Observable{
      * Else go directly into fortify phase
      */
 	private void phaseAttack() {
-		JOptionPane.showMessageDialog(null, "Attack Phase for player "+player.getID(), "Information", JOptionPane.INFORMATION_MESSAGE);
+		showDialog("Attack Phase for player "+player.getID());
 		if(checkIfCanAttack(player)) {
 			phase = "Attack Phase 1";
 			alertObservers();
@@ -403,7 +405,7 @@ public class GamePlay extends Observable{
 		defender.getOwner().getOwnContinent().remove(defender.getContinent());
 		if(defender.getOwner().getTotalCountriesNumber()==0) {
 			player_list.remove(defender.getOwner());
-			JOptionPane.showMessageDialog(null, "Player "+defender.getOwner().getID()+" is out!", "Information", JOptionPane.INFORMATION_MESSAGE);
+			showDialog("Player "+defender.getOwner().getID()+" is out!");
 			if(player_index>=player_list.size()) {
 				player_index--;
 			}
@@ -424,7 +426,7 @@ public class GamePlay extends Observable{
 		defender.setOwner(player);
 		defender.getContinent().checkIfConquered();
 		if(defender.getOwner().checkWin(continents_list.size())) {
-			JOptionPane.showMessageDialog(null, "Player "+attacker.getOwner().getID()+", you win!", "Congratulation", JOptionPane.INFORMATION_MESSAGE);
+			showDialog("Player "+attacker.getOwner().getID()+", you win!");
 			mapui.dispose();
 			Menu m = new Menu();
 			m.setVisible(true);
@@ -449,7 +451,7 @@ public class GamePlay extends Observable{
      * alerts InfoObsLabel
      */
 	private void phaseFortify() {
-		JOptionPane.showMessageDialog(null, "Fortification Phase for player "+player.getID(), "Information", JOptionPane.INFORMATION_MESSAGE);
+		showDialog("Fortification Phase for player "+player.getID());
 		if(checkIfCanFortify(player)) {
 			phase = "Fortification Phase";
 			alertObservers();
@@ -646,5 +648,15 @@ public class GamePlay extends Observable{
 	
 	public int getAddFlag() {
 		return add_flag;
+	}
+	
+	public void isTest() {
+		is_test = true;
+	}
+	
+	private void showDialog(String s) {
+		if(!is_test) {
+			JOptionPane.showMessageDialog(null, s, "Information", JOptionPane.INFORMATION_MESSAGE);
+		}
 	}
 }

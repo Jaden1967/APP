@@ -22,5 +22,6 @@ public class test extends Observable{
 		for(String s:v) {
 			System.out.println(s);
 		}
+
 	}
 }
