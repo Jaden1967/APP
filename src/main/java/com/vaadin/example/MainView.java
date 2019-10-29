@@ -13,13 +13,23 @@ import java.util.HashMap;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Label;
+
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
+
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.tabs.Tab;
+import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
+
+import org.vaadin.pekkam.Canvas;
+import org.vaadin.pekkam.CanvasRenderingContext2D;
 
 @Route
 public class MainView extends VerticalLayout {
@@ -45,6 +55,23 @@ public class MainView extends VerticalLayout {
     private TextArea neighbors = new TextArea();
     private TextArea outputLog = new TextArea(); // (2)
     private TextField commandLine = new TextField(); // (2)
+
+    private TextArea mapSize = new TextArea();
+
+    private Tab tab1 = new Tab("Output Log");
+    private Tab tab2 = new Tab(new Icon(VaadinIcon.GLOBE));
+    private Tab tab3 = new Tab("Tab three");
+    Tabs tabs = new Tabs(tab1, tab2, tab3);
+
+    private Div page1 = new Div();
+    private Div page2 = new Div();
+    private Div page3 = new Div();
+    Div pages = new Div(page1, page2, page3);
+
+    // private Image image = new Image("https://dummyimage.com/600x400/000/fff",
+    // "DummyImage");
+
+
     // private MemoryBuffer buffer = new MemoryBuffer();
     // private Upload upload = new Upload(buffer);
 
@@ -54,10 +81,74 @@ public class MainView extends VerticalLayout {
     private int map_width = 0;
     private int map_height = 0;
 
+
+    // private boolean hasMapSize = false;
+
     // if value == true, this color could be used in a new continent
     private HashMap<String, Boolean> colorAvailable = new HashMap<>();
 
+    private Canvas canvas = new Canvas(700, 400);
+    private CanvasRenderingContext2D ctx = canvas.getContext();
+
     private void init() {
+        // page1.setText("Page#1");
+
+        // page2.setText("Page#2");
+        // page2.setVisible(false);
+
+        // page3.setText("Page#3");
+        // page3.setVisible(false);
+
+        // Map<Tab, Component> tabsToPages = new HashMap<>();
+        // tabsToPages.put(tab1, outputLog);
+        // tabsToPages.put(tab2, new VerticalLayout(mapSize, canvas));
+        // tabsToPages.put(tab3, page3);
+
+        // Set<Component> pagesShown = Stream.of(page1).collect(Collectors.toSet());
+        mapSize.setVisible(false);
+        canvas.setVisible(false);
+        outputLog.setVisible(true);
+
+        tabs.addSelectedChangeListener(event -> {
+            if (tabs.getSelectedTab() == tab1) {
+                mapSize.setVisible(false);
+                canvas.setVisible(false);
+                outputLog.setVisible(true);
+            } else if (tabs.getSelectedTab() == tab2) {
+                mapSize.setVisible(true);
+                canvas.setVisible(true);
+                outputLog.setVisible(false);
+            } else if (tabs.getSelectedTab() == tab3) {
+                mapSize.setVisible(false);
+                canvas.setVisible(false);
+                outputLog.setVisible(false);
+            }
+        });
+
+        tabs.setSelectedTab(tab1);
+        tab3.add(outputLog);
+
+        // Draw an image located in src/main/webapp/resources:
+        // ctx.drawImage("https://dummyimage.com/600x400/FCFAF2/000000&text=+", 0, 0);
+        ctx.setStrokeStyle("#373C38");
+        ctx.strokeRect(1, 1, 699, 399);
+
+        // for (int i = 0; i < 6; i++) {
+        // for (int j = 0; j < 6; j++) {
+        // ctx.setFillStyle(String.format("rgb(%s, %s, 0)", i * 50, j * 50));
+        // ctx.fillRect(j * 25, i * 25, 25, 25);
+        // }
+        // }
+        // ctx.setFillStyle(String.format("rgb(%s, %s, %s)", 100, 111, 99));
+        // ctx.fillRect(200, 200, 100, 100);
+
+        // // Draw a red line from point (10,10) to (100,100):
+        // ctx.setStrokeStyle("red");
+        // ctx.beginPath();
+        // ctx.moveTo(10, 10);
+        // ctx.lineTo(100, 100);
+        // ctx.closePath();
+        // ctx.stroke();
 
         // continents color set
         colorAvailable.put("yellow", true);
@@ -291,9 +382,10 @@ public class MainView extends VerticalLayout {
                 // map operations
                 // show map
                 if (tempArr[0].equals("showmap")) {
-                    // TODO closed
-                    // showmap();
-                } 
+                    // TODO:
+                    showmap();
+                }
+
                 // validate map
                 else if (tempArr[0].equals("validatemap")) {
                     // TODO:
@@ -334,17 +426,11 @@ public class MainView extends VerticalLayout {
         
 
         add( // (5)
-                new H1("Map Editor"), 
-                new HorizontalLayout(
-                    continents, 
-                    countries,
-                    neighbors
-                    ),
-                new HorizontalLayout(
-                    commandLine, 
-                    runButton
-                    ), 
-                outputLog);
+                new H1("Map Editor"), new HorizontalLayout(continents, countries, neighbors),
+                new HorizontalLayout(commandLine, runButton),
+                tabs,
+                new HorizontalLayout(outputLog, new VerticalLayout(mapSize, canvas)));
+
     }
 
     private void addContinent(String continentname, String continentvalue) {
@@ -821,10 +907,17 @@ public class MainView extends VerticalLayout {
         addOutputLog("Map loaded from: " + path);
     }
 
-    /** Validation of map construction
-     * bind to command 'validatemap'
-     * @param isValidated if is true, map validation success; if is false, validation failed
-     * add log to output block
+
+    public void showmap() {
+        tabs.setSelectedTab(tab2);
+    }
+
+    // TODO:
+    /**
+     * Validation of map construction bind to command 'validatemap'
+     * 
+     * param isValidated if is true, map validation success; if is false, validation
+     * failed add log to output block
      */
     public boolean validateMap() {
         boolean isValidated = true;
