@@ -93,27 +93,38 @@ public class MainView extends VerticalLayout {
     private CanvasRenderingContext2D ctx = canvas.getContext();
 
     private void init() {
-        page1.setText("Page#1");
+        // page1.setText("Page#1");
 
-        page2.setText("Page#2");
-        page2.setVisible(false);
+        // page2.setText("Page#2");
+        // page2.setVisible(false);
 
-        page3.setText("Page#3");
-        page3.setVisible(false);
+        // page3.setText("Page#3");
+        // page3.setVisible(false);
 
-        Map<Tab, Component> tabsToPages = new HashMap<>();
-        tabsToPages.put(tab1, page1);
-        tabsToPages.put(tab2, page2);
-        tabsToPages.put(tab3, page3);
-        
-        Set<Component> pagesShown = Stream.of(page1).collect(Collectors.toSet());
+        // Map<Tab, Component> tabsToPages = new HashMap<>();
+        // tabsToPages.put(tab1, outputLog);
+        // tabsToPages.put(tab2, new VerticalLayout(mapSize, canvas));
+        // tabsToPages.put(tab3, page3);
+
+        // Set<Component> pagesShown = Stream.of(page1).collect(Collectors.toSet());
+        mapSize.setVisible(false);
+        canvas.setVisible(false);
+        outputLog.setVisible(false);
 
         tabs.addSelectedChangeListener(event -> {
-            pagesShown.forEach(page -> page.setVisible(false));
-            pagesShown.clear();
-            Component selectedPage = tabsToPages.get(tabs.getSelectedTab());
-            selectedPage.setVisible(true);
-            pagesShown.add(selectedPage);
+            if (tabs.getSelectedTab() == tab1) {
+                mapSize.setVisible(false);
+                canvas.setVisible(false);
+                outputLog.setVisible(true);
+            } else if (tabs.getSelectedTab() == tab2) {
+                mapSize.setVisible(true);
+                canvas.setVisible(true);
+                outputLog.setVisible(false);
+            } else if (tabs.getSelectedTab() == tab3) {
+                mapSize.setVisible(false);
+                canvas.setVisible(false);
+                outputLog.setVisible(false);
+            }
         });
 
         tabs.setSelectedTab(tab1);
@@ -466,7 +477,7 @@ public class MainView extends VerticalLayout {
 
         add( // (5)
                 new H1("Map Editor"), new HorizontalLayout(continents, countries, neighbors),
-                new HorizontalLayout(commandLine, runButton), tabs,
+                new HorizontalLayout(commandLine, runButton), new VerticalLayout(tabs, pages),
                 new HorizontalLayout(outputLog, new VerticalLayout(mapSize, canvas)));
     }
 
