@@ -40,7 +40,7 @@ public class MapUI extends JFrame {
 			+ "fortify (\\w*(\\-\\w+)* \\w*(\\-\\w+)* [1-9][0-9]*|\\-none))|"
 			+ "cheat|trade|"
 			+ "attack \\w*(\\-\\w+)* \\w*(\\-\\w+)* ([1-3]|\\-allout)|"
-			+ "\\-noattack|defence [1-2]|attackmove [1-9][0-9]*";
+			+ "\\-noattack|defend [1-2]|attackmove [1-9][0-9]*";
 	private Controller control;
 	
 	public static void main(String[] args) {
@@ -132,7 +132,7 @@ public class MapUI extends JFrame {
 	public MapUI() {
 		setTitle("Risk");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1000, 830);
+		setBounds(100, 100, 1262, 800);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(null);
@@ -144,8 +144,13 @@ public class MapUI extends JFrame {
 		
 		contentPane.add(map);
 		
+		OutcomeObsLabel outcome_label = new OutcomeObsLabel();
+		outcome_label.setEditable(false);
+		outcome_label.setBounds(974, 50, 256, 585);
+		contentPane.add(outcome_label);
+		
 		textField = new JTextField();
-		textField.setBounds(20, 665, 804, 27);
+		textField.setBounds(20, 665, 1081, 27);
 		contentPane.add(textField);
 		textField.setColumns(10);
 		
@@ -153,11 +158,6 @@ public class MapUI extends JFrame {
 		info_label.setHorizontalAlignment(SwingConstants.LEFT);
 		info_label.setBounds(100, 700, 800, 35);
 		contentPane.add(info_label);
-		
-		OutcomeObsLabel outcome_label = new OutcomeObsLabel();
-		outcome_label.setHorizontalAlignment(SwingConstants.LEFT);
-		outcome_label.setBounds(100,730,500, 35);
-		contentPane.add(outcome_label);
 		
 		PlayerTurnObsLabel turn_label = new PlayerTurnObsLabel();
 		turn_label.setBounds(30, 705, 40, 20);
@@ -175,11 +175,11 @@ public class MapUI extends JFrame {
 		
 		JButton runBtn = new JButton("Run");
 
-		runBtn.setBounds(847, 665, 115, 27);
+		runBtn.setBounds(1115, 665, 115, 27);
 		contentPane.add(runBtn);
 		
 		JMenuBar menuBar = new JMenuBar();
-		menuBar.setBounds(0, 0, 982, 35);
+		menuBar.setBounds(0, 0, 1244, 35);
 		contentPane.add(menuBar);
 		
 		JMenu Menu = new JMenu("Menu");
@@ -218,9 +218,14 @@ public class MapUI extends JFrame {
 	public void run() {
 		if(Pattern.matches(isCommandPattern, textField.getText())) {
 			String [] result = control.processInput(textField.getText());
-			if(result[0].equals("F")) {
-				JOptionPane.showMessageDialog(null, result[1], "Warning", JOptionPane.ERROR_MESSAGE);
-			}	
+			if(result.length>1) {
+				if(result[0].equals("F")) {
+					JOptionPane.showMessageDialog(null, result[1], "Warning", JOptionPane.ERROR_MESSAGE);
+				}
+				else {
+					JOptionPane.showMessageDialog(null, result[1], "Information", JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
 		}
 		else {
 			JOptionPane.showMessageDialog(null, "Command invalid!", "Warning", JOptionPane.ERROR_MESSAGE);
@@ -230,10 +235,11 @@ public class MapUI extends JFrame {
 	
 	public MapUI(Controller control) {
 		this.control = control;
-		
+		MapUI m = this;
+		control.getGame().setJFrame(this);
 		setTitle("Risk");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1000, 830);
+		setBounds(100, 100, 1262, 800);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(null);
@@ -246,7 +252,7 @@ public class MapUI extends JFrame {
 		contentPane.add(map);
 		
 		textField = new JTextField();
-		textField.setBounds(20, 665, 804, 27);
+		textField.setBounds(20, 665, 1081, 27);
 		contentPane.add(textField);
 		textField.setColumns(10);
 		
@@ -256,8 +262,9 @@ public class MapUI extends JFrame {
 		contentPane.add(info_label);
 		
 		OutcomeObsLabel outcome_label = new OutcomeObsLabel();
-		outcome_label.setHorizontalAlignment(SwingConstants.LEFT);
-		outcome_label.setBounds(100,730,500, 35);
+		outcome_label.setBounds(974, 50, 256, 585);
+		outcome_label.setEditable(false);
+		outcome_label.setLineWrap(true);
 		contentPane.add(outcome_label);
 		
 		PlayerTurnObsLabel turn_label = new PlayerTurnObsLabel();
@@ -285,11 +292,11 @@ public class MapUI extends JFrame {
 				run();
 			}
 		});
-		runBtn.setBounds(847, 665, 115, 27);
+		runBtn.setBounds(1115, 665, 115, 27);
 		contentPane.add(runBtn);
 		
 		JMenuBar menuBar = new JMenuBar();
-		menuBar.setBounds(0, 0, 982, 35);
+		menuBar.setBounds(0, 0, 1244, 35);
 		contentPane.add(menuBar);
 		
 		JMenu Menu = new JMenu("Menu");
@@ -300,14 +307,31 @@ public class MapUI extends JFrame {
 		JMenuItem mntmSaveGame = new JMenuItem("save game");
 		mntmSaveGame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				SavePrompt s = new SavePrompt(control);
-				s.setVisible(true);
+				if(!control.getGame().getPhase().equals("Attack Phase 2")&&!control.getGame().getPhase().equals("Attack Phase 3")) {
+					SavePrompt s = new SavePrompt(control);
+					s.setVisible(true);
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "You cannot save in the middle of the attack!", "Warning", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 		mntmSaveGame.setHorizontalAlignment(SwingConstants.LEFT);
 		mntmSaveGame.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 18));
 		mntmSaveGame.setPreferredSize(new Dimension(150,35));
 		Menu.add(mntmSaveGame);
+		
+		JMenuItem mntmLoadGame = new JMenuItem("load game");
+		mntmLoadGame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				LoadPrompt lp = new LoadPrompt(m);
+				lp.setVisible(true);
+			}
+		});
+		mntmLoadGame.setHorizontalAlignment(SwingConstants.LEFT);
+		mntmLoadGame.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 18));
+		mntmLoadGame.setPreferredSize(new Dimension(150,35));
+		Menu.add(mntmLoadGame);
 		
 		JMenuItem mntmExit = new JMenuItem("exit");
 		mntmExit.addActionListener(new ActionListener() {
