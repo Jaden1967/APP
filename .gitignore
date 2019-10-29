@@ -2,8 +2,7 @@ target
 .settings
 .classpath
 .project
-/bin/
-/bin
+
 /build/
 .idea  
 map
