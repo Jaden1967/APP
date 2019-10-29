@@ -115,8 +115,10 @@ public class AttackTest {
 	 * thus advancing the phase to Attack Phase 3, where player a moves a certain amount of army to 
 	 * the conquered Brazil
 	 */
+	@Test
 	public void attackAllout() {
 		//attack from Peru, with army number 30, to Brazil, with army number 1
+		getCountry("Peru").setArmy(30);
 		command = "attack Peru Brazil -allout";
 		assertEquals("S",control.processInput(command)[0]);
 		//after successfully conquering Brazil, the game is now Attack Phase 3
