@@ -62,7 +62,7 @@ public class MainView extends VerticalLayout {
     private TextField commandLine = new TextField(); // (2)
     private TextArea mapSize = new TextArea();
 
-    private Tab tab1 = new Tab("Tab one");
+    private Tab tab1 = new Tab("Output Log");
     private Tab tab2 = new Tab(new Icon(VaadinIcon.GLOBE));
     private Tab tab3 = new Tab("Tab three");
     Tabs tabs = new Tabs(tab1, tab2, tab3);
@@ -109,7 +109,7 @@ public class MainView extends VerticalLayout {
         // Set<Component> pagesShown = Stream.of(page1).collect(Collectors.toSet());
         mapSize.setVisible(false);
         canvas.setVisible(false);
-        outputLog.setVisible(false);
+        outputLog.setVisible(true);
 
         tabs.addSelectedChangeListener(event -> {
             if (tabs.getSelectedTab() == tab1) {
@@ -433,8 +433,8 @@ public class MainView extends VerticalLayout {
                 // map operations
                 // show map
                 if (tempArr[0].equals("showmap")) {
-                    // TODO：
-                    // showmap();
+                    // TODO:
+                    showmap();
                 }
                 // validate map
                 else if (tempArr[0].equals("validatemap")) {
@@ -477,7 +477,8 @@ public class MainView extends VerticalLayout {
 
         add( // (5)
                 new H1("Map Editor"), new HorizontalLayout(continents, countries, neighbors),
-                new HorizontalLayout(commandLine, runButton), new VerticalLayout(tabs, pages),
+                new HorizontalLayout(commandLine, runButton),
+                tabs,
                 new HorizontalLayout(outputLog, new VerticalLayout(mapSize, canvas)));
     }
 
@@ -941,6 +942,10 @@ public class MainView extends VerticalLayout {
 
         addOutputLog("Map loaded from: " + path);
         drawMap();
+    }
+
+    public void showmap() {
+        tabs.setSelectedTab(tab2);
     }
 
     // TODO:
