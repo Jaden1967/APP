@@ -1,5 +1,7 @@
 package ui;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
@@ -14,18 +16,11 @@ public class test extends Observable{
 
 	
 	public static void main (String args[] ) {
-		Vector<String> v = new Vector<String>();
+		Vector<String> v = new Vector<>();
+		v.add("a");
+		v.remove("b");
 		for(String s:v) {
 			System.out.println(s);
-		}
-		try {
-			GamePlay g = new GamePlay();
-			FileWriter out=new FileWriter(".\\save\\test.save",true);
-			out.write(Integer.toString(g.getPlayerIndex()));
-			out.flush();
-			out.close();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 
 	}

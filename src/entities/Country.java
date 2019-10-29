@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Observable;
 import java.util.Vector;
 import javax.swing.BorderFactory;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import ui.labels.CountryObsLabel;
@@ -46,7 +47,7 @@ public class Country extends Observable{
 			this.x = horizontal;
 			this.y = vertical;
 			this.owner = new Player();
-			label = new CountryObsLabel(String.valueOf(armyNum));
+			label = new CountryObsLabel(String.valueOf(armyNum),name);
 			x = (int)((float)plotX/imageX*x);
 			y = (int)((float)plotY/imageY*y);
 			label.setBounds(x-15, y-15, 30, 30);

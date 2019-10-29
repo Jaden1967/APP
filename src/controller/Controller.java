@@ -12,6 +12,9 @@ import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Observer;
 import java.util.Vector;
+
+import javax.swing.JTextField;
+
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
@@ -181,7 +184,7 @@ public class Controller {
 				for(int i = 0;i<p.getOwnCard().size();i++) {
 					out.write(p.getOwnCard().get(i).getType().substring(0,1));	
 				}
-				out.write("} "+p.getArmyToPlace()+"\r\n");
+				out.write("} "+p.getArmyToPlace()+" "+p.getTradeTimes()+"\r\n");
 			}
 			out.write("\r\n[countries]\r\n");
 			for(Country c:game.getCountries()) {
@@ -250,6 +253,7 @@ public class Controller {
 					p.addCard(cardType(String.valueOf(split[3].charAt(i))));
 				}
 				p.setArmyToPlace(Integer.parseInt(split[4]));
+				p.setTradeTimes(Integer.parseInt(split[5]));
 				line = br.readLine();
 			}
 			game.setPlayers(players);
@@ -516,14 +520,19 @@ public class Controller {
 		else if(splitted[0].equals("defend")) {
 			if (game.getPhase().equals("Attack Phase 2")) {
 				int num = Integer.parseInt(splitted[1]);
-				if(game.getDefender().getArmyNum() >= num) {
-					if(game.commenceAttack(num)) {
-						return new String [] {"S","Country successfully conquered, Move army to conquered city!"};
+				if(num<=2) {
+					if(game.getDefender().getArmyNum() >= num) {
+						if(game.commenceAttack(num)) {
+							return new String [] {"S","Country successfully conquered, Move army to conquered city!"};
+						}
+					}
+					else {
+			        	return new String [] {"F","Number of dice exceeds maximum number defender army!"};
+	
 					}
 				}
 				else {
-		        	return new String [] {"F","Number of dice exceeds maximum number defender army!"};
-
+		        	return new String [] {"F","Number of dice defender dice limit (2)!"};
 				}
 			}
 			else {
