@@ -636,6 +636,7 @@ public class GamePlay extends Observable{
 	
 	public void setPlayerIndex(int i) {
 		player_index = i;
+		player = player_list.get(i);
 	}
 	
 	public int getAttackDice() {
