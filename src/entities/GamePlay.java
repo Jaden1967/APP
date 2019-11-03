@@ -481,10 +481,7 @@ public class GamePlay extends Observable{
 	 * Initiate reinforcement phase for that player
 	 */
 	public void nextPlayer() {
-		player_index++;
-		if(player_index % player_list.size()==0) {
-			player_index = 0;
-		}
+		player = player_list.get(i);
 		player = player_list.get(player_index);
 		player.rewardInitialArmy();
 		army_to_place = player.getArmyToPlace();
@@ -636,6 +633,7 @@ public class GamePlay extends Observable{
 	
 	public void setPlayerIndex(int i) {
 		player_index = i;
+		player = player_list.get(i);
 	}
 	
 	public int getAttackDice() {

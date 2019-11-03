@@ -1,6 +1,7 @@
 package controller;
 
 import entities.*;
+import ui.DominationView;
 import ui.Trade;
 import java.awt.Color;
 import java.io.BufferedReader;
@@ -12,8 +13,6 @@ import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Observer;
 import java.util.Vector;
-
-import javax.swing.JTextField;
 
 import java.util.Date;
 import java.text.SimpleDateFormat;
@@ -628,6 +627,15 @@ public class Controller {
 			}
 			else {
 				return new String [] {"F","Not in Reinforcement Phase!"};
+			}
+		}
+		else if(splitted[0].equals("view")) {
+			if(!game.getPhase().equals("Startup Phase")) {
+				DominationView d = new DominationView(this);
+				d.setVisible(true);
+			}
+			else {
+				return new String[] {"F","Can't check domination view in startup phase!"};
 			}
 		}
 		else if(splitted[0].equals("trade")) {
