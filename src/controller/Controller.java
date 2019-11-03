@@ -17,7 +17,16 @@ import java.util.Vector;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
-
+/**
+ * Controller used in the observer pattern for the Risk Game
+ * Processes commands received from the user in the MapUI
+ * Contains 4 major functions:
+ * 1. loadMap function: loads the game map created by the game editor
+ * 2. saveFile function: to save the game state of the game model that the Controller handles
+ * 3. loadGame: loads the game state, as well as the game map that the game uses
+ * 4. processInput: processes commands from the MapUI (the view), checks the validity of the command, and returns a String array containing information
+ * on the outcome of the command 
+ */
 public class Controller {
 	
 	GamePlay game;
@@ -26,21 +35,31 @@ public class Controller {
 	Vector <Country> countries_list = new Vector<>();
 	boolean loaded_game = false;
 
+	/**
+	 * Default constructor containing the GamePlay entity that the controller handles
+	 * @param game GamePlay 
+	 */
 	public Controller(GamePlay game) {
 		this.game = game;
 	}
 	
+	/**
+	 * Empty constructor
+	 */
 	public Controller() {
-		
 	}
 	
+	/**
+	 * Start the gameplayer by first randomly populating the countries for the game model by
+	 * calling the corresponding method
+	 */
 	public void startGame() {
 		game.populateCountries();
 	}
 	
 	/**
 	 * Convert string type of player list into actual object type of player list
-	 * @param list
+	 * @param list list of all player
 	 */
 	public void addPlayers(Vector<String[]> list) {
 		Vector<Player> player_list = new Vector<>();
@@ -50,6 +69,10 @@ public class Controller {
 		game.setPlayers(player_list);
 	}
 	
+	/**
+	 * Attach the observers from the MapUI to the game play model
+	 * @param ob Observer to be attached to the model object
+	 */
 	public void attachObserver (Observer ob) {
 		game.addObserver(ob);
 	}
@@ -218,6 +241,13 @@ public class Controller {
 		return true;
 	}
 	
+	/**
+	 * Load the game state from a previous gameplay .save file
+	 * first loads the map the the game used, which is specified in the .save file
+	 * then loads in order data representing the players, the countries, and the game status to re-actualize the game
+	 * @param name Address of the previously saved game
+	 * @return true if the save file is valid and is correctly loaded
+	 */
 	public boolean loadFile(String name) {
 		loaded_game = true;
 		Vector<Player> players = new Vector<>();
@@ -298,6 +328,11 @@ public class Controller {
 		}	
 	}
 	
+	/**
+	 * Translates the save file card type to its full name to be used in adding a card object during loadGame
+	 * @param c Sub-string card type with one letter
+	 * @return Full length card type
+	 */
 	private String cardType(String c) {
 		switch (c) {
 			case "I": return "Infantry";
@@ -307,6 +342,12 @@ public class Controller {
 		}
 	}
 	
+	/**
+	 * Getter for specific player with parameter id String from the players Vector 
+	 * @param players Vector of players
+	 * @param id Specific id to get the player
+	 * @return Specific Player object
+	 */
 	private Player getPlayer(Vector<Player> players, String id) {
 		for (Player p: players) {
 			if (p.getID().equals(id)) {
@@ -341,12 +382,12 @@ public class Controller {
         }
     }
 	
-	
-	
-	
-	
-	//Commands from MapUI
-	
+	/**
+	 * Processing of player commands that is inputted from the MapUI during game play
+	 * Verifies if the command is valid while retrieving data from the current game play
+	 * @param input String input from the user
+	 * @return String array representing outcome of the controller processing, first String element will be "S" or "F" depending on success of the processing
+	 */
 	public String [] processInput(String input) {
 		String [] splitted = input.split("\\s+");
 		
@@ -550,10 +591,10 @@ public class Controller {
 						game.reSetOwner();
 					}
 					else {
-						return new String[] {"F","Number of the army to send must equal or greater than attack dice"};
+						return new String[] {"F","Number of the army to send must not be less than number of dice rolled"};
 					}
 				}else {
-					return new String[] {"F","Number of the army to send cannot be great or equal than the army you own"};
+					return new String[] {"F","Number of the army to send cannot be greater or equal than the army you own"};
 				}
 			}
 			else {
@@ -650,6 +691,9 @@ public class Controller {
 		return new String [] {"S"};
 	}
 	
+	/**
+	 * After successfully game components by loadGame function, alert all observers in the MapUI for the current game state
+	 */
 	public void refresh() {
 		for(Country cl:countries_list) {
 			cl.alertObservers();
@@ -657,19 +701,34 @@ public class Controller {
 		game.alertObservers();
 	}
 	
+	/**
+	 * Determines if the current game is a loaded game
+	 * @return true if game is loaded
+	 */
 	public boolean loadedGame() {
 		return loaded_game;
 	}
 	
+	/**
+	 * Getter for countries parsed in from the map
+	 * @return Vector of countries from the game
+	 */
 	public Vector<Country> getCountries() {
 		return countries_list;
 	}
 	
-
+	/**
+	 * Getter for all files uses for the map load
+	 * @return Vector of file names
+	 */
 	public Vector<String> getFilesLoad() {
 		return files_load;
 	}
 	
+	/**
+	 * Getter for the game play model
+	 * @return GamePlay object
+	 */
 	public GamePlay getGame() {
 		return game;
 	}

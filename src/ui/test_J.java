@@ -33,7 +33,8 @@ public class test_J extends JFrame {
 	private JPanel contentPane;
 
 	/**
-	 * Launch the application.
+	 * Launch the test
+	 * @param args args
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {

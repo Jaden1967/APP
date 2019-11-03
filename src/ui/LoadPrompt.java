@@ -25,7 +25,8 @@ public class LoadPrompt extends JFrame {
 	private JTextField textField;
 
 	/**
-	 * Create the frame.
+	 * Load the frame
+	 * @param menuFrame the frame of the front manu
 	 */
 	public LoadPrompt(JFrame menuFrame) {
 		setTitle("Load progress");

@@ -42,6 +42,7 @@ public class StartupTest {
 		loadgame_success = control.loadFile(address);
 		countries_list = game.getCountries();
 		players_list = game.getPlayers();
+		game.isTest();
 	}
 	
 	private Country getCountry(String id) {

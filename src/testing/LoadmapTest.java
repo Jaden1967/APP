@@ -235,10 +235,10 @@ public class LoadmapTest {
 		Player b = new Player ("b",getColor("green"));
 		Country c = countriesList.get(0);
 		c.setOwner(a);
-		assertEquals(getColor(a.getColorStr()),c.getLabel().getBackground());
+		assertEquals(a.getColor(),c.getLabel().getBackground());
 		c.setOwner(b);
-		assertNotEquals(getColor(a.getColorStr()),c.getLabel().getBackground());
-		assertEquals(getColor(b.getColorStr()),c.getLabel().getBackground());
+		assertNotEquals(a.getColor(),c.getLabel().getBackground());
+		assertEquals(b.getColor(),c.getLabel().getBackground());
 
 	}
 	

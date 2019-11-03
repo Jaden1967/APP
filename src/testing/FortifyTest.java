@@ -42,7 +42,7 @@ public class FortifyTest {
 		countries_list = game.getCountries();
 		players_list = game.getPlayers();
 		loadgame_success = control.loadFile(address);
-
+		game.isTest();
 	}
 
 	@Test

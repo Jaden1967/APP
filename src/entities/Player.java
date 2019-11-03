@@ -3,6 +3,11 @@ package entities;
 import java.awt.Color;
 import java.util.Vector;
 
+/**
+ * Player object for the game play
+ * Contains attributes for a single player, such as id, owned country number, color, armies to place
+ * as well as methods to alter these attributes
+ */
 public class Player {
 	private String id;
 	private int total_country_number;
@@ -59,6 +64,7 @@ public class Player {
    /**
 	* At the start of startup phase, this method is called to give players an initial amount of army
 	* To place one at a time in round-robin fashion
+	* @param playersize number of players
 	*/
 	public void initializeStartupArmy(int playersize) {
 		int reward;
@@ -102,6 +108,10 @@ public class Player {
 		total_country_number++;
 	}
 	
+	/**
+	 * Increments the number of countries that the player owns
+	 * @param i number of countries to increase
+	 */
 	public void increaseCountry(int i) {
 		total_country_number+=i;
 	}
@@ -132,7 +142,7 @@ public class Player {
 	
 	/**
 	 * Getter for Player's assigned Color
-	 * @return
+	 * @return Color of player
 	 */
 	public Color getColor() {
 		return this.color;
@@ -140,8 +150,8 @@ public class Player {
 	
 	/**
 	 * Verifies if the player has won the game by owning all continents available in the game
-	 * @param totalContinents
-	 * @return
+	 * @param totalContinents the number of the continent in total
+	 * @return true if player won
 	 */
 	public boolean checkWin (int totalContinents) {
 		return this.ownedContinent.size() == totalContinents;
@@ -238,14 +248,25 @@ public class Player {
 		return this.army_to_place;
 	}
 	
+	/**
+	 * Increments the amount of times the player has traded in cards
+	 */
 	public void addTradeTimes() {
 		trade_times++;
 	}
 	
+	/**
+	 * Getter for trade_times, 
+	 * @return amount of times the player has traded in cards
+	 */
 	public int getTradeTimes() {
 		return trade_times;
 	}
 	
+	/**
+	 * Setter for trade_times 
+	 * @param t amount of times the player has traded in cards
+	 */
 	public void setTradeTimes(int t) {
 		trade_times = t;
 	}

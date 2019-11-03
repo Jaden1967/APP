@@ -18,12 +18,21 @@ import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+/**
+ * This JFrame will appear when the player insert view in the main game UI
+ * It shows the information of all the players' name, how much countries they owned (in percentage), which continent they have controlled
+ * It also shows the total army numbers of all the players, if one player is already lose, it will not been shown
+ * @author Administrator
+ *
+ */
 public class DominationView extends JFrame {
 
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 
 	/**
 	 * Launch the application.
+	 * @param args set user as arg
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -40,6 +49,7 @@ public class DominationView extends JFrame {
 
 	/**
 	 * Create the frame.
+	 * This default constructor is only for test
 	 */
 	public DominationView() {
 		setTitle("Domination View");
@@ -77,6 +87,10 @@ public class DominationView extends JFrame {
 		contentPane.add(btnOk);
 	}
 	
+	/**
+	 * Create the frame.
+	 * @param control object of controller
+	 */
 	public DominationView(Controller control) {
 		setTitle("Domination View");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -137,3 +151,4 @@ public class DominationView extends JFrame {
 		contentPane.add(btnOk);
 	}
 }
+

@@ -11,8 +11,8 @@ import junit.runner.*;
 
 @RunWith(Suite.class)
 @SuiteClasses({StartupTest.class,ReinforceTest.class,PlayerTest.class,LoadmapTest.class,FortifyTest.class
-	,ContinentTest.class,AttackTest.class})
-class TestSuite{
+	,AttackTest.class})
+public class TestSuite{
 	public static void main(String[] args) {
 		Result result = JUnitCore.runClasses(TestSuite.class);
 		for(Failure failure : result.getFailures()) {

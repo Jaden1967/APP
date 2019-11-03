@@ -3,6 +3,16 @@ package entities;
 import java.awt.Color;
 import java.util.Vector;
 
+/**
+ * Continent object for the game play
+ * Contains attributes for the continent such as continent id, name, list of countries in the continent, value of continent and color
+ * as well as setters for its attributes
+ * @author Boxiao Yu 40070128
+ * @author Yilun Sun 40092802
+ * @author Yuhua Jiang 40083453
+ * @author Jiuxiang Chen 40086723
+ * @author Chao Ye 40055665
+ */
 public class Continent {
 	private int continentID;
 	private String name;
@@ -11,10 +21,12 @@ public class Continent {
 	private Color color;
 	
 	/**
+	 * /**
 	 * Constructor for Continent
+	 * @param continentID ID of the continent
 	 * @param name of continent
 	 * @param value of continent to be rewarded to complete owner
-	 * @param color of continent
+	 * @param color color of the continent
 	 */
 	public Continent(int continentID, String name, int value, Color color) {
 		this.continentID = continentID;
