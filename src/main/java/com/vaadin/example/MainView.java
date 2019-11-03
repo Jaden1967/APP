@@ -9,6 +9,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
@@ -27,6 +30,8 @@ import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.Notification.Position;
 
 import org.vaadin.pekkam.Canvas;
 import org.vaadin.pekkam.CanvasRenderingContext2D;
@@ -106,6 +111,7 @@ public class MainView extends VerticalLayout {
 
         // Set<Component> pagesShown = Stream.of(page1).collect(Collectors.toSet());
         mapSize.setVisible(false);
+        mapSize.setReadOnly(true);;
         canvas.setVisible(false);
         outputLog.setVisible(true);
 
@@ -188,7 +194,10 @@ public class MainView extends VerticalLayout {
                             +   "editneighbor -remove China India\n"
                             +   "editmap risk\n"
                             +   "savemap map_1\n"
-                            +   "validatemap\n";
+                            +   "validatemap\n"
+                            +   "editneighbor -remove Siam Indonesia\n"
+                            +   "editneighbor -add Siam Indonesia\n"
+                            +   "showmap\n";
         outputLog.setValue("output shows here\n" + defaultOutput);
         outputLog.setLabel("Output Log");
         outputLog.setReadOnly(true);
@@ -204,6 +213,8 @@ public class MainView extends VerticalLayout {
 
     public void addOutputLog(String addtext){
         outputLog.setValue(outputLog.getValue() + addtext + "\n");
+        Notification notification = new Notification(addtext, 3000, Position.TOP_START);
+        notification.open();
     }
 
     public void coordinatesDialog(String countryname, String continentname) {
@@ -248,6 +259,7 @@ public class MainView extends VerticalLayout {
             map_height = Integer.valueOf(mapSizeText.getValue().split(" ")[1]);
             dialog.close();
             addOutputLog("set map width to: " + map_width + "; set map height to: " + map_height);
+            mapSize.setValue("map width: " + map_width + "; map height: " + map_height);
         });   
         confirmButton.addClickShortcut(Key.ENTER);
 
@@ -650,9 +662,19 @@ public class MainView extends VerticalLayout {
         // TODO:
         for (ArrayList<String> arrList : neighborsData) {
             if (arrList.get(0).equals(neighborCountryname)) {
-                for (String neighbor_name : arrList) {
-                    if (neighbor_name.equals(countryname)) {
-                        arrList.remove(countryname);
+                // for (String neighbor_name : arrList) {
+                //     if (neighbor_name.equals(countryname)) {
+                //         arrList.remove(countryname);
+                //         if (arrList.size() == 1) {
+                //             neighborsData.remove(arrList);
+                //         }
+                //         hasNeighborCountry = true;
+                //         updateNeighbors();
+                //     }
+                // }
+                for (int neighbor_index = 1; neighbor_index < arrList.size(); neighbor_index++) {
+                    if (arrList.get(neighbor_index).equals(countryname)) {
+                        arrList.remove(neighbor_index);
                         if (arrList.size() == 1) {
                             neighborsData.remove(arrList);
                         }
@@ -876,6 +898,7 @@ public class MainView extends VerticalLayout {
                         map_width = Integer.valueOf(temp[2]);
                         map_height = Integer.valueOf(temp[4]);
                         addOutputLog("Load game map width: " + map_width + "\nLoad game map height: " + map_height);
+                        mapSize.setValue("map width: " + map_width + "; map height: " + map_height);
                     }
                 }
 
@@ -909,7 +932,51 @@ public class MainView extends VerticalLayout {
 
 
     public void showmap() {
+        drawMap();
+        
         tabs.setSelectedTab(tab2);
+    }
+
+    // DrawMap
+    public void drawMap() {
+        ctx.clearRect(2, 2, 696, 396);
+
+        // countries
+        for (ArrayList<String> arrList : countriesData) {
+            String countryName = arrList.get(0);
+            String continentName = arrList.get(1);
+            int coordinate_x = Integer.valueOf(arrList.get(2));
+            int coordinate_y = Integer.valueOf(arrList.get(3));
+            ctx.setFillStyle(String.format("rgb(%s, %s, %s)", 100, 111, 99));
+            ctx.fillRect(coordinate_x - 10, coordinate_y - 10, 20, 20);
+            ctx.setFillStyle(String.format("BLACK"));
+            ctx.fillText(countryName, coordinate_x - 30, coordinate_y - 15);
+        }
+
+        for (ArrayList<String> neighborList : neighborsData) {
+            String currCountryName = neighborList.get(0);
+            int coordinate_x = Integer.valueOf(getCountryCoordinates(currCountryName).split(",")[0]);
+            int coordinate_y = Integer.valueOf(getCountryCoordinates(currCountryName).split(",")[1]);
+            for (int i = 1; i < neighborList.size(); i++) {
+                int neighbor_x = Integer.valueOf(getCountryCoordinates(neighborList.get(i)).split(",")[0]);
+                int neighbor_y = Integer.valueOf(getCountryCoordinates(neighborList.get(i)).split(",")[1]);
+                ctx.setStrokeStyle("red");
+                ctx.beginPath();
+                ctx.moveTo(coordinate_x, coordinate_y);
+                ctx.lineTo(neighbor_x, neighbor_y);
+                ctx.closePath();
+                ctx.stroke();
+            }
+        }
+    }
+
+    public String getCountryCoordinates(String countryName) {
+        for (ArrayList<String> countryList : countriesData) {
+            if (countryList.get(0).equals(countryName)) {
+                return countryList.get(2) + "," + countryList.get(3);
+            }
+        }
+        return "1,1";
     }
 
     // TODO:
@@ -939,6 +1006,43 @@ public class MainView extends VerticalLayout {
                 }
             }
         }
+
+        int country_num = countriesMap.size();
+        HashSet<String> country_set = new HashSet<>();
+        Queue<String> openList = new LinkedList<>();
+        Queue<String> closedList = new LinkedList<>();
+        openList.add(neighborsData.get(0).get(0));
+        country_set.add(neighborsData.get(0).get(0));
+        
+        while (openList.size() != 0) {
+            String curr_country = openList.peek();
+            for (ArrayList<String> neighbor_data : neighborsData) {
+                // if (neighbor_data.get(0) == curr_country) {
+                //     for (String neighbor_name : neighbor_data) {
+                //         if (!country_set.contains(neighbor_name)) {
+                //             openList.add(neighbor_name);
+                //             country_set.add(neighbor_name);
+                //         }
+                //     }
+                // }
+                if (neighbor_data.contains(curr_country)) {
+                    for (String neighbor_name : neighbor_data) {
+                        if (!country_set.contains(neighbor_name)) {
+                            openList.add(neighbor_name);
+                            country_set.add(neighbor_name);
+                        }
+                    }
+                }
+            }
+            openList.poll();
+        }
+        if (country_set.size() != country_num) {
+            addOutputLog("0" + country_set.size());
+            createAlert(neighborsData.toString());
+            createAlert(country_set.toString());
+            isValidated = false;
+        }
+
 
         if (isValidated) {
             Dialog dialog = new Dialog();
