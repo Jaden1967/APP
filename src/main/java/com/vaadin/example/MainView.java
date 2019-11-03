@@ -87,12 +87,13 @@ public class MainView extends VerticalLayout {
     private int map_height = 0;
 
 
+
     // private boolean hasMapSize = false;
 
     // if value == true, this color could be used in a new continent
     private HashMap<String, Boolean> colorAvailable = new HashMap<>();
 
-    private Canvas canvas = new Canvas(700, 400);
+    private Canvas canvas = new Canvas(2000, 1000);
     private CanvasRenderingContext2D ctx = canvas.getContext();
 
     private void init() {
@@ -111,7 +112,9 @@ public class MainView extends VerticalLayout {
 
         // Set<Component> pagesShown = Stream.of(page1).collect(Collectors.toSet());
         mapSize.setVisible(false);
-        mapSize.setReadOnly(true);;
+        mapSize.setReadOnly(true);
+        mapSize.setMaxHeight("200px");
+        mapSize.setMaxWidth("200px");
         canvas.setVisible(false);
         outputLog.setVisible(true);
 
@@ -136,8 +139,10 @@ public class MainView extends VerticalLayout {
 
         // Draw an image located in src/main/webapp/resources:
         // ctx.drawImage("https://dummyimage.com/600x400/FCFAF2/000000&text=+", 0, 0);
-        ctx.setStrokeStyle("#373C38");
-        ctx.strokeRect(1, 1, 699, 399);
+
+        // TODO:
+        // ctx.setStrokeStyle("#373C38");
+        // ctx.strokeRect(1, 1, 699, 399);
 
         // for (int i = 0; i < 6; i++) {
         // for (int j = 0; j < 6; j++) {
@@ -175,14 +180,14 @@ public class MainView extends VerticalLayout {
         countries.setValue("countries shows here\n");
         countries.setLabel("Countries");
         countries.setReadOnly(true);
-        countries.setWidth("350px");
+        countries.setWidth("500px");
         countries.getStyle().set("maxHeight", "300px");
         countries.getStyle().set("minHeight", "200px");
 
         neighbors.setValue("neighbors shows here\n");
         neighbors.setLabel("Neighbors");
         neighbors.setReadOnly(true);
-        neighbors.setWidth("350px");
+        neighbors.setWidth("800px");
         neighbors.getStyle().set("maxHeight", "300px");
         neighbors.getStyle().set("minHeight", "200px");
 
@@ -252,14 +257,21 @@ public class MainView extends VerticalLayout {
         mapSizeText.setPlaceholder("input map width and height seperate with space");
         mapSizeText.setWidth("400px");
         mapSizeText.setClearButtonVisible(true);
-
         
         Button confirmButton = new Button("Confirm", event -> {
             map_width = Integer.valueOf(mapSizeText.getValue().split(" ")[0]);
             map_height = Integer.valueOf(mapSizeText.getValue().split(" ")[1]);
             dialog.close();
             addOutputLog("set map width to: " + map_width + "; set map height to: " + map_height);
-            mapSize.setValue("map width: " + map_width + "; map height: " + map_height);
+            mapSize.setValue("map width: " + map_width + "\nmap height: " + map_height);
+
+            // TODO:
+            canvas.setMaxHeight(String.valueOf(map_height));
+            canvas.setMinHeight(String.valueOf(map_height));
+            canvas.setMaxWidth(String.valueOf(map_width));
+            canvas.setMinWidth(String.valueOf(map_width));
+            ctx.setStrokeStyle("#373C38");
+            ctx.strokeRect(2, 2, map_width - 2, map_height - 2);
         });   
         confirmButton.addClickShortcut(Key.ENTER);
 
@@ -279,9 +291,10 @@ public class MainView extends VerticalLayout {
     public MainView() {
         init();
 
-        testCases();
+        // testCases();
 
         setMapSize();
+
         commandLine.addKeyDownListener(event -> {
 			commandLine.setInvalid(false);
         });
@@ -438,10 +451,28 @@ public class MainView extends VerticalLayout {
         
 
         add( // (5)
-                new H1("Map Editor"), new HorizontalLayout(continents, countries, neighbors),
-                new HorizontalLayout(commandLine, runButton),
-                tabs,
-                new HorizontalLayout(outputLog, new VerticalLayout(mapSize, canvas)));
+                // new H1("Map Editor"), 
+                // new HorizontalLayout(
+                //     new VerticalLayout(
+                //         new HorizontalLayout(continents, countries, neighbors),
+                //         new HorizontalLayout(commandLine, runButton)
+                //     ),
+                //     new VerticalLayout(
+                //         tabs,
+                //         new HorizontalLayout(outputLog, new HorizontalLayout(mapSize, canvas))
+                //     )
+                // )
+                new H1("Map Editor"), 
+                new VerticalLayout(
+                    new HorizontalLayout(continents, countries, neighbors),
+                    new HorizontalLayout(commandLine, runButton),
+                    tabs,
+                    new HorizontalLayout(outputLog, new HorizontalLayout(mapSize, canvas))
+                )
+            );
+                // new HorizontalLayout(continents, countries, neighbors),
+                // new HorizontalLayout(commandLine, runButton),
+                
 
     }
 
@@ -898,7 +929,7 @@ public class MainView extends VerticalLayout {
                         map_width = Integer.valueOf(temp[2]);
                         map_height = Integer.valueOf(temp[4]);
                         addOutputLog("Load game map width: " + map_width + "\nLoad game map height: " + map_height);
-                        mapSize.setValue("map width: " + map_width + "; map height: " + map_height);
+                        mapSize.setValue("map width: " + map_width + "\nmap height: " + map_height);
                     }
                 }
 
@@ -939,7 +970,13 @@ public class MainView extends VerticalLayout {
 
     // DrawMap
     public void drawMap() {
-        ctx.clearRect(2, 2, 696, 396);
+        canvas.setMaxHeight(String.valueOf(map_height));
+        canvas.setMinHeight(String.valueOf(map_height));
+        canvas.setMaxWidth(String.valueOf(map_width));
+        canvas.setMinWidth(String.valueOf(map_width));
+        ctx.setStrokeStyle("#373C38");
+        ctx.clearRect(0, 0, 2000, 2000);
+        ctx.strokeRect(2, 2, map_width - 2, map_height - 2);
 
         // countries
         for (ArrayList<String> arrList : countriesData) {
