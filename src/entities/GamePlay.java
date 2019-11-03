@@ -481,7 +481,7 @@ public class GamePlay extends Observable{
 	 * Initiate reinforcement phase for that player
 	 */
 	public void nextPlayer() {
-		player = player_list.get(i);
+		player_index = (player_index + 1) % player_list.size();
 		player = player_list.get(player_index);
 		player.rewardInitialArmy();
 		army_to_place = player.getArmyToPlace();
