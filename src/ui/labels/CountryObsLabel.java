@@ -12,6 +12,13 @@ import javax.swing.JTextField;
 
 import entities.Country;
 
+/**
+ * Country label representing countries in the game play
+ * Implements Observer in the observer pattern, Observes Country objects
+ * Updates the value of armies in the Country and the owner's Color
+ * @author bo_yu
+ *
+ */
 public class CountryObsLabel extends JLabel implements Observer{
 
 	private static final long serialVersionUID = 1L;

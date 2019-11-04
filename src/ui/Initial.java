@@ -109,6 +109,7 @@ public class Initial extends JFrame {
 					}
 				}
 				else if(type.equals("-remove")) {
+					boolean exists = false;
 					if(player_str_list.size()==0) {
 						JOptionPane.showMessageDialog(null, "Invalid removal!", "Warning", JOptionPane.ERROR_MESSAGE);
 						output_text.append("Fail to remove player "+name+"\n");
@@ -120,11 +121,14 @@ public class Initial extends JFrame {
 								player_str_list.remove(i);
 								input_text.setText("");
 								output_text.append("Successfully removed player "+name+"\n");
-								return;
+								exists = true; 
+								break;
 							}
 						}
-						JOptionPane.showMessageDialog(null, "No such username!", "Warning", JOptionPane.ERROR_MESSAGE);
-						output_text.append("Fail to remove player "+name+"\n");
+						if(!exists) {
+							JOptionPane.showMessageDialog(null, "No such username!", "Warning", JOptionPane.ERROR_MESSAGE);
+							output_text.append("Fail to remove player "+name+"\n");
+						}
 					}
 					
 				}

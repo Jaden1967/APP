@@ -25,7 +25,8 @@ public class SavePrompt extends JFrame {
 	private JTextField textField;
 
 	/**
-	 * Create the frame.
+	 * Save the game state
+	 * @param control a instance of Controller class
 	 */
 	public SavePrompt(Controller control) {
 		setTitle("Saving progress");

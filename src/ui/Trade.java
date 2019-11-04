@@ -22,6 +22,13 @@ import javax.swing.JTextField;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+/**
+ * When the player insert "trade" in the main game UI, this JFrame will pop out
+ * This JFrame shows all the cards that the current player has in a visualized way (showing the card views)
+ * The player can use command to finish one trade command or just simply choose three cards on the screen by click the right image
+ * @author Administrator
+ *
+ */
 public class Trade extends JFrame{
 
 	private static final long serialVersionUID = 1L;
@@ -42,6 +49,14 @@ public class Trade extends JFrame{
 		});
 	}
 	
+	/**
+	 * Check if these three input number are correct, can not be the same and must smaller then the player maximum card number
+	 * @param a the first number
+	 * @param b the second number
+	 * @param c the third number
+	 * @param g object of game
+	 * @return
+	 */
 	private boolean checkNumValid(int a, int b, int c, GamePlay g) {
 		if(a!=b&&a!=c&&b!=c&&a<=g.getPlayer().getOwnCard().size()&&b<=g.getPlayer().getOwnCard().size()&&c<=g.getPlayer().getOwnCard().size()) {
 			return true;
@@ -49,6 +64,12 @@ public class Trade extends JFrame{
 		return false;
 	}
 	
+	/**
+	 * Check if these three cards in chosen list can meet the requirement based on the rules
+	 * If it pass the validation then add extra armies to the current player, if not, clear the chosen list
+	 * @param game object of game
+	 * @return boolean, success or not
+	 */
 	public boolean tradeCard(GamePlay game) {
 		if(chosen_cards_list.size()!=3) {
 			JOptionPane.showMessageDialog(null, "You can only choose three cards!", "Warning", JOptionPane.ERROR_MESSAGE);
@@ -83,6 +104,7 @@ public class Trade extends JFrame{
 	
 	/**
 	 * Create the frame.
+	 * This default constructor is only for test
 	 */
 	public Trade() {
 		setTitle("Trade");
@@ -135,6 +157,10 @@ public class Trade extends JFrame{
 		contentPane.add(btnRun);
 	}
 	
+	/**
+	 * Create the frame.
+	 * @param game object of game
+	 */
 	public Trade(GamePlay game) {
 		setTitle("Trade");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -144,6 +170,7 @@ public class Trade extends JFrame{
 		contentPane.setLayout(null);
 		setContentPane(contentPane);
 		
+		//Create card views
 		for(int i = 0;i<game.getPlayer().getOwnCard().size();i++) {
 			CardView l = game.getPlayer().getOwnCard().get(i).getCardView();
 			l.reSetCount();
@@ -215,7 +242,7 @@ public class Trade extends JFrame{
 			}
 		});
 		btnRun.setBounds(577, 284, 113, 27);
-		contentPane.add(btnRun);
-		
+		contentPane.add(btnRun);	
 	}
 }
+

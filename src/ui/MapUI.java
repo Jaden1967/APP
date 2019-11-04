@@ -239,7 +239,7 @@ public class MapUI extends JFrame {
 		control.getGame().setJFrame(this);
 		setTitle("Risk");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1262, 800);
+		setBounds(100, 100, 1350, 800);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(null);
@@ -262,7 +262,7 @@ public class MapUI extends JFrame {
 		contentPane.add(info_label);
 		
 		OutcomeObsLabel outcome_label = new OutcomeObsLabel();
-		outcome_label.setBounds(974, 50, 256, 585);
+		outcome_label.setBounds(974, 50, 350, 585);
 		outcome_label.setEditable(false);
 		outcome_label.setLineWrap(true);
 		contentPane.add(outcome_label);
@@ -296,7 +296,7 @@ public class MapUI extends JFrame {
 		contentPane.add(runBtn);
 		
 		JMenuBar menuBar = new JMenuBar();
-		menuBar.setBounds(0, 0, 1244, 35);
+		menuBar.setBounds(0, 0, 1350, 35);
 		contentPane.add(menuBar);
 		
 		JMenu Menu = new JMenu("Menu");

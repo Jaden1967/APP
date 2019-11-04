@@ -16,7 +16,13 @@ import java.util.Observable;
 import java.util.Random;
 
 /**
- * Model for Risk Game
+ * Observable Model for the Risk Game
+ * Contains Vectors of relevant class entities, such as continents, countries and players that has been created by the loadmap function from 
+ * the controller
+ * Observed by the MapUI JLabels to update information on the current game status
+ * public methods within GamePlay is called by the controller while processing user inputs from the UI during game play
+ * Attributes can only be accessed by getters and setters from the controller
+ * handles change of game data and state and reflects to relevant observers
  */
 public class GamePlay extends Observable{
 	private Vector <Continent> continents_list;
@@ -36,9 +42,16 @@ public class GamePlay extends Observable{
 	private JFrame mapui = null;
 	boolean is_test = false;
 	
+	/**
+	 * Empty default ctor
+	 */
 	public GamePlay() {
 	}
 	
+	/**
+	 * Set the JFrame for the MapUI related to the game play
+	 * @param m JFrame of MapUI
+	 */
 	public void setJFrame(JFrame m) {
 		mapui = m;
 	}
@@ -89,6 +102,8 @@ public class GamePlay extends Observable{
 	
 	/**
      * Startup Phase
+     * Set status to appropriate player and phase
+     * Alert observers
      */
 	private void phaseZero() {
 		phase = "Startup Phase";
@@ -102,6 +117,7 @@ public class GamePlay extends Observable{
 	/**
 	 * From player command: placearmy countryname
      * place one army to target country in parameter, then give the turn to the next player 
+     * @param c Country to play an army
 	 */
 	public void placeArmy(Country c) {
 		c.addArmy(1);
@@ -254,6 +270,7 @@ public class GamePlay extends Observable{
 		att_dice = dicenum;
 		phase = "Attack Phase 2";
 		outcome += "Attacking from "+from.getName()+" to "+to.getName()+" \nChoose defender's number of dice to be rolled\n";
+		player = defender.getOwner();
 		alertObservers();
 	}
 	
@@ -295,6 +312,7 @@ public class GamePlay extends Observable{
 	 */
 	public boolean commenceAttack(int defenderDice) {
 		def_dice = defenderDice;
+		player = attacker.getOwner();
 		return attackRound(false);
 	}
 	
@@ -338,7 +356,7 @@ public class GamePlay extends Observable{
 				alose++;
 			}
 		}
-		outcome += "Attacker lost "+alose+ " , Defender lose "+dlose+"\n";
+		outcome += "Attacker lost "+alose+ " , Defender lost "+dlose+"\n";
 		if(defender.getArmyNum()==0) {
 			outcome += "Successfully conquered "+defender.getName()+" with "+attacker.getArmyNum()+" armies remaining\n";
 			if(add_flag==0) {
@@ -393,7 +411,10 @@ public class GamePlay extends Observable{
 	}
 	
 	/**
-	 * Send army to the target country
+	 * Send army to the target country after the defender country lost all its armies
+	 * If defender has lost all its countries, remove the defender from the game
+	 * Moves phase to attack phase 1 or fortification depending on if the current player still can perform an attack
+	 * @param number Number of army to move
 	 */
 	public void moveArmyTo(int number) {
 		attacker.removeArmy(number);
@@ -419,8 +440,9 @@ public class GamePlay extends Observable{
 		}
 		alertObservers();
 	}
+	
 	/**
-	 * Reset the owner
+	 * Reset the owner for the defending country to the current owner after a successful conquer
 	 */
 	public void reSetOwner() {
 		defender.setOwner(player);
@@ -433,6 +455,11 @@ public class GamePlay extends Observable{
 		}
 	}
 	
+	/**
+	 * Checks if the current player has the ability to fortify units in the fortification phase
+	 * @param p The player to check
+	 * @return true if the player can fortify at least 1 country
+	 */
 	public boolean checkIfCanFortify(Player p) {
 		if(p.getTotalCountriesNumber()==1) {
 			return false;
@@ -481,10 +508,7 @@ public class GamePlay extends Observable{
 	 * Initiate reinforcement phase for that player
 	 */
 	public void nextPlayer() {
-		player_index++;
-		if(player_index % player_list.size()==0) {
-			player_index = 0;
-		}
+		player_index = (player_index+1)% player_list.size();
 		player = player_list.get(player_index);
 		player.rewardInitialArmy();
 		army_to_place = player.getArmyToPlace();
@@ -502,6 +526,10 @@ public class GamePlay extends Observable{
         return phase;
     }
     
+    /**
+     * Set the phase for the game for the load game function
+     * @param s The string 
+     */
     public void setPhase(String s) {
     	switch (s) {
     		case "0": phase = "Startup Phase";return;
@@ -563,7 +591,7 @@ public class GamePlay extends Observable{
     
     /**
      * Setter for continents_list
-     * @param continentsList
+     * @param continentsList List of continents
      */
     public void setContinents(Vector<Continent> continentsList) {
 		continents_list = continentsList;
@@ -579,7 +607,7 @@ public class GamePlay extends Observable{
 	
 	/**
 	 * Setter for countries_list
-	 * @param countriesList
+	 * @param countriesList list of Countries in gameplay
 	 */
 	public void setCountries(Vector<Country> countriesList) {
 		countries_list = countriesList;
@@ -595,19 +623,17 @@ public class GamePlay extends Observable{
 	
 	/**
 	 * Setter for player_list
-	 * @param playerList
+	 * @param playerList list of players in gameplay
 	 */
 	public void setPlayers(Vector<Player> playerList) {
 		player_list = playerList;
 		player = playerList.get(0);
 	}
     
-    /**
+	/**
 	 * After change of game state, alert concerned Observers
-	 * @param x type of Observer to alert: 1 = InfoObsLabel, 2 = OutcomeObsLabel
 	 */
 	public void alertObservers() {
-		player = player_list.get(player_index);
 		army_to_place = player.getArmyToPlace();
 
 		setChanged();
@@ -616,6 +642,10 @@ public class GamePlay extends Observable{
 		alert_type = 0;
 	}
 	
+	/**
+	 * Add a random Card to the current player
+	 * Method is called once the current player successfully conquered a new Country after an attack
+	 */
 	public void addCard() {
 		String tmp[] = {"Infantry","Cavalry","Artillery"};
 		int r = (int)(Math.random()*3);
@@ -623,7 +653,7 @@ public class GamePlay extends Observable{
 			player.getOwnCard().remove(0);
 		}
 		player.addCard(tmp[r]);
-		outcome += "Added "+tmp[r]+" card to current player";
+		outcome += "Added "+tmp[r]+" card to current player\n";
 	}
 	
 	/**
@@ -634,26 +664,53 @@ public class GamePlay extends Observable{
 		return player_index;
 	}
 	
+	/**
+	 * Setter for the current player index
+	 * Sets the current player according to the index
+	 * @param i Index to be set for current player
+	 */
 	public void setPlayerIndex(int i) {
 		player_index = i;
+		player = player_list.get(i);
 	}
 	
+	/**
+	 * Get the number of attack dice that has been set by the attacker
+	 * @return att_dice return the number of attack dice
+	 */
 	public int getAttackDice() {
 		return att_dice;
 	}
 	
+	/**
+	 * Setter for the flag for the current player to indicate if the player has already received a Card after a successful attack
+	 * @param f 1 if the current player received a card this turn, 0 if not
+	 */
 	public void setAddFlag(int f) {
 		add_flag = f;
 	}
 	
+	/**
+	 * returns
+	 * @return add_flag return the flag
+	 */
 	public int getAddFlag() {
 		return add_flag;
 	}
 	
+	/**
+	 * Used to determine the current running game is a part of a JUnit test
+	 * Will disable Message Dialogues from popping up during the test runs by checking the is_test boolean
+	 */
 	public void isTest() {
 		is_test = true;
 	}
 	
+	/**
+	 * Prompts a message dialogue showing an important message in game
+	 * Will only show the dialogue if the game is not a test being run in JUnit
+	 * @param s Message to be shown in the Message Dialogue
+	 */
 	private void showDialog(String s) {
 		if(!is_test) {
 			JOptionPane.showMessageDialog(null, s, "Information", JOptionPane.INFORMATION_MESSAGE);
