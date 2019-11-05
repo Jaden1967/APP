@@ -76,7 +76,6 @@ public class MainView extends VerticalLayout {
     // private Image image = new Image("https://dummyimage.com/600x400/000/fff",
     // "DummyImage");
 
-
     // private MemoryBuffer buffer = new MemoryBuffer();
     // private Upload upload = new Upload(buffer);
 
@@ -85,8 +84,6 @@ public class MainView extends VerticalLayout {
 
     private int map_width = 0;
     private int map_height = 0;
-
-
 
     // private boolean hasMapSize = false;
 
@@ -191,18 +188,11 @@ public class MainView extends VerticalLayout {
         neighbors.getStyle().set("maxHeight", "300px");
         neighbors.getStyle().set("minHeight", "200px");
 
-        String defaultOutput =  "editcontinent -add Asia 10\n"
-                            +   "editcontinent -remove Asia\n"
-                            +   "editcountry -add China Asia\n"
-                            +   "editcountry -remove China\n"
-                            +   "editneighbor -add China India\n"
-                            +   "editneighbor -remove China India\n"
-                            +   "editmap risk\n"
-                            +   "savemap map_1\n"
-                            +   "validatemap\n"
-                            +   "editneighbor -remove Siam Indonesia\n"
-                            +   "editneighbor -add Siam Indonesia\n"
-                            +   "showmap\n";
+        String defaultOutput = "editcontinent -add Asia 10\n" + "editcontinent -remove Asia\n"
+                + "editcountry -add China Asia\n" + "editcountry -add India Asia\n" + "editcountry -remove China\n"
+                + "editneighbor -add China India\n" + "editneighbor -remove China India\n"
+                + "editneighbor -remove India China\n" + "editmap risk\n" + "savemap map_1\n" + "validatemap\n"
+                + "editneighbor -remove Siam Indonesia\n" + "editneighbor -add Siam Indonesia\n" + "showmap\n";
         outputLog.setValue("output shows here\n" + defaultOutput);
         outputLog.setLabel("Output Log");
         outputLog.setReadOnly(true);
@@ -216,7 +206,7 @@ public class MainView extends VerticalLayout {
         commandLine.setErrorMessage("invalid");
     }
 
-    public void addOutputLog(String addtext){
+    public void addOutputLog(String addtext) {
         outputLog.setValue(outputLog.getValue() + addtext + "\n");
         Notification notification = new Notification(addtext, 3000, Position.TOP_START);
         notification.open();
@@ -226,32 +216,29 @@ public class MainView extends VerticalLayout {
         Dialog dialog = new Dialog();
         dialog.setCloseOnEsc(false);
         dialog.setCloseOnOutsideClick(false);
-        
+
         TextField coordinatesText = new TextField(); // (2)
         coordinatesText.setPlaceholder("input coordinates seperate with space");
         coordinatesText.setWidth("300px");
         coordinatesText.setClearButtonVisible(true);
 
-        
         Button confirmButton = new Button("Confirm", event -> {
             x_coor = coordinatesText.getValue().split(" ")[0];
             y_coor = coordinatesText.getValue().split(" ")[1];
             dialog.close();
 
             if (x_coor.matches("\\d+") && y_coor.matches("\\d+")) {
-                if (Integer.valueOf(x_coor) > 0 &&  Integer.valueOf(x_coor) < map_width && Integer.valueOf(y_coor) > 0 &&  Integer.valueOf(y_coor) < map_width) {
+                if (Integer.valueOf(x_coor) > 0 && Integer.valueOf(x_coor) < map_width && Integer.valueOf(y_coor) > 0
+                        && Integer.valueOf(y_coor) < map_width) {
                     addCountry(countryname, continentname, Integer.valueOf(x_coor), Integer.valueOf(y_coor));
-                }
-                else {
+                } else {
                     createAlert("Wrong coordiantes. You can not place a country outside the map.");
                 }
-            }
-            else {
+            } else {
                 createAlert("Country coordiantes should be integers!");
             }
 
-            
-        });   
+        });
         confirmButton.addClickShortcut(Key.ENTER);
         // TODO:
         // invalid coordinates
@@ -265,21 +252,24 @@ public class MainView extends VerticalLayout {
         Dialog dialog = new Dialog();
         dialog.setCloseOnEsc(false);
         dialog.setCloseOnOutsideClick(false);
-        
+
         TextField mapSizeText = new TextField(); // (2)
         mapSizeText.setPlaceholder("input map width and height seperate with space");
         mapSizeText.setWidth("400px");
         mapSizeText.setClearButtonVisible(true);
-        
+
         Button confirmButton = new Button("Confirm", event -> {
             map_width = Integer.valueOf(mapSizeText.getValue().split(" ")[0]);
             map_height = Integer.valueOf(mapSizeText.getValue().split(" ")[1]);
             dialog.close();
 
-            if ((mapSizeText.getValue().split(" ")[0].matches("\\d+") && Integer.valueOf(mapSizeText.getValue().split(" ")[0]) > 0) && (mapSizeText.getValue().split(" ")[1].matches("\\d+") && Integer.valueOf(mapSizeText.getValue().split(" ")[1]) > 0)) {
+            if ((mapSizeText.getValue().split(" ")[0].matches("\\d+")
+                    && Integer.valueOf(mapSizeText.getValue().split(" ")[0]) > 0)
+                    && (mapSizeText.getValue().split(" ")[1].matches("\\d+")
+                            && Integer.valueOf(mapSizeText.getValue().split(" ")[1]) > 0)) {
                 addOutputLog("set map width to: " + map_width + "; set map height to: " + map_height);
                 mapSize.setValue("map width: " + map_width + "\nmap height: " + map_height);
-    
+
                 // TODO:
                 canvas.setMaxHeight(String.valueOf(map_height));
                 canvas.setMinHeight(String.valueOf(map_height));
@@ -287,12 +277,11 @@ public class MainView extends VerticalLayout {
                 canvas.setMinWidth(String.valueOf(map_width));
                 ctx.setStrokeStyle("#373C38");
                 ctx.strokeRect(2, 2, map_width - 2, map_height - 2);
-            }
-            else {
+            } else {
                 createAlert("Invalid map size.");
                 setMapSize();
             }
-        });   
+        });
         confirmButton.addClickShortcut(Key.ENTER);
 
         dialog.add(mapSizeText, confirmButton);
@@ -316,9 +305,9 @@ public class MainView extends VerticalLayout {
         setMapSize();
 
         commandLine.addKeyDownListener(event -> {
-			commandLine.setInvalid(false);
+            commandLine.setInvalid(false);
         });
-        
+
         // TODO:
         Button runButton = new Button("Run", event -> {
             String temp = commandLine.getValue();
@@ -334,14 +323,13 @@ public class MainView extends VerticalLayout {
                         else {
                             createAlert("Continent value is not an positive integer!");
                         }
-                    }
-                    else {
+                    } else {
                         // TODO closed
                         // invalid input alert
                         // invalidInputAlert();
                         commandLine.setInvalid(true);
                     }
-                } 
+                }
                 // editcountry
                 else if (tempArr[0].equals("editcountry")) {
                     // TODO closed
@@ -349,11 +337,11 @@ public class MainView extends VerticalLayout {
                         // open dialog for the input of coordinates
 
                         coordinatesDialog(tempArr[2], tempArr[3]);
-                        
+
                         // TODO closed
-                        // addCountry(tempArr[2], tempArr[3], Integer.valueOf(x_coor), Integer.valueOf(y_coor));
-                    }
-                    else {
+                        // addCountry(tempArr[2], tempArr[3], Integer.valueOf(x_coor),
+                        // Integer.valueOf(y_coor));
+                    } else {
                         // TODO closed
                         // invalid input alert
                         invalidInputAlert();
@@ -364,22 +352,18 @@ public class MainView extends VerticalLayout {
                     // TODO:
                     if (tempArr[1].equals("-add")) {
                         addNeighbor(tempArr[2], tempArr[3]);
-                    }
-                    else if (tempArr[1].equals("-remove")) {
+                    } else if (tempArr[1].equals("-remove")) {
                         removeNeighbor(tempArr[2], tempArr[3]);
-                    }
-                    else {
+                    } else {
                         // invalid input alert
                         invalidInputAlert();
                     }
-                }
-                else {
+                } else {
                     // TODO closed
                     // invalid input alert
                     invalidInputAlert();
                 }
-            } 
-            else if (tempArr.length == 3) {
+            } else if (tempArr.length == 3) {
                 // editcontinent
                 if (tempArr[0].equals("editcontinent")) {
                     if (tempArr[1].equals("-remove")) {
@@ -390,7 +374,7 @@ public class MainView extends VerticalLayout {
                         // invalid input alert
                         invalidInputAlert();
                     }
-                } 
+                }
                 // editcountry
                 else if (tempArr[0].equals("editcountry")) {
                     if (tempArr[1].equals("-remove")) {
@@ -401,33 +385,29 @@ public class MainView extends VerticalLayout {
                         // invalid input alert
                         invalidInputAlert();
                     }
-                }
-                else {
+                } else {
                     // TODO closed
                     // invalid input alert
                     invalidInputAlert();
                 }
-            }
-            else if (tempArr.length == 2) {
+            } else if (tempArr.length == 2) {
                 // TODO:
                 // map operations combined with few buttons
                 // savemap
                 if (tempArr[0].equals("savemap")) {
                     // TODO closed
                     saveMap(tempArr[1]);
-                } 
+                }
                 // edit map
                 else if (tempArr[0].equals("editmap")) {
                     // TODO:
-                    editMap(tempArr[1]);               
-                }
-                else {
+                    editMap(tempArr[1]);
+                } else {
                     // TODO closed
                     // invalid input alert
                     invalidInputAlert();
                 }
-            } 
-            else if (tempArr.length == 1) {
+            } else if (tempArr.length == 1) {
                 // TODO:
                 // map operations
                 // show map
@@ -439,15 +419,13 @@ public class MainView extends VerticalLayout {
                 // validate map
                 else if (tempArr[0].equals("validatemap")) {
                     // TODO:
-                    validateMap();               
-                }
-                else {
+                    validateMap();
+                } else {
                     // TODO closed
                     // invalid input alert
                     invalidInputAlert();
                 }
-            }
-            else {
+            } else {
                 // TODO:
                 // invalid input alert
                 Dialog dialog = new Dialog();
@@ -459,50 +437,42 @@ public class MainView extends VerticalLayout {
                 dialog.open();
             }
 
-            
         });
         runButton.addClickShortcut(Key.ENTER);
 
         // TODO:
         // a save map button
 
-
         // upload map
         // upload.addSucceededListener(event -> {
-        //     Component component = createComponent(event.getMIMEType(),
-        //             event.getFileName(), buffer.getInputStream());
-        //     showOutput(event.getFileName(), component, output);
+        // Component component = createComponent(event.getMIMEType(),
+        // event.getFileName(), buffer.getInputStream());
+        // showOutput(event.getFileName(), component, output);
         // });
-        
 
         add( // (5)
-                // new H1("Map Editor"), 
-                // new HorizontalLayout(
-                //     new VerticalLayout(
-                //         new HorizontalLayout(continents, countries, neighbors),
-                //         new HorizontalLayout(commandLine, runButton)
-                //     ),
-                //     new VerticalLayout(
-                //         tabs,
-                //         new HorizontalLayout(outputLog, new HorizontalLayout(mapSize, canvas))
-                //     )
-                // )
-                new H1("Map Editor"), 
-                new VerticalLayout(
-                    new HorizontalLayout(continents, countries, neighbors),
-                    new HorizontalLayout(commandLine, runButton),
-                    tabs,
-                    new HorizontalLayout(outputLog, new HorizontalLayout(mapSize, canvas))
-                )
-            );
-                // new HorizontalLayout(continents, countries, neighbors),
-                // new HorizontalLayout(commandLine, runButton),
-                
+             // new H1("Map Editor"),
+             // new HorizontalLayout(
+             // new VerticalLayout(
+             // new HorizontalLayout(continents, countries, neighbors),
+             // new HorizontalLayout(commandLine, runButton)
+             // ),
+             // new VerticalLayout(
+             // tabs,
+             // new HorizontalLayout(outputLog, new HorizontalLayout(mapSize, canvas))
+             // )
+             // )
+                new H1("Map Editor"),
+                new VerticalLayout(new HorizontalLayout(continents, countries, neighbors),
+                        new HorizontalLayout(commandLine, runButton), tabs,
+                        new HorizontalLayout(outputLog, new HorizontalLayout(mapSize, canvas))));
+        // new HorizontalLayout(continents, countries, neighbors),
+        // new HorizontalLayout(commandLine, runButton),
 
     }
 
     private void addContinent(String continentname, String continentvalue) {
-        if (!continentsMap.containsKey(continentname)){
+        if (!continentsMap.containsKey(continentname)) {
             ArrayList<String> tempAL = new ArrayList<>();
             tempAL.add(continentname);
             tempAL.add(continentvalue);
@@ -524,10 +494,10 @@ public class MainView extends VerticalLayout {
             tempAL.add(tempColor);
             continentsData.add(tempAL);
             continentsMap.put(continentname, Integer.valueOf(continentvalue));
-        }
-        else {
+        } else {
             Dialog dialog = new Dialog();
-            dialog.add(new Label("Already exist continent, please remove it first. \nClose me with the esc-key or an outside click"));
+            dialog.add(new Label(
+                    "Already exist continent, please remove it first. \nClose me with the esc-key or an outside click"));
             dialog.setWidth("400px");
             dialog.setHeight("150px");
             dialog.open();
@@ -541,17 +511,17 @@ public class MainView extends VerticalLayout {
             continentsMap.remove(continentname);
             // TODO:
             // fix bugs here!!!
-            for (int i = 0; i < continentsData.size(); i++ ) {
+            for (int i = 0; i < continentsData.size(); i++) {
                 if (continentsData.get(i).get(0).equals(continentname)) {
                     continentsData.remove(i);
                 }
             }
-        }
-        else {
+        } else {
             // TODO:
             // invalid
             Dialog dialog = new Dialog();
-            dialog.add(new Label("No such continent, please create it first. \nClose me with the esc-key or an outside click"));
+            dialog.add(new Label(
+                    "No such continent, please create it first. \nClose me with the esc-key or an outside click"));
             dialog.setWidth("400px");
             dialog.setHeight("150px");
             dialog.open();
@@ -560,7 +530,7 @@ public class MainView extends VerticalLayout {
         updateContinents();
     }
 
-    private void updateContinents(){
+    private void updateContinents() {
         if (continentsData.size() > 0) {
             StringBuilder strBuilder = new StringBuilder();
             for (ArrayList<String> arrList : continentsData) {
@@ -571,14 +541,13 @@ public class MainView extends VerticalLayout {
                 strBuilder.append(continentStr + "\n");
             }
             continents.setValue(strBuilder.toString());
-        }
-        else {
+        } else {
             continents.setValue("continents shows here\n");
         }
     }
 
     private void addCountry(String countryname, String continentname, int x_coordinates, int y_coordinates) {
-        if (!countriesMap.containsKey(countryname)){
+        if (!countriesMap.containsKey(countryname)) {
             if (continentsMap.containsKey(continentname)) {
                 ArrayList<String> tempAL = new ArrayList<>();
                 tempAL.add(countryname);
@@ -587,18 +556,18 @@ public class MainView extends VerticalLayout {
                 tempAL.add(y_coordinates + "");
                 countriesData.add(tempAL);
                 countriesMap.put(countryname, continentname);
-            }
-            else {
+            } else {
                 Dialog dialog = new Dialog();
-                dialog.add(new Label("No such continent, please create it first. \nClose me with the esc-key or an outside click"));
+                dialog.add(new Label(
+                        "No such continent, please create it first. \nClose me with the esc-key or an outside click"));
                 dialog.setWidth("400px");
                 dialog.setHeight("150px");
                 dialog.open();
             }
-        }
-        else {
+        } else {
             Dialog dialog = new Dialog();
-            dialog.add(new Label("Already exist country, please remove it first. \nClose me with the esc-key or an outside click"));
+            dialog.add(new Label(
+                    "Already exist country, please remove it first. \nClose me with the esc-key or an outside click"));
             dialog.setWidth("400px");
             dialog.setHeight("150px");
             dialog.open();
@@ -617,12 +586,12 @@ public class MainView extends VerticalLayout {
                     countriesData.remove(arrList);
                 }
             }
-        }
-        else {
+        } else {
             // TODO:
             // invalid
             Dialog dialog = new Dialog();
-            dialog.add(new Label("No such country, please create it first. \nClose me with the esc-key or an outside click"));
+            dialog.add(new Label(
+                    "No such country, please create it first. \nClose me with the esc-key or an outside click"));
             dialog.setWidth("400px");
             dialog.setHeight("150px");
             dialog.open();
@@ -631,7 +600,7 @@ public class MainView extends VerticalLayout {
         updateCountries();
     }
 
-    private void updateCountries(){
+    private void updateCountries() {
         if (countriesData.size() > 0) {
             StringBuilder strBuilder = new StringBuilder();
             for (ArrayList<String> arrList : countriesData) {
@@ -642,14 +611,13 @@ public class MainView extends VerticalLayout {
                 strBuilder.append(countryStr + "\n");
             }
             countries.setValue(strBuilder.toString());
-        }
-        else {
+        } else {
             countries.setValue("countries shows here\n");
         }
     }
 
     private void addNeighbor(String countryname, String neighborCountryname) {
-        if (countriesMap.containsKey(countryname) && countriesMap.containsKey(neighborCountryname)){
+        if (countriesMap.containsKey(countryname) && countriesMap.containsKey(neighborCountryname)) {
             boolean hasCountry = false;
             boolean hasNeighborCountry = false;
             for (ArrayList<String> arrList : neighborsData) {
@@ -678,10 +646,10 @@ public class MainView extends VerticalLayout {
                 tempAL.add(countryname);
                 neighborsData.add(tempAL);
             }
-        }
-        else {
+        } else {
             Dialog dialog = new Dialog();
-            dialog.add(new Label("No such countries exist, please add it first. \nClose me with the esc-key or an outside click"));
+            dialog.add(new Label(
+                    "No such countries exist, please add it first. \nClose me with the esc-key or an outside click"));
             dialog.setWidth("400px");
             dialog.setHeight("150px");
             dialog.open();
@@ -693,7 +661,7 @@ public class MainView extends VerticalLayout {
     private void removeNeighbor(String countryname, String neighborCountryname) {
         boolean hasCountry = false;
         boolean hasNeighborCountry = false;
-        // TODO: 
+        // TODO:
         // bug need to fix!
         if (neighborsData.size() == 0) {
             invalidInputAlert();
@@ -701,41 +669,63 @@ public class MainView extends VerticalLayout {
         }
 
         for (ArrayList<String> arrList : neighborsData) {
-            if (arrList.get(0).equals(countryname)) {
-                for (String neighbor_name : arrList.subList(1, arrList.size())) {
-                    if (neighbor_name.equals(neighborCountryname)) {
-                        arrList.remove(neighborCountryname);
-                        if (arrList.size() == 1) {
-
-                            neighborsData.remove(neighborsData.indexOf(arrList));
+            if (arrList != null && arrList.size() != 0) {
+                if (arrList.get(0).equals(countryname)) {
+                    for (int neighbor_index = 1; neighbor_index < arrList.size(); neighbor_index++) {
+                        if (arrList.get(neighbor_index).equals(neighborCountryname)) {
+                            arrList.remove(neighbor_index);
+                            if (arrList.size() == 1) {
+                                neighborsData.remove(arrList);
+                            }
+                            hasNeighborCountry = true;
+                            updateNeighbors();
                         }
-                        hasCountry = true;
-                        updateNeighbors();
                     }
                 }
             }
         }
+
+        addOutputLog(neighborsData.toString());
+        addOutputLog(String.valueOf(neighborsData.size()));
+
         // TODO:
-        for (ArrayList<String> arrList : neighborsData) {
-            if (arrList.get(0).equals(neighborCountryname)) {
-                // for (String neighbor_name : arrList) {
-                //     if (neighbor_name.equals(countryname)) {
-                //         arrList.remove(countryname);
-                //         if (arrList.size() == 1) {
-                //             neighborsData.remove(arrList);
-                //         }
-                //         hasNeighborCountry = true;
-                //         updateNeighbors();
-                //     }
-                // }
-                for (int neighbor_index = 1; neighbor_index < arrList.size(); neighbor_index++) {
-                    if (arrList.get(neighbor_index).equals(countryname)) {
-                        arrList.remove(neighbor_index);
-                        if (arrList.size() == 1) {
-                            neighborsData.remove(arrList);
+        // for (ArrayList<String> arrList : neighborsData) {
+        // if (arrList != null) {
+        // if (arrList.get(0).equals(neighborCountryname)) {
+        // for (int neighbor_index = 1; neighbor_index < arrList.size();
+        // neighbor_index++) {
+        // if (arrList.get(neighbor_index).equals(countryname)) {
+        // arrList.remove(neighbor_index);
+        // if (arrList.size() == 1) {
+        // neighborsData.remove(arrList);
+        // }
+        // hasNeighborCountry = true;
+        // updateNeighbors();
+        // }
+        // }
+        // }
+        // }
+
+        // }
+
+        // TODO:
+        for (int arrListIndex = 0; arrListIndex < neighborsData.size(); arrListIndex++) {
+            if (neighborsData.get(arrListIndex) != null && neighborsData.get(arrListIndex).size() != 0) {
+                addOutputLog("arrList Size:" + neighborsData.get(arrListIndex).size());
+                if (neighborsData.get(arrListIndex).get(0).equals(neighborCountryname)) {
+                    for (int neighbor_index = 1; neighbor_index < neighborsData.get(arrListIndex)
+                            .size(); neighbor_index++) {
+                        addOutputLog("arrList Size1:" + neighborsData.get(arrListIndex).size());
+                        if (neighborsData.get(arrListIndex).get(neighbor_index).equals(countryname)) {
+                            addOutputLog("arrList Size2:" + neighborsData.get(arrListIndex).size());
+                            neighborsData.get(arrListIndex).remove(neighbor_index);
+                            if (neighborsData.get(arrListIndex).size() == 1) {
+                                addOutputLog("arrList Size3:" + neighborsData.get(arrListIndex).size());
+                                neighborsData.remove(arrListIndex);
+                            }
+                            hasNeighborCountry = true;
+                            updateNeighbors();
                         }
-                        hasNeighborCountry = true;
-                        updateNeighbors();
                     }
                 }
             }
@@ -745,14 +735,15 @@ public class MainView extends VerticalLayout {
         if (!hasCountry || !hasNeighborCountry) {
             // invalid
             Dialog dialog = new Dialog();
-            dialog.add(new Label("No such country, please create it first. \nClose me with the esc-key or an outside click"));
+            dialog.add(new Label(
+                    "No such country, please create it first. \nClose me with the esc-key or an outside click"));
             dialog.setWidth("400px");
             dialog.setHeight("150px");
             dialog.open();
         }
     }
 
-    private void updateNeighbors(){
+    private void updateNeighbors() {
         if (neighborsData.size() > 0) {
             StringBuilder strBuilder = new StringBuilder();
             for (ArrayList<String> arrList : neighborsData) {
@@ -763,8 +754,7 @@ public class MainView extends VerticalLayout {
                 strBuilder.append(neighborStr + "\n");
             }
             neighbors.setValue(strBuilder.toString());
-        }
-        else {
+        } else {
             neighbors.setValue("neighbors shows here\n");
         }
     }
@@ -775,9 +765,7 @@ public class MainView extends VerticalLayout {
             return;
         }
 
-
         try {
-            
 
             String path = "map/" + fileName + ".map";
             // TODO:
@@ -795,7 +783,6 @@ public class MainView extends VerticalLayout {
             strBuilder.append("\n[files]\n");
 
             strBuilder.append("\n[continents]\n");
-            
 
             for (ArrayList<String> arrList : continentsData) {
                 String continentStr = "";
@@ -817,14 +804,12 @@ public class MainView extends VerticalLayout {
                         for (ArrayList<String> contList : continentsData) {
                             if (!contList.get(0).equals(arrList.get(1))) {
                                 index++;
-                            }
-                            else {
+                            } else {
                                 break;
                             }
                         }
                         counutryStr += (index + " ");
-                    }
-                    else {
+                    } else {
                         counutryStr += (arrList.get(i) + " ");
                     }
                 }
@@ -845,7 +830,7 @@ public class MainView extends VerticalLayout {
                         }
                         strBuilder.append(neighborStr.substring(0, neighborStr.length() - 1) + "\n");
                     }
-                    
+
                 }
             }
 
@@ -855,8 +840,7 @@ public class MainView extends VerticalLayout {
             Files.writeString(Paths.get(path), content);
 
             addOutputLog("Map saved to " + path);
-        } 
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -885,7 +869,7 @@ public class MainView extends VerticalLayout {
         try {
             fileReader = new FileReader(file);
             bufferedReader = new BufferedReader(fileReader);
-    
+
             String line = "";
 
             boolean continentPhase = false;
@@ -900,7 +884,7 @@ public class MainView extends VerticalLayout {
 
                 // TODO:
                 // System.out.println(line);
-                if (continentPhase){
+                if (continentPhase) {
                     String[] tempStr = line.split(" ");
                     ArrayList<String> tempAL = new ArrayList<>();
                     tempAL.add(tempStr[0]);
@@ -909,8 +893,7 @@ public class MainView extends VerticalLayout {
                     continentsData.add(tempAL);
                     continentsMap.put(tempStr[0], Integer.valueOf(tempStr[1]));
                     updateContinents();
-                }
-                else if (countryPhase) {
+                } else if (countryPhase) {
                     String[] tempStr = line.split(" ");
                     ArrayList<String> tempAL = new ArrayList<>();
                     tempAL.add(tempStr[1]);
@@ -921,8 +904,7 @@ public class MainView extends VerticalLayout {
                     countriesData.add(tempAL);
                     countriesMap.put(tempStr[1], continent_name);
                     updateCountries();
-                }
-                else if (borderPhase) {
+                } else if (borderPhase) {
                     String[] tempStr = line.split(" ");
                     ArrayList<String> tempAL = new ArrayList<>();
 
@@ -938,17 +920,13 @@ public class MainView extends VerticalLayout {
                     updateNeighbors();
                 }
 
-
-                if (line.equals("[continents]")){
+                if (line.equals("[continents]")) {
                     continentPhase = true;
-                }
-                else if (line.equals("[countries]")){
+                } else if (line.equals("[countries]")) {
                     countryPhase = true;
-                }
-                else if (line.equals("[borders]")){
+                } else if (line.equals("[borders]")) {
                     borderPhase = true;
-                }
-                else if (line.length() > 20) {
+                } else if (line.length() > 20) {
                     if (line.substring(0, 13).equals("; Dimensions:")) {
                         String[] temp = line.split(" ");
                         map_width = Integer.valueOf(temp[2]);
@@ -966,19 +944,19 @@ public class MainView extends VerticalLayout {
             e.printStackTrace();
         } finally {
             if (fileReader != null) {
-            try {
-                fileReader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+                try {
+                    fileReader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-            }
-    
+
             if (bufferedReader != null) {
-            try {
-                bufferedReader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                try {
+                    bufferedReader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
         // Files.read(Paths.get(path), content);
@@ -986,10 +964,9 @@ public class MainView extends VerticalLayout {
         addOutputLog("Map loaded from: " + path);
     }
 
-
     public void showmap() {
         drawMap();
-        
+
         tabs.setSelectedTab(tab2);
     }
 
@@ -1075,17 +1052,17 @@ public class MainView extends VerticalLayout {
         Queue<String> closedList = new LinkedList<>();
         openList.add(neighborsData.get(0).get(0));
         country_set.add(neighborsData.get(0).get(0));
-        
+
         while (openList.size() != 0) {
             String curr_country = openList.peek();
             for (ArrayList<String> neighbor_data : neighborsData) {
                 // if (neighbor_data.get(0) == curr_country) {
-                //     for (String neighbor_name : neighbor_data) {
-                //         if (!country_set.contains(neighbor_name)) {
-                //             openList.add(neighbor_name);
-                //             country_set.add(neighbor_name);
-                //         }
-                //     }
+                // for (String neighbor_name : neighbor_data) {
+                // if (!country_set.contains(neighbor_name)) {
+                // openList.add(neighbor_name);
+                // country_set.add(neighbor_name);
+                // }
+                // }
                 // }
                 if (neighbor_data.contains(curr_country)) {
                     for (String neighbor_name : neighbor_data) {
@@ -1105,15 +1082,13 @@ public class MainView extends VerticalLayout {
             isValidated = false;
         }
 
-
         if (isValidated) {
             Dialog dialog = new Dialog();
             dialog.add(new Label("Map successful Validated!"));
             dialog.setWidth("300px");
             dialog.setHeight("150px");
             dialog.open();
-        }
-        else {
+        } else {
             Dialog dialog = new Dialog();
             dialog.add(new Label("Map Validation Failed!"));
             dialog.setWidth("300px");
@@ -1124,10 +1099,11 @@ public class MainView extends VerticalLayout {
         return isValidated;
     }
 
-    /** Create Invalid Input Alert Dialog
-     * dialog can be closed with the esc-key or an outside click
+    /**
+     * Create Invalid Input Alert Dialog dialog can be closed with the esc-key or an
+     * outside click
      */
-    private void invalidInputAlert(){
+    private void invalidInputAlert() {
         Dialog dialog = new Dialog();
         dialog.add(new Label("Invalid Input Command!"));
         dialog.setWidth("300px");
@@ -1137,11 +1113,13 @@ public class MainView extends VerticalLayout {
         // inputAlert.alert();
     }
 
-    /** Create Alert Dialog
-     * @param alertStr alert text will appear on the Dialog
-     * dialog can be closed with the esc-key or an outside click
+    /**
+     * Create Alert Dialog
+     * 
+     * @param alertStr alert text will appear on the Dialog dialog can be closed
+     *                 with the esc-key or an outside click
      */
-    private void createAlert(String alertStr){
+    private void createAlert(String alertStr) {
         Dialog dialog = new Dialog();
         dialog.add(new Label(alertStr));
         dialog.setWidth("300px");
