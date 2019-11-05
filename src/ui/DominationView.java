@@ -22,7 +22,11 @@ import java.awt.event.ActionEvent;
  * This JFrame will appear when the player insert view in the main game UI
  * It shows the information of all the players' name, how much countries they owned (in percentage), which continent they have controlled
  * It also shows the total army numbers of all the players, if one player is already lose, it will not been shown
- * @author Administrator
+ * @author Boxiao Yu 40070128
+ * @author Yilun Sun 40092802
+ * @author Yuhua Jiang 40083453
+ * @author Jiuxiang Chen 40086723
+ * @author Chao Ye 40055665
  *
  */
 public class DominationView extends JFrame {
@@ -66,8 +70,8 @@ public class DominationView extends JFrame {
 		textArea.setBounds(14, 13, 716, 262);
 		contentPane.add(textArea);
 		
-		textArea.append(String.format("%-20s%-18s%-40s%-10s","Player","Percentage","Continent control","Armies")+"\n");
-		textArea.append(String.format("%-20s%-18s%-40s%-10s","yechao","20%","AF,SE","56")+"\n");
+		textArea.append(String.format("%-20s%-18s%-30s%-10s","Player","Percentage","Continent control","Armies")+"\n");
+		textArea.append(String.format("%-20s%-18s%-30s%-10s","yechao","20%","AF,SE","56")+"\n");
 		textArea.append(String.format("%-20s%-18s%-40s%-10s","yechao","20%","AF,SE","56")+"\n");
 		textArea.append(String.format("%-20s%-18s%-40s%-10s","yechao","20%","AF,SE","56")+"\n");
 		textArea.append(String.format("%-20s%-18s%-40s%-10s","yechao","20%","AF,SE","56")+"\n");
@@ -94,7 +98,7 @@ public class DominationView extends JFrame {
 	public DominationView(Controller control) {
 		setTitle("Domination View");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 762, 345);
+		setBounds(100, 100, 762, 396);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(null);
@@ -106,7 +110,7 @@ public class DominationView extends JFrame {
 		textArea.setBounds(14, 13, 716, 262);
 		contentPane.add(textArea);
 		
-		textArea.append(String.format("%-20s%-18s%-40s%-10s","Player","Percentage","Continent control","Armies")+"\n");
+		textArea.append(String.format("%-20s%-18s%-30s%-10s","Player","Percentage","Continent control","Armies")+"\n");
 		for(Player p:control.getGame().getPlayers()) {
 			String name = p.getID();
 			String percentage = String.valueOf(p.getTotalCountriesNumber()*100/control.getGame().getCountries().size())+"%";
@@ -125,19 +129,19 @@ public class DominationView extends JFrame {
 					armies+=c.getArmyNum();
 				}
 			}
-			if(continent_control.length()>40) {
-				String tmp = continent_control.substring(37);
-				continent_control = continent_control.substring(0,37)+"-";
-				textArea.append(String.format("%-20s%-18s%-40s%-10s",name,percentage,continent_control,String.valueOf(armies))+"\n");
-				while(tmp.length()>40) {
-					String t = tmp.substring(0,37)+"-";
-					textArea.append(String.format("%-20s%-18s%-40s%-10s","","",t,"")+"\n");
-					tmp = tmp.substring(37);
+			if(continent_control.length()>30) {
+				String tmp = continent_control.substring(27);
+				continent_control = continent_control.substring(0,27)+"-";
+				textArea.append(String.format("%-20s%-18s%-30s%-10s",name,percentage,continent_control,String.valueOf(armies))+"\n");
+				while(tmp.length()>30) {
+					String t = tmp.substring(0,27)+"-";
+					textArea.append(String.format("%-20s%-18s%-30s%-10s","","",t,"")+"\n");
+					tmp = tmp.substring(27);
 				}
-				textArea.append(String.format("%-20s%-18s%-40s%-10s","","",tmp,"")+"\n");
+				textArea.append(String.format("%-20s%-18s%-30s%-10s","","",tmp,"")+"\n");
 			}
 			else {
-				textArea.append(String.format("%-20s%-18s%-40s%-10s",name,percentage,continent_control,String.valueOf(armies))+"\n");
+				textArea.append(String.format("%-20s%-18s%-30s%-10s",name,percentage,continent_control,String.valueOf(armies))+"\n");
 			}
 		}
 		

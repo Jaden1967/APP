@@ -9,9 +9,17 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import junit.runner.*;
 
+/**
+ * @author Boxiao Yu 40070128
+ * @author Yilun Sun 40092802
+ * @author Yuhua Jiang 40083453
+ * @author Jiuxiang Chen 40086723
+ * @author Chao Ye 40055665
+ */
+
 @RunWith(Suite.class)
 @SuiteClasses({StartupTest.class,ReinforceTest.class,PlayerTest.class,LoadmapTest.class,FortifyTest.class
-	,AttackTest.class})
+	,AttackTest.class,VictoryTest.class})
 public class TestSuite{
 	public static void main(String[] args) {
 		Result result = JUnitCore.runClasses(TestSuite.class);

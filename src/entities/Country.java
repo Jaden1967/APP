@@ -10,6 +10,14 @@ import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import ui.labels.CountryObsLabel;
 
+/**
+ * Country object for the game play
+ * @author Boxiao Yu 40070128
+ * @author Yilun Sun 40092802
+ * @author Yuhua Jiang 40083453
+ * @author Jiuxiang Chen 40086723
+ * @author Chao Ye 40055665
+ */
 public class Country extends Observable{
 		private String countryName;
 		private Player owner;

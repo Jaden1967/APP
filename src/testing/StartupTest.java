@@ -23,7 +23,11 @@ import entities.Player;
  * Siam is assigned to Player b
  * China is assigned to Player c
  * 
- *
+ * @author Boxiao Yu 40070128
+ * @author Yilun Sun 40092802
+ * @author Yuhua Jiang 40083453
+ * @author Jiuxiang Chen 40086723
+ * @author Chao Ye 40055665
  */
 public class StartupTest {
 	Controller control;

@@ -17,6 +17,13 @@ import entities.Continent;
 import entities.Country;
 import entities.Player;
 
+/**
+ * @author Boxiao Yu 40070128
+ * @author Yilun Sun 40092802
+ * @author Yuhua Jiang 40083453
+ * @author Jiuxiang Chen 40086723
+ * @author Chao Ye 40055665
+ */
 public class LoadmapTest {
 	
 	private Vector<Continent> continentsList = new Vector<Continent>();
@@ -195,7 +202,7 @@ public class LoadmapTest {
 	
 	@Test
 	public void hasPathTo() {
-		Player p = new Player ("a", getColor("blue"));
+		Player p = new Player ("a", getColor("blue"), null);
 		HashSet<String> visited = new HashSet<>();
 		countriesList.get(0).setOwner(p);
 		countriesList.get(2).setOwner(p);
@@ -207,7 +214,7 @@ public class LoadmapTest {
 	
 	@Test 
 	public void noPathTo() {
-		Player p = new Player ("a",getColor("blue"));
+		Player p = new Player ("a",getColor("blue"), null);
 		HashSet<String> visited = new HashSet<>();
 		countriesList.get(0).setOwner(p);
 		countriesList.get(7).setOwner(p);
@@ -231,8 +238,8 @@ public class LoadmapTest {
 	
 	@Test
 	public void observerChange() {
-		Player a = new Player ("a",getColor("blue"));
-		Player b = new Player ("b",getColor("green"));
+		Player a = new Player ("a",getColor("blue"), null);
+		Player b = new Player ("b",getColor("green"), null);
 		Country c = countriesList.get(0);
 		c.setOwner(a);
 		assertEquals(a.getColor(),c.getLabel().getBackground());

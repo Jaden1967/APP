@@ -237,7 +237,20 @@ public class MainView extends VerticalLayout {
             x_coor = coordinatesText.getValue().split(" ")[0];
             y_coor = coordinatesText.getValue().split(" ")[1];
             dialog.close();
-            addCountry(countryname, continentname, Integer.valueOf(x_coor), Integer.valueOf(y_coor));
+
+            if (x_coor.matches("\\d+") && y_coor.matches("\\d+")) {
+                if (Integer.valueOf(x_coor) > 0 &&  Integer.valueOf(x_coor) < map_width && Integer.valueOf(y_coor) > 0 &&  Integer.valueOf(y_coor) < map_width) {
+                    addCountry(countryname, continentname, Integer.valueOf(x_coor), Integer.valueOf(y_coor));
+                }
+                else {
+                    createAlert("Wrong coordiantes. You can not place a country outside the map.");
+                }
+            }
+            else {
+                createAlert("Country coordiantes should be integers!");
+            }
+
+            
         });   
         confirmButton.addClickShortcut(Key.ENTER);
         // TODO:
@@ -262,16 +275,23 @@ public class MainView extends VerticalLayout {
             map_width = Integer.valueOf(mapSizeText.getValue().split(" ")[0]);
             map_height = Integer.valueOf(mapSizeText.getValue().split(" ")[1]);
             dialog.close();
-            addOutputLog("set map width to: " + map_width + "; set map height to: " + map_height);
-            mapSize.setValue("map width: " + map_width + "\nmap height: " + map_height);
 
-            // TODO:
-            canvas.setMaxHeight(String.valueOf(map_height));
-            canvas.setMinHeight(String.valueOf(map_height));
-            canvas.setMaxWidth(String.valueOf(map_width));
-            canvas.setMinWidth(String.valueOf(map_width));
-            ctx.setStrokeStyle("#373C38");
-            ctx.strokeRect(2, 2, map_width - 2, map_height - 2);
+            if ((mapSizeText.getValue().split(" ")[0].matches("\\d+") && Integer.valueOf(mapSizeText.getValue().split(" ")[0]) > 0) && (mapSizeText.getValue().split(" ")[1].matches("\\d+") && Integer.valueOf(mapSizeText.getValue().split(" ")[1]) > 0)) {
+                addOutputLog("set map width to: " + map_width + "; set map height to: " + map_height);
+                mapSize.setValue("map width: " + map_width + "\nmap height: " + map_height);
+    
+                // TODO:
+                canvas.setMaxHeight(String.valueOf(map_height));
+                canvas.setMinHeight(String.valueOf(map_height));
+                canvas.setMaxWidth(String.valueOf(map_width));
+                canvas.setMinWidth(String.valueOf(map_width));
+                ctx.setStrokeStyle("#373C38");
+                ctx.strokeRect(2, 2, map_width - 2, map_height - 2);
+            }
+            else {
+                createAlert("Invalid map size.");
+                setMapSize();
+            }
         });   
         confirmButton.addClickShortcut(Key.ENTER);
 
@@ -309,7 +329,11 @@ public class MainView extends VerticalLayout {
                 if (tempArr[0].equals("editcontinent")) {
                     if (tempArr[1].equals("-add")) {
                         // TODO closed
-                        addContinent(tempArr[2], tempArr[3]);
+                        if (tempArr[3].matches("\\d+") && Integer.valueOf(tempArr[3]) > 0)
+                            addContinent(tempArr[2], tempArr[3]);
+                        else {
+                            createAlert("Continent value is not an positive integer!");
+                        }
                     }
                     else {
                         // TODO closed
@@ -323,6 +347,7 @@ public class MainView extends VerticalLayout {
                     // TODO closed
                     if (tempArr[1].equals("-add")) {
                         // open dialog for the input of coordinates
+
                         coordinatesDialog(tempArr[2], tempArr[3]);
                         
                         // TODO closed

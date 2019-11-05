@@ -17,8 +17,11 @@ import javax.swing.SwingConstants;
  * The play button create an initial JFrame for player which can load map or add player
  * The load button simply regenerate a game based on the map file and status which the player has saved before
  * The exit button end the game
- * @author Administrator
- *
+ * @author Boxiao Yu 40070128
+ * @author Yilun Sun 40092802
+ * @author Yuhua Jiang 40083453
+ * @author Jiuxiang Chen 40086723
+ * @author Chao Ye 40055665
  */
 public class Menu extends JFrame {
 

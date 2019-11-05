@@ -3,10 +3,17 @@ package entities;
 import java.awt.Color;
 import java.util.Vector;
 
+import controller.Controller;
+
 /**
  * Player object for the game play
  * Contains attributes for a single player, such as id, owned country number, color, armies to place
  * as well as methods to alter these attributes
+ * @author Boxiao Yu 40070128
+ * @author Yilun Sun 40092802
+ * @author Yuhua Jiang 40083453
+ * @author Jiuxiang Chen 40086723
+ * @author Chao Ye 40055665
  */
 public class Player {
 	private String id;
@@ -16,6 +23,7 @@ public class Player {
 	private Color color;
 	private int army_to_place;
 	private int trade_times;
+	private GamePlay g;
 	
 	/**
 	 * Empty constructor for Player
@@ -32,18 +40,19 @@ public class Player {
 	 * @param id name of Player
 	 * @param color Color of player
 	 */
-	public Player(String id, Color color) {
+	public Player(String id, Color color, GamePlay g) {
 		this.id = id;
 		this.color = color;
 		this.ownedContinent = new Vector<>();
 		this.army_to_place = 0;
 		this.trade_times = 0;
+		this.g = g;
 	}
 	
 	/**
 	 * Calculate the default amount of army rewarded to Player at the start of the recruitment phase
 	 * Based on total number of Countries owned by the player
-	 * @return rew number of armies to place as int
+	 * @return raw number of armies to place as int
 	 */
 	public int calculateArmy() {
         int raw = total_country_number/3;
@@ -269,5 +278,25 @@ public class Player {
 	 */
 	public void setTradeTimes(int t) {
 		trade_times = t;
+	}
+	
+	/**
+	 * Getter for game
+	 * @return game
+	 */
+	public GamePlay getGame() {
+		return this.g;
+	}
+	
+	public void phaseRecruit() {
+		g.phaseRecruit();
+	}
+	
+	public void phaseAttack() {
+		g.phaseAttack();
+	}
+	
+	public void phaseFortify() {
+		g.phaseFortify();
 	}
 }

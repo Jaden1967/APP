@@ -23,6 +23,11 @@ import java.util.Random;
  * public methods within GamePlay is called by the controller while processing user inputs from the UI during game play
  * Attributes can only be accessed by getters and setters from the controller
  * handles change of game data and state and reflects to relevant observers
+ * @author Boxiao Yu 40070128
+ * @author Yilun Sun 40092802
+ * @author Yuhua Jiang 40083453
+ * @author Jiuxiang Chen 40086723
+ * @author Chao Ye 40055665
  */
 public class GamePlay extends Observable{
 	private Vector <Continent> continents_list;
@@ -41,6 +46,7 @@ public class GamePlay extends Observable{
 	private int add_flag = 0;
 	private JFrame mapui = null;
 	boolean is_test = false;
+	public boolean game_ended = false;
 	
 	/**
 	 * Empty default ctor
@@ -108,7 +114,6 @@ public class GamePlay extends Observable{
 	private void phaseZero() {
 		phase = "Startup Phase";
 		for(Player p: player_list) p.initializeStartupArmy(player_list.size());
-
 		player = player_list.get(player_index);
 		army_to_place = player.getArmyToPlace();
 		alertObservers();
@@ -174,7 +179,7 @@ public class GamePlay extends Observable{
 		alertObservers();
 		if(army_to_place==0) {
 			player.rewardInitialArmy();
-			phaseRecruit();
+			player.phaseRecruit();
 		}
 	}
 	
@@ -185,7 +190,7 @@ public class GamePlay extends Observable{
      * Set phase to "Fortification Phase"
      * Alerts InfoObsLabel
      */
-	private void phaseRecruit() {
+	public void phaseRecruit() {
 		showDialog("Reinforcement Phase for player "+player.getID());
 		add_flag = 0;
 		if(player.getOwnCard().size()==5) {
@@ -212,7 +217,7 @@ public class GamePlay extends Observable{
 		outcome = "Reinforced "+c.getName()+" with "+num+" armies";
 		alertObservers();
 		if(army_to_place==0) {
-			phaseAttack();
+			player.phaseAttack();
 		}
 	}
 	
@@ -237,13 +242,13 @@ public class GamePlay extends Observable{
      * If player is able to attack with at least one of its countries, continue the attack phase
      * Else go directly into fortify phase
      */
-	private void phaseAttack() {
+	public void phaseAttack() {
 		showDialog("Attack Phase for player "+player.getID());
 		if(checkIfCanAttack(player)) {
 			phase = "Attack Phase 1";
 			alertObservers();
 		}else {
-			phaseFortify();
+			player.phaseFortify();
 		}
 		
 	}
@@ -254,7 +259,7 @@ public class GamePlay extends Observable{
 	 * Goes directly into Fortification Phase
 	 */
 	public void noAttack() {
-		phaseFortify();
+		player.phaseFortify();
 	}
 	
 	/**
@@ -299,7 +304,7 @@ public class GamePlay extends Observable{
 				alertObservers();
 			}
 			else {
-				phaseFortify();
+				player.phaseFortify();
 			}
 		}
 		return conquered;
@@ -375,7 +380,7 @@ public class GamePlay extends Observable{
 			}
 			else {
 				outcome += "No more countries is able to attack";
-				phaseFortify();
+				player.phaseFortify();
 			}
 			alertObservers();
 		}
@@ -436,7 +441,7 @@ public class GamePlay extends Observable{
 			outcome += "Continue Attacking.\n";
 		}
 		else {
-			phaseFortify();
+			player.phaseFortify();
 		}
 		alertObservers();
 	}
@@ -449,9 +454,12 @@ public class GamePlay extends Observable{
 		defender.getContinent().checkIfConquered();
 		if(defender.getOwner().checkWin(continents_list.size())) {
 			showDialog("Player "+attacker.getOwner().getID()+", you win!");
-			mapui.dispose();
-			Menu m = new Menu();
-			m.setVisible(true);
+			game_ended = true;
+			if(!is_test) {
+				mapui.dispose();
+				Menu m = new Menu();
+				m.setVisible(true);
+			}
 		}
 	}
 	
@@ -477,7 +485,7 @@ public class GamePlay extends Observable{
      * Set phase to "Fortification Phase"
      * alerts InfoObsLabel
      */
-	private void phaseFortify() {
+	public void phaseFortify() {
 		showDialog("Fortification Phase for player "+player.getID());
 		if(checkIfCanFortify(player)) {
 			phase = "Fortification Phase";
@@ -514,8 +522,7 @@ public class GamePlay extends Observable{
 		army_to_place = player.getArmyToPlace();
 		outcome += "\tNext player's turn";
 		alertObservers();
-		
-		phaseRecruit();
+		player.phaseRecruit();
 	}
 	
     /**

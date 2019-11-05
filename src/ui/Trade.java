@@ -26,8 +26,11 @@ import java.awt.event.KeyEvent;
  * When the player insert "trade" in the main game UI, this JFrame will pop out
  * This JFrame shows all the cards that the current player has in a visualized way (showing the card views)
  * The player can use command to finish one trade command or just simply choose three cards on the screen by click the right image
- * @author Administrator
- *
+ * @author Boxiao Yu 40070128
+ * @author Yilun Sun 40092802
+ * @author Yuhua Jiang 40083453
+ * @author Jiuxiang Chen 40086723
+ * @author Chao Ye 40055665
  */
 public class Trade extends JFrame{
 
