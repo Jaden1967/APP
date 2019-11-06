@@ -675,7 +675,7 @@ public class MainView extends VerticalLayout {
                         if (arrList.get(neighbor_index).equals(neighborCountryname)) {
                             arrList.remove(neighbor_index);
                             // if (arrList.size() == 1) {
-                            //     neighborsData.remove(arrList);
+                            // neighborsData.remove(arrList);
                             // }
                             hasNeighborCountry = true;
                             updateNeighbors();
@@ -685,7 +685,7 @@ public class MainView extends VerticalLayout {
             }
         }
 
-        addOutputLog(neighborsData.toString());
+        // addOutputLog(neighborsData.toString());
 
         // TODO:
         // for (ArrayList<String> arrList : neighborsData) {
@@ -716,8 +716,8 @@ public class MainView extends VerticalLayout {
                         if (neighborsData.get(arrListIndex).get(neighbor_index).equals(countryname)) {
                             neighborsData.get(arrListIndex).remove(neighbor_index);
                             // if (neighborsData.get(arrListIndex).size() == 1) {
-                            //     addOutputLog("arrList Size3:" + neighborsData.get(arrListIndex).size());
-                            //     neighborsData.remove(arrListIndex);
+                            // addOutputLog("arrList Size3:" + neighborsData.get(arrListIndex).size());
+                            // neighborsData.remove(arrListIndex);
                             // }
                             hasCountry = true;
                             updateNeighbors();
@@ -751,10 +751,10 @@ public class MainView extends VerticalLayout {
                     }
                     strBuilder.append(neighborStr + "\n");
                 }
-                
+
             }
             neighbors.setValue(strBuilder.toString());
-        } 
+        }
         if (neighbors.getValue().equals("")) {
             neighbors.setValue("neighbors shows here\n");
         }
@@ -1047,10 +1047,54 @@ public class MainView extends VerticalLayout {
             }
         }
 
+        // TODO:
+        for (ArrayList<String> continentArrayList : continentsData) {
+            String continent_name = continentArrayList.get(0);
+
+            ArrayList<String> can_reach_country_set = new ArrayList<>();
+            ArrayList<String> continent_country_list = new ArrayList<>();
+            for (ArrayList<String> countryArrayList : countriesData) {
+                if (countryArrayList.get(1).equals(continent_name)) {
+                    continent_country_list.add(countryArrayList.get(0));
+                }
+            }
+
+            if (continent_name.equals("South-America")) {
+                addOutputLog(continent_country_list.toString());
+            }
+            
+            Queue<String> country_openList = new LinkedList<>();
+            country_openList.add(continent_country_list.get(0));
+            can_reach_country_set.add(continent_country_list.get(0));
+
+            while (country_openList.size() != 0) {
+                String curr_country = country_openList.peek();
+                for (ArrayList<String> neighbor_data : neighborsData) {
+                    // TODO:
+                    if (neighbor_data.get(0).equals(curr_country) && neighbor_data.size() > 1) {
+                        for (String neighbor_name : neighbor_data) {
+                            if (!can_reach_country_set.contains(neighbor_name) && continent_country_list.contains(neighbor_name)) {
+                                country_openList.add(neighbor_name);
+                                can_reach_country_set.add(neighbor_name);
+                            }
+                        }
+                    }
+                }
+                country_openList.poll();
+            }
+            if (can_reach_country_set.size() != continent_country_list.size()) {
+                addOutputLog("can_reach_country_set: " + can_reach_country_set.toString());
+                addOutputLog("continent_country_list: " + continent_country_list.toString());
+                // createAlert(neighborsData.toString());
+                // createAlert(can_reach_country_set.toString());
+                isValidated = false;
+            }
+        }
+
         int country_num = countriesMap.size();
         HashSet<String> country_set = new HashSet<>();
         Queue<String> openList = new LinkedList<>();
-        Queue<String> closedList = new LinkedList<>();
+        // Queue<String> closedList = new LinkedList<>();
         openList.add(neighborsData.get(0).get(0));
         country_set.add(neighborsData.get(0).get(0));
 
@@ -1078,8 +1122,8 @@ public class MainView extends VerticalLayout {
         }
         if (country_set.size() != country_num) {
             addOutputLog("0" + country_set.size());
-            createAlert(neighborsData.toString());
-            createAlert(country_set.toString());
+            // createAlert(neighborsData.toString());
+            // createAlert(country_set.toString());
             isValidated = false;
         }
 
