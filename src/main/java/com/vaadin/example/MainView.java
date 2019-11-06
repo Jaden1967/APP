@@ -516,6 +516,32 @@ public class MainView extends VerticalLayout {
                     continentsData.remove(i);
                 }
             }
+
+            ArrayList<String> removed_countries = new ArrayList<>();
+            // delete countries belong to this continent
+            for (int i = countriesData.size() - 1; i >= 0; i--) {
+                if (countriesData.get(i).get(1).equals(continentname)) {
+                    removed_countries.add(countriesData.get(i).get(0));
+                    countriesData.remove(i);
+                }
+            }
+
+            // delete neighbors data related to removed countries
+            for (ArrayList<String> neighbor_names : neighborsData) {
+                if (removed_countries.contains(neighbor_names.get(0))) {
+                    String temp_curr_country = neighbor_names.get(0);
+                    neighbor_names.clear();
+                    neighbor_names.add(temp_curr_country);
+                }
+                if (neighbor_names.size() > 1) {
+                    for (int j = neighbor_names.size() - 1; j >= 1; j--) {
+                        if (removed_countries.contains(neighbor_names.get(j))) {
+                            neighbor_names.remove(j);
+                        }
+                    }
+                }
+            }
+
         } else {
             // TODO:
             // invalid
@@ -528,6 +554,8 @@ public class MainView extends VerticalLayout {
         }
 
         updateContinents();
+        updateCountries();
+        updateNeighbors();
     }
 
     private void updateContinents() {
