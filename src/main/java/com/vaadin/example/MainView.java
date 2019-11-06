@@ -14,7 +14,11 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.contextmenu.MenuItem;
+import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
@@ -22,14 +26,18 @@ import com.vaadin.flow.component.html.Label;
 
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-
+import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.dom.ThemeList;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.theme.Theme;
+import com.vaadin.flow.theme.lumo.Lumo;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.Notification.Position;
 
@@ -92,8 +100,86 @@ public class MainView extends VerticalLayout {
 
     private Canvas canvas = new Canvas(2000, 1000);
     private CanvasRenderingContext2D ctx = canvas.getContext();
+    private Button runButton;
+    private MenuBar menuBar = new MenuBar();
+
+    private ArrayList<String> map_list = new ArrayList<>();
+
+    // private void updateMapList() {
+    // map_list = getFile();
+    // }
 
     private void init() {
+        // add all maps in map folder to map_list
+        map_list.addAll(getFile());
+
+        String[] continent_data_list = { "Asia", "Europe", "North-America", "South-America", "Africa", "Oceania" };
+        String[] country_data_list = { "Afghanistan", "Alaska", "Alberta", "Argentina", "Brazil", "Central-America",
+                "China", "Congo", "East-Africa", "Eastern-United-States", "Egypt", "Great-Britain", "Greenland",
+                "Iceland", "Madagascar", "North-Africa", "North-West-Territory", "Northern-Europe", "Ontario", "Peru",
+                "Quebec", "Scandinavia", "Siberia", "South-Africa", "Southern-Europe", "Ukraine", "Ural", "Venezuela",
+                "Western-Europe", "Western-United-States" };
+
+        MenuItem editcontinent_menu = menuBar.addItem("editcontinent");
+        MenuItem editcountry_menu = menuBar.addItem("editcountry");
+        MenuItem editneighbor_menu = menuBar.addItem("editneighbor");
+        MenuItem map_menu = menuBar.addItem("map operations");
+        MenuItem data_menu = menuBar.addItem("data");
+
+        // menuBar.addItem("Sign Out", e -> selected.setText("Sign Out"));
+
+        SubMenu editcontinent_submenu = editcontinent_menu.getSubMenu();
+        editcontinent_submenu.addItem("-add", e -> commandLine.setValue("editcontinent -add"));
+        editcontinent_submenu.addItem("-remove", e -> commandLine.setValue("editcontinent -remove"));
+
+        SubMenu editcountry_submenu = editcountry_menu.getSubMenu();
+        editcountry_submenu.addItem("-add", e -> commandLine.setValue("editcountry -add"));
+        editcountry_submenu.addItem("-remove", e -> commandLine.setValue("editcountry -remove"));
+
+        SubMenu editneighbor_submenu = editneighbor_menu.getSubMenu();
+        editneighbor_submenu.addItem("-add", e -> commandLine.setValue("editneighbor -add"));
+        editneighbor_submenu.addItem("-remove", e -> commandLine.setValue("editneighbor -remove"));
+
+        SubMenu map_submenu = map_menu.getSubMenu();
+        map_submenu.addItem("showmap", e -> showmap());
+        map_submenu.addItem("validatemap", e -> validateMap());
+        map_submenu.addItem("savemap", e -> commandLine.setValue("savemap"));
+
+        MenuItem editmap_submenu = map_submenu.addItem("editmap");
+        SubMenu editmap_data_submenu = editmap_submenu.getSubMenu();
+        for (String map_name : map_list) {
+            editmap_data_submenu.addItem(map_name, e -> editMap(map_name));
+        }
+
+        SubMenu data_submenu = data_menu.getSubMenu();
+        MenuItem continent_data_menu = data_submenu.addItem("continent list");
+        MenuItem country_data_menu = data_submenu.addItem("country list");
+        // MenuItem integer_data_menu = data_submenu.addItem("integer list");
+
+        SubMenu continent_data_submenu = continent_data_menu.getSubMenu();
+        for (String continent_data_name : continent_data_list) {
+            continent_data_submenu.addItem(continent_data_name,
+                    e -> commandLine.setValue(commandLine.getValue() + " " + continent_data_name));
+        }
+        SubMenu country_data_submenu = country_data_menu.getSubMenu();
+        for (String country_data_name : country_data_list) {
+            country_data_submenu.addItem(country_data_name,
+                    e -> commandLine.setValue(commandLine.getValue() + " " + country_data_name));
+        }
+        // SubMenu integer_data_menu = continent_data_menu.getSubMenu();
+        // for {
+        // continent_data_submenu.addItem(continent_data_name, e ->
+        // commandLine.setValue(commandLine.getValue() + " " + continent_data_name));
+        // }
+
+        // TODO:
+
+        // SubMenu country_data_list_submenu = country_data_list.getSubMenu();
+        // MenuItem continent_data_list = country_data_list_submenu.addItem("continent
+        // list");
+        // MenuItem country_data_list = country_data_list_submenu.addItem("country
+        // list");
+
         // page1.setText("Page#1");
 
         // page2.setText("Page#2");
@@ -120,14 +206,32 @@ public class MainView extends VerticalLayout {
                 mapSize.setVisible(false);
                 canvas.setVisible(false);
                 outputLog.setVisible(true);
+                continents.setVisible(true);
+                countries.setVisible(true);
+                neighbors.setVisible(true);
+                commandLine.setVisible(true);
+                runButton.setVisible(true);
+                menuBar.setVisible(true);
             } else if (tabs.getSelectedTab() == tab2) {
                 mapSize.setVisible(true);
                 canvas.setVisible(true);
                 outputLog.setVisible(false);
+                continents.setVisible(false);
+                countries.setVisible(false);
+                neighbors.setVisible(false);
+                commandLine.setVisible(false);
+                runButton.setVisible(false);
+                menuBar.setVisible(false);
             } else if (tabs.getSelectedTab() == tab3) {
                 mapSize.setVisible(false);
                 canvas.setVisible(false);
                 outputLog.setVisible(false);
+                continents.setVisible(false);
+                countries.setVisible(false);
+                neighbors.setVisible(false);
+                commandLine.setVisible(false);
+                runButton.setVisible(false);
+                menuBar.setVisible(false);
             }
         });
 
@@ -204,6 +308,24 @@ public class MainView extends VerticalLayout {
         commandLine.setWidth("600px");
         commandLine.setClearButtonVisible(true);
         commandLine.setErrorMessage("invalid");
+    }
+
+    private ArrayList<String> getFile() {
+        String path = "D:/Projects/GitProjects/APPmapeditor/map"; // 要遍历的路径
+        File file = new File(path); // 获取其file对象
+        File[] fs = file.listFiles(); // 遍历path下的文件和目录，放在File数组中
+        ArrayList<String> file_list = new ArrayList<>();
+        for (File f : fs) { // 遍历File[]数组
+            if (!f.isDirectory()) { // 若非目录(即文件)，则加入list
+                // TODO:
+                String temp = f.getName();
+                if (temp.substring(temp.length() - 4).equals(".map")) {
+                    file_list.add(temp.substring(0, temp.length() - 4));
+                }
+            }
+        }
+        addOutputLog("Find maps in map folder: " + file_list);
+        return file_list;
     }
 
     public void addOutputLog(String addtext) {
@@ -309,7 +431,7 @@ public class MainView extends VerticalLayout {
         });
 
         // TODO:
-        Button runButton = new Button("Run", event -> {
+        runButton = new Button("Run", event -> {
             String temp = commandLine.getValue();
             String[] tempArr = temp.split(" ");
 
@@ -440,6 +562,16 @@ public class MainView extends VerticalLayout {
         });
         runButton.addClickShortcut(Key.ENTER);
 
+        Button toggleThemeButton = new Button("Toggle dark theme", click -> {
+            ThemeList themeList = UI.getCurrent().getElement().getThemeList(); //
+
+            if (themeList.contains(Lumo.DARK)) { //
+                themeList.remove(Lumo.DARK);
+            } else {
+                themeList.add(Lumo.DARK);
+            }
+        });
+
         // TODO:
         // a save map button
 
@@ -462,10 +594,10 @@ public class MainView extends VerticalLayout {
              // new HorizontalLayout(outputLog, new HorizontalLayout(mapSize, canvas))
              // )
              // )
-                new H1("Map Editor"),
-                new VerticalLayout(new HorizontalLayout(continents, countries, neighbors),
-                        new HorizontalLayout(commandLine, runButton), tabs,
-                        new HorizontalLayout(outputLog, new HorizontalLayout(mapSize, canvas))));
+                new H1("Map Editor"), new HorizontalLayout(tabs, toggleThemeButton),
+                new VerticalLayout(new HorizontalLayout(continents, countries, neighbors), menuBar,
+                        new HorizontalLayout(commandLine, runButton), outputLog),
+                new HorizontalLayout(mapSize, canvas));
         // new HorizontalLayout(continents, countries, neighbors),
         // new HorizontalLayout(commandLine, runButton),
 
@@ -1001,40 +1133,44 @@ public class MainView extends VerticalLayout {
 
     // DrawMap
     public void drawMap() {
-        canvas.setMaxHeight(String.valueOf(map_height));
-        canvas.setMinHeight(String.valueOf(map_height));
-        canvas.setMaxWidth(String.valueOf(map_width));
-        canvas.setMinWidth(String.valueOf(map_width));
-        ctx.setStrokeStyle("#373C38");
+        canvas.setMaxHeight(String.valueOf(map_height * 2));
+        canvas.setMinHeight(String.valueOf(map_height * 2));
+        canvas.setMaxWidth(String.valueOf(map_width * 2));
+        canvas.setMinWidth(String.valueOf(map_width * 2));
+        ctx.setStrokeStyle("#348498");
         ctx.clearRect(0, 0, 2000, 2000);
-        ctx.strokeRect(2, 2, map_width - 2, map_height - 2);
+        ctx.strokeRect(2, 2, map_width * 2 - 2, map_height * 2 - 2);
 
-        // countries
-        for (ArrayList<String> arrList : countriesData) {
-            String countryName = arrList.get(0);
-            String continentName = arrList.get(1);
-            int coordinate_x = Integer.valueOf(arrList.get(2));
-            int coordinate_y = Integer.valueOf(arrList.get(3));
-            ctx.setFillStyle(String.format("rgb(%s, %s, %s)", 100, 111, 99));
-            ctx.fillRect(coordinate_x - 10, coordinate_y - 10, 20, 20);
-            ctx.setFillStyle(String.format("BLACK"));
-            ctx.fillText(countryName, coordinate_x - 30, coordinate_y - 15);
-        }
-
+        // neighbors line
         for (ArrayList<String> neighborList : neighborsData) {
             String currCountryName = neighborList.get(0);
-            int coordinate_x = Integer.valueOf(getCountryCoordinates(currCountryName).split(",")[0]);
-            int coordinate_y = Integer.valueOf(getCountryCoordinates(currCountryName).split(",")[1]);
+            // * 2
+            int coordinate_x = Integer.valueOf(getCountryCoordinates(currCountryName).split(",")[0]) * 2;
+            int coordinate_y = Integer.valueOf(getCountryCoordinates(currCountryName).split(",")[1]) * 2;
             for (int i = 1; i < neighborList.size(); i++) {
-                int neighbor_x = Integer.valueOf(getCountryCoordinates(neighborList.get(i)).split(",")[0]);
-                int neighbor_y = Integer.valueOf(getCountryCoordinates(neighborList.get(i)).split(",")[1]);
-                ctx.setStrokeStyle("red");
+                // * 2
+                int neighbor_x = Integer.valueOf(getCountryCoordinates(neighborList.get(i)).split(",")[0]) * 2;
+                int neighbor_y = Integer.valueOf(getCountryCoordinates(neighborList.get(i)).split(",")[1]) * 2;
+                ctx.setStrokeStyle("#ff502f");
                 ctx.beginPath();
                 ctx.moveTo(coordinate_x, coordinate_y);
                 ctx.lineTo(neighbor_x, neighbor_y);
                 ctx.closePath();
                 ctx.stroke();
             }
+        }
+
+        // countries
+        for (ArrayList<String> arrList : countriesData) {
+            String countryName = arrList.get(0);
+            String continentName = arrList.get(1);
+            // * 2
+            int coordinate_x = Integer.valueOf(arrList.get(2)) * 2;
+            int coordinate_y = Integer.valueOf(arrList.get(3)) * 2;
+            ctx.setFillStyle("#348498");
+            ctx.fillRect(coordinate_x - 10, coordinate_y - 10, 20, 20);
+            ctx.setFillStyle("#5f6769");
+            ctx.fillText(countryName, coordinate_x - 30, coordinate_y - 15);
         }
     }
 
@@ -1090,7 +1226,7 @@ public class MainView extends VerticalLayout {
             if (continent_name.equals("South-America")) {
                 addOutputLog(continent_country_list.toString());
             }
-            
+
             Queue<String> country_openList = new LinkedList<>();
             country_openList.add(continent_country_list.get(0));
             can_reach_country_set.add(continent_country_list.get(0));
@@ -1101,7 +1237,8 @@ public class MainView extends VerticalLayout {
                     // TODO:
                     if (neighbor_data.get(0).equals(curr_country) && neighbor_data.size() > 1) {
                         for (String neighbor_name : neighbor_data) {
-                            if (!can_reach_country_set.contains(neighbor_name) && continent_country_list.contains(neighbor_name)) {
+                            if (!can_reach_country_set.contains(neighbor_name)
+                                    && continent_country_list.contains(neighbor_name)) {
                                 country_openList.add(neighbor_name);
                                 can_reach_country_set.add(neighbor_name);
                             }
