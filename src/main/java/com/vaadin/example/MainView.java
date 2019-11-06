@@ -669,14 +669,14 @@ public class MainView extends VerticalLayout {
         }
 
         for (ArrayList<String> arrList : neighborsData) {
-            if (arrList != null && arrList.size() != 0) {
+            if (arrList != null && arrList.size() > 1) {
                 if (arrList.get(0).equals(countryname)) {
                     for (int neighbor_index = 1; neighbor_index < arrList.size(); neighbor_index++) {
                         if (arrList.get(neighbor_index).equals(neighborCountryname)) {
                             arrList.remove(neighbor_index);
-                            if (arrList.size() == 1) {
-                                neighborsData.remove(arrList);
-                            }
+                            // if (arrList.size() == 1) {
+                            //     neighborsData.remove(arrList);
+                            // }
                             hasNeighborCountry = true;
                             updateNeighbors();
                         }
@@ -686,7 +686,6 @@ public class MainView extends VerticalLayout {
         }
 
         addOutputLog(neighborsData.toString());
-        addOutputLog(String.valueOf(neighborsData.size()));
 
         // TODO:
         // for (ArrayList<String> arrList : neighborsData) {
@@ -710,20 +709,17 @@ public class MainView extends VerticalLayout {
 
         // TODO:
         for (int arrListIndex = 0; arrListIndex < neighborsData.size(); arrListIndex++) {
-            if (neighborsData.get(arrListIndex) != null && neighborsData.get(arrListIndex).size() != 0) {
-                addOutputLog("arrList Size:" + neighborsData.get(arrListIndex).size());
+            if (neighborsData.get(arrListIndex) != null && neighborsData.get(arrListIndex).size() > 1) {
                 if (neighborsData.get(arrListIndex).get(0).equals(neighborCountryname)) {
                     for (int neighbor_index = 1; neighbor_index < neighborsData.get(arrListIndex)
                             .size(); neighbor_index++) {
-                        addOutputLog("arrList Size1:" + neighborsData.get(arrListIndex).size());
                         if (neighborsData.get(arrListIndex).get(neighbor_index).equals(countryname)) {
-                            addOutputLog("arrList Size2:" + neighborsData.get(arrListIndex).size());
                             neighborsData.get(arrListIndex).remove(neighbor_index);
-                            if (neighborsData.get(arrListIndex).size() == 1) {
-                                addOutputLog("arrList Size3:" + neighborsData.get(arrListIndex).size());
-                                neighborsData.remove(arrListIndex);
-                            }
-                            hasNeighborCountry = true;
+                            // if (neighborsData.get(arrListIndex).size() == 1) {
+                            //     addOutputLog("arrList Size3:" + neighborsData.get(arrListIndex).size());
+                            //     neighborsData.remove(arrListIndex);
+                            // }
+                            hasCountry = true;
                             updateNeighbors();
                         }
                     }
@@ -748,13 +744,18 @@ public class MainView extends VerticalLayout {
             StringBuilder strBuilder = new StringBuilder();
             for (ArrayList<String> arrList : neighborsData) {
                 String neighborStr = "";
-                for (String strList : arrList) {
-                    neighborStr += (strList + " ");
+                // TODO:
+                if (arrList.size() > 1) {
+                    for (String strList : arrList) {
+                        neighborStr += (strList + " ");
+                    }
+                    strBuilder.append(neighborStr + "\n");
                 }
-                strBuilder.append(neighborStr + "\n");
+                
             }
             neighbors.setValue(strBuilder.toString());
-        } else {
+        } 
+        if (neighbors.getValue().equals("")) {
             neighbors.setValue("neighbors shows here\n");
         }
     }
@@ -824,7 +825,7 @@ public class MainView extends VerticalLayout {
                 String currCountryName = arrList.get(0);
                 for (ArrayList<String> neighborList : neighborsData) {
                     String neighborStr = "";
-                    if (neighborList.get(0).equals(currCountryName)) {
+                    if (neighborList.get(0).equals(currCountryName) && neighborList.size() > 1) {
                         for (String country_name : neighborList) {
                             neighborStr = neighborStr + neighborsMap.get(country_name) + " ";
                         }
