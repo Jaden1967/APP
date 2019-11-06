@@ -116,8 +116,8 @@ public class MainView extends VerticalLayout {
         String[] continent_data_list = { "Asia", "Europe", "North-America", "South-America", "Africa", "Oceania" };
         String[] country_data_list = { "Afghanistan", "Alaska", "Alberta", "Argentina", "Brazil", "Central-America",
                 "China", "Congo", "East-Africa", "Eastern-United-States", "Egypt", "Great-Britain", "Greenland",
-                "Iceland", "Madagascar", "North-Africa", "North-West-Territory", "Northern-Europe", "Ontario", "Peru",
-                "Quebec", "Scandinavia", "Siberia", "South-Africa", "Southern-Europe", "Ukraine", "Ural", "Venezuela",
+                "Iceland", "India", "Indonesia", "Madagascar", "North-Africa", "North-West-Territory", "Northern-Europe", "Ontario", "Peru",
+                "Quebec", "Scandinavia", "Siam", "Siberia", "South-Africa", "Southern-Europe", "Ukraine", "Ural", "Venezuela",
                 "Western-Europe", "Western-United-States" };
 
         MenuItem editcontinent_menu = menuBar.addItem("editcontinent");
