@@ -740,10 +740,30 @@ public class MainView extends VerticalLayout {
         if (countriesMap.containsKey(countryname)) {
             countriesMap.remove(countryname);
             // TODO:
+
+            ArrayList<String> removed_countries = new ArrayList<>();
             // fix bugs here!!!country
             for (ArrayList<String> arrList : countriesData) {
                 if (arrList.get(0).equals(countryname)) {
+                    removed_countries.add(arrList.get(0));
                     countriesData.remove(arrList);
+                    // break;
+                }
+            }
+            
+            // delete neighbors data related to removed countries
+            for (ArrayList<String> neighbor_names : neighborsData) {
+                if (removed_countries.contains(neighbor_names.get(0))) {
+                    String temp_curr_country = neighbor_names.get(0);
+                    neighbor_names.clear();
+                    neighbor_names.add(temp_curr_country);
+                }
+                if (neighbor_names.size() > 1) {
+                    for (int j = neighbor_names.size() - 1; j >= 1; j--) {
+                        if (removed_countries.contains(neighbor_names.get(j))) {
+                            neighbor_names.remove(j);
+                        }
+                    }
                 }
             }
         } else {
