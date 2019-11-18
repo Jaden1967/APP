@@ -11,12 +11,32 @@ import entities.GamePlay;
 import entities.Player;
 import ui.MapUI;
 
+/**
+ * An aggressive computer player strategy that focuses on attack 
+ * Contains 3 major functions:
+ * 1. reinforces the computer player's strongest country
+ * 2. then always attack with this strongest country until it cannot attack anymore
+ * 3. then fortifies in order to maximize aggregation of forces in one country
+ * @author Boxiao Yu 40070128
+ * @author Yilun Sun 40092802
+ * @author Yuhua Jiang 40083453
+ * @author Jiuxiang Chen 40086723
+ * @author Chao Ye 40055665
+ */
 public class StrategyAggresive extends Strategy {
+	
+	/**
+	 * Default constructor containing the GamePlay entity 
+	 * @param game GamePlay 
+	 */
 	public StrategyAggresive (GamePlay g) {
 		this.game = g;
 		this.current_player = game.getPlayer();
 	}
 	
+	/**
+	 * Reinforces the computer player's strongest country 
+	 */
 	public void doReinforcement(Player player) {
 		 System.out.printf("Player %s is in reinforcement.\n", player.getID());
 		 aggressivelyDeployArmy(player); 
@@ -33,6 +53,9 @@ public class StrategyAggresive extends Strategy {
 		 Aggresive.game.reinforceArmy(aggressivelyPickCountryFrom(countries), num);
 	}
 	
+	/**
+	 * then always attack with this strongest country until it cannot attack anymore 
+	 */
 	public void doAttack(Player player) {
         System.out.printf("Player %s is in attack.\n", player.getID());
         aggressivelyAttack(player);
@@ -54,7 +77,10 @@ public class StrategyAggresive extends Strategy {
 	          }
 	      }
 	 }
-	    	 
+	    	
+	/**
+	 * then fortifies in order to maximize aggregation of forces in one country 
+	 */	 
 	 public void doFortification(Player player) {
 	        System.out.printf("Player %sin fortification.\n", player.getID());
 	        aggressivelyFortify(player);
