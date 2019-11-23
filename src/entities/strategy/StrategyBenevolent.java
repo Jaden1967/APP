@@ -1,5 +1,9 @@
 package entities.strategy;
 
+import java.util.Collections;
+import java.util.Vector;
+
+import entities.Country;
 import entities.GamePlay;
 
 /**
@@ -23,11 +27,26 @@ public class StrategyBenevolent extends Strategy{
 	 */
 	public StrategyBenevolent (GamePlay g) {
 		this.game = g;
-		this.current_player =g.getPlayer();
+		this.player =g.getPlayer();
+		this.ownedCountries = player.getOwnCountries();
 	}
 	
 	@Override
 	public void reinforce() {
+		Collections.sort(player.getOwnCountries(),new CountryComparator());
+		int curr = 0;
+		int next = 1;
+		while (next < player.getOwnCountries().size() && player.getArmyToPlace()>0) {
+			if(ownedCountries.get(curr).getArmyNum() < ownedCountries.get(next).getArmyNum()) {
+				int amt = Math.min(player.getArmyToPlace(), ownedCountries.get(next).getArmyNum()-ownedCountries.get(curr).getArmyNum());
+				game.reinforceArmy(ownedCountries.get(curr), amt);
+				continue;
+			}else {
+				curr++;
+				next++;
+			}
+		}
+		
 		
 	}
 	

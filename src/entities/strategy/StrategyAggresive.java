@@ -31,7 +31,7 @@ public class StrategyAggresive extends Strategy {
 	 */
 	public StrategyAggresive (GamePlay g) {
 		this.game = g;
-		this.current_player = game.getPlayer();
+		this.player = game.getPlayer();
 	}
 	
 	/**

@@ -258,6 +258,14 @@ public class Player {
 	}
 	
 	/**
+	 * Getter for vector of owned countries
+	 * @return owned country vector
+	 */
+	public Vector<Country> getOwnCountries(){
+		return this.ownedCountries;
+	}
+	
+	/**
 	 * Setter for army to place
 	 * @param i Value to set
 	 */
