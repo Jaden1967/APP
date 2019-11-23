@@ -40,11 +40,18 @@ public class StrategyBenevolent extends Strategy{
 			if(ownedCountries.get(curr).getArmyNum() < ownedCountries.get(next).getArmyNum()) {
 				int amt = Math.min(player.getArmyToPlace(), ownedCountries.get(next).getArmyNum()-ownedCountries.get(curr).getArmyNum());
 				game.reinforceArmy(ownedCountries.get(curr), amt);
+				curr = 0;
+				next = 1;
 				continue;
 			}else {
 				curr++;
 				next++;
+				if (next == player.getOwnCountries().size() && player.getArmyToPlace()>0) {
+					curr = 0;
+					next = 1;
+				}
 			}
+			
 		}
 		
 		
