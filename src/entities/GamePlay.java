@@ -89,7 +89,7 @@ public class GamePlay extends Observable{
 			
 			countries_list.get(cInd).setOwner(player_list.get(pInd)); //set unassigned Country to Player in List in order
 			countries_list.get(cInd).addArmy(1);
-			player_list.get(pInd).increaseCountry();
+			player_list.get(pInd).addCountry(countries_list.get(cInd));
 			player_list.get(pInd).deployArmy(1);
 			pInd++;
 			if (pInd % player_list.size() == 0) {
@@ -426,8 +426,8 @@ public class GamePlay extends Observable{
 		defender.addArmy(number);
 		outcome = "Moved "+number+" to "+defender.getName()+"\n";
 		phase = "Attack Phase 1";
-		attacker.getOwner().increaseCountry();
-		defender.getOwner().decreaseCountry();
+		attacker.getOwner().addCountry(defender);
+		defender.getOwner().removeCountry(defender);
 		defender.getOwner().getOwnContinent().remove(defender.getContinent());
 		if(defender.getOwner().getTotalCountriesNumber()==0) {
 			player_list.remove(defender.getOwner());
@@ -562,6 +562,18 @@ public class GamePlay extends Observable{
      */
     public Player getPlayer() {
         return player;
+    }
+    
+    /**
+     * Getter for player with specific input id
+     * @param id ID name of player
+     * @return Specified Player object
+     */
+    public Player getPlayer(String id) {
+    	for (Player p: player_list) {
+    		if(p.getID().equals(id)) return p;
+    	}
+    	return null;
     }
     
     /**

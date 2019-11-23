@@ -280,7 +280,6 @@ public class Controller {
 				String[] split = line.split("\\s+");
 				Player p = new Player(split[0],new Color(Integer.parseInt(split[2]),true), this.game);
 				players.add(p);
-				p.increaseCountry(Integer.parseInt(split[1]));
 				for (int i=0;i<split[3].length();i++) {
 					if (String.valueOf(split[3].charAt(i)).equals("{")) continue;
 					if (String.valueOf(split[3].charAt(i)).equals("}")) break;
@@ -302,6 +301,7 @@ public class Controller {
 				int index = Integer.parseInt(split[0])-1; //country index
 				game.getCountries().get(index).setOwner(getPlayer(game.getPlayers(),split[1]));
 				game.getCountries().get(index).setArmy(Integer.parseInt(split[2]));
+				game.getPlayer(split[1]).addCountry(game.getCountries().get(index));
 				line = br.readLine();
 			}
 			

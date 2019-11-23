@@ -1,4 +1,4 @@
-package ui.Strategy;
+package entities.strategy;
 
 import java.util.Collections;
 import java.util.Comparator;

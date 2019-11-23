@@ -20,6 +20,7 @@ public class Player {
 	private int total_country_number;
 	private Vector<Continent> ownedContinent = new Vector<Continent>();
 	private Vector<Card> ownedCard = new Vector<Card>(); 
+	private Vector<Country> ownedCountries = new Vector<>();
 	private Color color;
 	private int army_to_place;
 	private int trade_times;
@@ -43,7 +44,6 @@ public class Player {
 	public Player(String id, Color color, GamePlay g) {
 		this.id = id;
 		this.color = color;
-		this.ownedContinent = new Vector<>();
 		this.army_to_place = 0;
 		this.trade_times = 0;
 		this.g = g;
@@ -110,12 +110,7 @@ public class Player {
 		this.army_to_place -= i;
 	}
 	
-	/**
-	 * When the player successfully conquers a new country, increment the totalaCountryNum this player has
-	 */
-	public void increaseCountry () {
-		total_country_number++;
-	}
+
 	
 	/**
 	 * Increments the number of countries that the player owns
@@ -126,15 +121,37 @@ public class Player {
 	}
 	
 	/**
+	 * Add a country to the player's owned country vecter
+	 * @param c Country object to be added
+	 */
+	public void addCountry(Country c) {
+		this.ownedCountries.add(c);
+		total_country_number++;
+	}
+	
+	/**
 	 * When a player loses ownership of a country, the totalCountryNum is decreased. 
 	 * When the player no longer have at least 1 country, the player loses, this function returns true
+	 * @param c Country object to be removed
 	 * @return true if player lost, false if player still has at least 1 country remaining
 	 */
-	public boolean decreaseCountry()  {
-		total_country_number--;
-		if (total_country_number >0 ) return false;
+	public boolean removeCountry(Country c) {
+		int index = -1;
+		for (int i=0;i<ownedCountries.size();i++) {
+			if(ownedCountries.get(i).getID()==(c.getID())) {
+				index = i;
+				break;
+			}
+		}
+		if(index >= 0) {
+			ownedCountries.remove(index);
+			total_country_number--;
+		}
+		if (total_country_number>0) return false;
+		
 		return true;
 	}
+	
 	
 	/**
 	 * During phase one, when a player owns all countries in this Continent, player will be rewarded

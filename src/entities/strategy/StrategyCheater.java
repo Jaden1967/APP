@@ -1,4 +1,4 @@
-package ui.Strategy;
+package entities.strategy;
 import java.util.Vector;
 import entities.Continent;
 import entities.Country;
@@ -21,15 +21,15 @@ import entities.Player;
 
 public class StrategyCheater extends Strategy {
 	
-	public void StrategyChrater(GamePlay game) {
+	public StrategyCheater(GamePlay game) {
 		this.game = game;
 		this.current_player = game.getPlayer();		
-		
 	}
 	
+	@Override
 	//doubles the armies on all its countries
-	public void reinforcement(Player pla) {
-		Vector<Country> countries = playerOwnedCountries(pla);
+	public void reinforce() {
+		Vector<Country> countries = playerOwnedCountries(current_player);
 		for(int i = 0; i < countries.size(); i++) {
 			Country c = countries.elementAt(i);
 			int temp = c.getArmyNum();
@@ -39,15 +39,15 @@ public class StrategyCheater extends Strategy {
 	}
 	
 	// automatically conquers all the neighbors of all its countries
-	public void attack(Player pla) {
-		Vector<Country> countries = playerOwnedCountries(pla);
+	public void attack() {
+		Vector<Country> countries = playerOwnedCountries(current_player);
 		for(int i = 0; i < countries.size(); i++) {
 			Country c = countries.elementAt(i);
 			Vector<Country> neighbour = c.getLinkCountries(); 
 			for(int j = 0; j<neighbour.size();j++) {
 				Country currentCountry = neighbour.elementAt(j);
-				if(currentCountry.getOwner() != pla) {
-					currentCountry.setOwner(pla);
+				if(!currentCountry.getOwner().getID().equals(current_player)) {
+					currentCountry.setOwner(current_player);
 				}
 			}
 		}
@@ -55,8 +55,8 @@ public class StrategyCheater extends Strategy {
 	}
 	
 	//doubles the number of armies on its countries that have neighbors that belong to other players. 
-	public void fortify(Player pla) {
-		Vector<Country> countries = playerOwnedCountries(pla);
+	public void fortify() {
+		Vector<Country> countries = playerOwnedCountries(current_player);
 		for(int i = 0; i < countries.size(); i++) {
 			Country c = countries.elementAt(i);
 			if(c.hasEnemyNeighbour()) {
