@@ -29,16 +29,22 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JMenuBar;
 import java.awt.Font;
-
+/**
+ * @author Boxiao Yu 40070128
+ * @author Yilun Sun 40092802
+ * @author Yuhua Jiang 40083453
+ * @author Jiuxiang Chen 40086723
+ * @author Chao Ye 40055665
+ */
 public class MapUI extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JTextField textField;
+	public JTextField textField;
 	private String isCommandPattern = "(placearmy \\w*(\\-\\w+)*|placeall|"
 			+ "reinforce \\w*(\\-\\w+)* [1-9][0-9]*|"
 			+ "fortify (\\w*(\\-\\w+)* \\w*(\\-\\w+)* [1-9][0-9]*|\\-none))|"
-			+ "cheat|trade|"
+			+ "cheat|trade|view|"
 			+ "attack \\w*(\\-\\w+)* \\w*(\\-\\w+)* ([1-3]|\\-allout)|"
 			+ "\\-noattack|defend [1-2]|attackmove [1-9][0-9]*";
 	private Controller control;
@@ -239,7 +245,7 @@ public class MapUI extends JFrame {
 		control.getGame().setJFrame(this);
 		setTitle("Risk");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1262, 800);
+		setBounds(100, 100, 1350, 800);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(null);
@@ -262,7 +268,7 @@ public class MapUI extends JFrame {
 		contentPane.add(info_label);
 		
 		OutcomeObsLabel outcome_label = new OutcomeObsLabel();
-		outcome_label.setBounds(974, 50, 256, 585);
+		outcome_label.setBounds(974, 50, 350, 585);
 		outcome_label.setEditable(false);
 		outcome_label.setLineWrap(true);
 		contentPane.add(outcome_label);
@@ -296,7 +302,7 @@ public class MapUI extends JFrame {
 		contentPane.add(runBtn);
 		
 		JMenuBar menuBar = new JMenuBar();
-		menuBar.setBounds(0, 0, 1244, 35);
+		menuBar.setBounds(0, 0, 1350, 35);
 		contentPane.add(menuBar);
 		
 		JMenu Menu = new JMenu("Menu");

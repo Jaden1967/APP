@@ -1,6 +1,7 @@
 package controller;
 
 import entities.*;
+import ui.DominationView;
 import ui.Trade;
 import java.awt.Color;
 import java.io.BufferedReader;
@@ -13,12 +14,24 @@ import java.util.HashSet;
 import java.util.Observer;
 import java.util.Vector;
 
-import javax.swing.JTextField;
-
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
-
+/**
+ * Controller used in the observer pattern for the Risk Game
+ * Processes commands received from the user in the MapUI
+ * Contains 4 major functions:
+ * 1. loadMap function: loads the game map created by the game editor
+ * 2. saveFile function: to save the game state of the game model that the Controller handles
+ * 3. loadGame: loads the game state, as well as the game map that the game uses
+ * 4. processInput: processes commands from the MapUI (the view), checks the validity of the command, and returns a String array containing information
+ * on the outcome of the command 
+ * @author Boxiao Yu 40070128
+ * @author Yilun Sun 40092802
+ * @author Yuhua Jiang 40083453
+ * @author Jiuxiang Chen 40086723
+ * @author Chao Ye 40055665
+ */
 public class Controller {
 	
 	GamePlay game;
@@ -27,30 +40,44 @@ public class Controller {
 	Vector <Country> countries_list = new Vector<>();
 	boolean loaded_game = false;
 
+	/**
+	 * Default constructor containing the GamePlay entity that the controller handles
+	 * @param game GamePlay 
+	 */
 	public Controller(GamePlay game) {
 		this.game = game;
 	}
 	
+	/**
+	 * Empty constructor
+	 */
 	public Controller() {
-		
 	}
 	
+	/**
+	 * Start the gameplayer by first randomly populating the countries for the game model by
+	 * calling the corresponding method
+	 */
 	public void startGame() {
 		game.populateCountries();
 	}
 	
 	/**
 	 * Convert string type of player list into actual object type of player list
-	 * @param list
+	 * @param list list of all player
 	 */
 	public void addPlayers(Vector<String[]> list) {
 		Vector<Player> player_list = new Vector<>();
 		for(String [] s: list) {
-			player_list.add(new Player(s[0],getColor(s[1])));
+			player_list.add(new Player(s[0],getColor(s[1]), this.game));
 		}
 		game.setPlayers(player_list);
 	}
 	
+	/**
+	 * Attach the observers from the MapUI to the game play model
+	 * @param ob Observer to be attached to the model object
+	 */
 	public void attachObserver (Observer ob) {
 		game.addObserver(ob);
 	}
@@ -219,6 +246,13 @@ public class Controller {
 		return true;
 	}
 	
+	/**
+	 * Load the game state from a previous gameplay .save file
+	 * first loads the map the the game used, which is specified in the .save file
+	 * then loads in order data representing the players, the countries, and the game status to re-actualize the game
+	 * @param name Address of the previously saved game
+	 * @return true if the save file is valid and is correctly loaded
+	 */
 	public boolean loadFile(String name) {
 		loaded_game = true;
 		Vector<Player> players = new Vector<>();
@@ -244,7 +278,7 @@ public class Controller {
 			line = br.readLine();
 			while(!line.trim().isEmpty()) {
 				String[] split = line.split("\\s+");
-				Player p = new Player(split[0],new Color(Integer.parseInt(split[2]),true));
+				Player p = new Player(split[0],new Color(Integer.parseInt(split[2]),true), this.game);
 				players.add(p);
 				p.increaseCountry(Integer.parseInt(split[1]));
 				for (int i=0;i<split[3].length();i++) {
@@ -299,6 +333,11 @@ public class Controller {
 		}	
 	}
 	
+	/**
+	 * Translates the save file card type to its full name to be used in adding a card object during loadGame
+	 * @param c Sub-string card type with one letter
+	 * @return Full length card type
+	 */
 	private String cardType(String c) {
 		switch (c) {
 			case "I": return "Infantry";
@@ -308,6 +347,12 @@ public class Controller {
 		}
 	}
 	
+	/**
+	 * Getter for specific player with parameter id String from the players Vector 
+	 * @param players Vector of players
+	 * @param id Specific id to get the player
+	 * @return Specific Player object
+	 */
 	private Player getPlayer(Vector<Player> players, String id) {
 		for (Player p: players) {
 			if (p.getID().equals(id)) {
@@ -342,12 +387,12 @@ public class Controller {
         }
     }
 	
-	
-	
-	
-	
-	//Commands from MapUI
-	
+	/**
+	 * Processing of player commands that is inputted from the MapUI during game play
+	 * Verifies if the command is valid while retrieving data from the current game play
+	 * @param input String input from the user
+	 * @return String array representing outcome of the controller processing, first String element will be "S" or "F" depending on success of the processing
+	 */
 	public String [] processInput(String input) {
 		String [] splitted = input.split("\\s+");
 		
@@ -391,8 +436,7 @@ public class Controller {
 		}
 		//Command reinforce countryid num
 		else if(splitted[0].equals("reinforce")) {
-			if(game.getPhase().equals("Reinforcement Phase")) {
-			
+			if(game.getPhase().equals("Reinforcement Phase")) {		
 				String countryId = splitted[1];
 				int num = Integer.parseInt(splitted[2]);
 				boolean c_exists = false;
@@ -551,10 +595,10 @@ public class Controller {
 						game.reSetOwner();
 					}
 					else {
-						return new String[] {"F","Number of the army to send must equal or greater than attack dice"};
+						return new String[] {"F","Number of the army to send must not be less than number of dice rolled"};
 					}
 				}else {
-					return new String[] {"F","Number of the army to send cannot be great or equal than the army you own"};
+					return new String[] {"F","Number of the army to send cannot be greater or equal than the army you own"};
 				}
 			}
 			else {
@@ -630,6 +674,15 @@ public class Controller {
 				return new String [] {"F","Not in Reinforcement Phase!"};
 			}
 		}
+		else if(splitted[0].equals("view")) {
+			if(!game.getPhase().equals("Startup Phase")) {
+				DominationView d = new DominationView(this);
+				d.setVisible(true);
+			}
+			else {
+				return new String[] {"F","Can't check domination view in startup phase!"};
+			}
+		}
 		else if(splitted[0].equals("trade")) {
 			if(game.getPhase().equals("Reinforcement Phase")) {
 				Trade t = new Trade(game);
@@ -642,6 +695,9 @@ public class Controller {
 		return new String [] {"S"};
 	}
 	
+	/**
+	 * After successfully game components by loadGame function, alert all observers in the MapUI for the current game state
+	 */
 	public void refresh() {
 		for(Country cl:countries_list) {
 			cl.alertObservers();
@@ -649,19 +705,34 @@ public class Controller {
 		game.alertObservers();
 	}
 	
+	/**
+	 * Determines if the current game is a loaded game
+	 * @return true if game is loaded
+	 */
 	public boolean loadedGame() {
 		return loaded_game;
 	}
 	
+	/**
+	 * Getter for countries parsed in from the map
+	 * @return Vector of countries from the game
+	 */
 	public Vector<Country> getCountries() {
 		return countries_list;
 	}
 	
-
+	/**
+	 * Getter for all files uses for the map load
+	 * @return Vector of file names
+	 */
 	public Vector<String> getFilesLoad() {
 		return files_load;
 	}
 	
+	/**
+	 * Getter for the game play model
+	 * @return GamePlay object
+	 */
 	public GamePlay getGame() {
 		return game;
 	}

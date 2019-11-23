@@ -27,6 +27,11 @@ import entities.Player;
  * Siam is assigned to Player b with army count 3
  * Ural is assigned to Player b with army count 2
  * China is assigned to Player c with army count 1
+ * @author Boxiao Yu 40070128
+ * @author Yilun Sun 40092802
+ * @author Yuhua Jiang 40083453
+ * @author Jiuxiang Chen 40086723
+ * @author Chao Ye 40055665
  */
 public class ReinforceTest {
 	Controller control;
@@ -68,6 +73,13 @@ public class ReinforceTest {
 	@Test
 	public void loadGame() {
 		assertTrue(loadgame_success);
+	}
+	
+	@Test
+	public void armyValidate(){
+		int country_num = game.getPlayer().getTotalCountriesNumber();
+		int reward = country_num /3;
+		assertEquals(reward,game.getPlayer().getArmyToPlace());
 	}
 	
 	@Test

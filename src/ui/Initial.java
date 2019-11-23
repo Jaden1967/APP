@@ -23,7 +23,13 @@ import javax.swing.JScrollPane;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-
+/**
+ * @author Boxiao Yu 40070128
+ * @author Yilun Sun 40092802
+ * @author Yuhua Jiang 40083453
+ * @author Jiuxiang Chen 40086723
+ * @author Chao Ye 40055665
+ */
 public class Initial extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -109,6 +115,7 @@ public class Initial extends JFrame {
 					}
 				}
 				else if(type.equals("-remove")) {
+					boolean exists = false;
 					if(player_str_list.size()==0) {
 						JOptionPane.showMessageDialog(null, "Invalid removal!", "Warning", JOptionPane.ERROR_MESSAGE);
 						output_text.append("Fail to remove player "+name+"\n");
@@ -120,11 +127,14 @@ public class Initial extends JFrame {
 								player_str_list.remove(i);
 								input_text.setText("");
 								output_text.append("Successfully removed player "+name+"\n");
-								return;
+								exists = true; 
+								break;
 							}
 						}
-						JOptionPane.showMessageDialog(null, "No such username!", "Warning", JOptionPane.ERROR_MESSAGE);
-						output_text.append("Fail to remove player "+name+"\n");
+						if(!exists) {
+							JOptionPane.showMessageDialog(null, "No such username!", "Warning", JOptionPane.ERROR_MESSAGE);
+							output_text.append("Fail to remove player "+name+"\n");
+						}
 					}
 					
 				}

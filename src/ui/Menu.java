@@ -11,13 +11,25 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+/**
+ * Main menu for the Risk Game
+ * Containing three buttons:
+ * The play button create an initial JFrame for player which can load map or add player
+ * The load button simply regenerate a game based on the map file and status which the player has saved before
+ * The exit button end the game
+ * @author Boxiao Yu 40070128
+ * @author Yilun Sun 40092802
+ * @author Yuhua Jiang 40083453
+ * @author Jiuxiang Chen 40086723
+ * @author Chao Ye 40055665
+ */
 public class Menu extends JFrame {
-
 
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Launch the application.
+	 * start
+	 * @param args args
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {

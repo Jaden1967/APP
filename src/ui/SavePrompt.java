@@ -17,7 +17,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-
+/**
+ * @author Boxiao Yu 40070128
+ * @author Yilun Sun 40092802
+ * @author Yuhua Jiang 40083453
+ * @author Jiuxiang Chen 40086723
+ * @author Chao Ye 40055665
+ */
 public class SavePrompt extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -25,7 +31,8 @@ public class SavePrompt extends JFrame {
 	private JTextField textField;
 
 	/**
-	 * Create the frame.
+	 * Save the game state
+	 * @param control a instance of Controller class
 	 */
 	public SavePrompt(Controller control) {
 		setTitle("Saving progress");

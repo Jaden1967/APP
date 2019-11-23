@@ -269,10 +269,11 @@ Constants use upper case letters with underscores between words.
 like: `MAXIMUM_TEMPERATURE`
 
 ## Global names
-Global names are prefixed with the project name,like `MAXIMUM_TEMPERATURE`
+Global names are prefixed with the project name,like `MAXIMUM_TEMPERATURE`.
 
-## Temporary variable names
+## Variable names
 Temporary variable names may be single letters such as `i`, `j`, `k`, `m`, and `n` for integers and `c`, `d`, and `e` for characters.
+Variable names could be noun phrase with underline connection or hump.
 
 ## Generic Type Parameter Names
 

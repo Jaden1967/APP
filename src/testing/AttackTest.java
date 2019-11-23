@@ -24,6 +24,11 @@ import entities.Player;
  * Central-America is assigned to Player c with army count 3
  * Central-America does not neighbor Peru, but neighbors Venezuela and Western-United-States
  * Western-United-States is assigned to Player a with army count 1
+ * @author Boxiao Yu 40070128
+ * @author Yilun Sun 40092802
+ * @author Yuhua Jiang 40083453
+ * @author Jiuxiang Chen 40086723
+ * @author Chao Ye 40055665
  */
 public class AttackTest {
 	Controller control;

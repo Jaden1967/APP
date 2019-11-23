@@ -3,6 +3,18 @@ package entities;
 import java.awt.Color;
 import java.util.Vector;
 
+import controller.Controller;
+
+/**
+ * Player object for the game play
+ * Contains attributes for a single player, such as id, owned country number, color, armies to place
+ * as well as methods to alter these attributes
+ * @author Boxiao Yu 40070128
+ * @author Yilun Sun 40092802
+ * @author Yuhua Jiang 40083453
+ * @author Jiuxiang Chen 40086723
+ * @author Chao Ye 40055665
+ */
 public class Player {
 	private String id;
 	private int total_country_number;
@@ -11,6 +23,7 @@ public class Player {
 	private Color color;
 	private int army_to_place;
 	private int trade_times;
+	private GamePlay g;
 	
 	/**
 	 * Empty constructor for Player
@@ -27,18 +40,19 @@ public class Player {
 	 * @param id name of Player
 	 * @param color Color of player
 	 */
-	public Player(String id, Color color) {
+	public Player(String id, Color color, GamePlay g) {
 		this.id = id;
 		this.color = color;
 		this.ownedContinent = new Vector<>();
 		this.army_to_place = 0;
 		this.trade_times = 0;
+		this.g = g;
 	}
 	
 	/**
 	 * Calculate the default amount of army rewarded to Player at the start of the recruitment phase
 	 * Based on total number of Countries owned by the player
-	 * @return rew number of armies to place as int
+	 * @return raw number of armies to place as int
 	 */
 	public int calculateArmy() {
         int raw = total_country_number/3;
@@ -59,6 +73,7 @@ public class Player {
    /**
 	* At the start of startup phase, this method is called to give players an initial amount of army
 	* To place one at a time in round-robin fashion
+	* @param playersize number of players
 	*/
 	public void initializeStartupArmy(int playersize) {
 		int reward;
@@ -102,6 +117,10 @@ public class Player {
 		total_country_number++;
 	}
 	
+	/**
+	 * Increments the number of countries that the player owns
+	 * @param i number of countries to increase
+	 */
 	public void increaseCountry(int i) {
 		total_country_number+=i;
 	}
@@ -132,7 +151,7 @@ public class Player {
 	
 	/**
 	 * Getter for Player's assigned Color
-	 * @return
+	 * @return Color of player
 	 */
 	public Color getColor() {
 		return this.color;
@@ -140,8 +159,8 @@ public class Player {
 	
 	/**
 	 * Verifies if the player has won the game by owning all continents available in the game
-	 * @param totalContinents
-	 * @return
+	 * @param totalContinents the number of the continent in total
+	 * @return true if player won
 	 */
 	public boolean checkWin (int totalContinents) {
 		return this.ownedContinent.size() == totalContinents;
@@ -238,15 +257,46 @@ public class Player {
 		return this.army_to_place;
 	}
 	
+	/**
+	 * Increments the amount of times the player has traded in cards
+	 */
 	public void addTradeTimes() {
 		trade_times++;
 	}
 	
+	/**
+	 * Getter for trade_times, 
+	 * @return amount of times the player has traded in cards
+	 */
 	public int getTradeTimes() {
 		return trade_times;
 	}
 	
+	/**
+	 * Setter for trade_times 
+	 * @param t amount of times the player has traded in cards
+	 */
 	public void setTradeTimes(int t) {
 		trade_times = t;
+	}
+	
+	/**
+	 * Getter for game
+	 * @return game
+	 */
+	public GamePlay getGame() {
+		return this.g;
+	}
+	
+	public void phaseRecruit() {
+		g.phaseRecruit();
+	}
+	
+	public void phaseAttack() {
+		g.phaseAttack();
+	}
+	
+	public void phaseFortify() {
+		g.phaseFortify();
 	}
 }

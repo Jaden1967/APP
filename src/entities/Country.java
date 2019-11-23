@@ -10,6 +10,14 @@ import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import ui.labels.CountryObsLabel;
 
+/**
+ * Country object for the game play
+ * @author Boxiao Yu 40070128
+ * @author Yilun Sun 40092802
+ * @author Yuhua Jiang 40083453
+ * @author Jiuxiang Chen 40086723
+ * @author Chao Ye 40055665
+ */
 public class Country extends Observable{
 		private String countryName;
 		private Player owner;
@@ -22,7 +30,11 @@ public class Country extends Observable{
 		private CountryObsLabel label;
 		private Border border; //Continent's border, constant throughout the game
 
-
+		/**
+		 * Empty constructor for country
+		 * Set country name to DNE
+		 * Set empty player for country
+		 */
 		public Country() {
 			this.countryName = "DNE";
 			this.owner = new Player();
@@ -35,11 +47,11 @@ public class Country extends Observable{
 		 * @param id serialized Country id number created 
 		 * @param name assigned Country name 
 		 * @param horizontal TODO
-		 * @param vertical
-		 * @param imageX
-		 * @param imageY
-		 * @param plotX
-		 * @param plotY
+		 * @param vertical Vertical of label for UI
+		 * @param imageX imageX of label for UI
+		 * @param imageY imageY of label for UI
+		 * @param plotX plotX of label for UI
+		 * @param plotY plotY of label for UI
 		 */
 		public Country(int id, String name, int horizontal, int vertical,int imageX, int imageY, int plotX, int plotY) {
 			this.countryId = id;
@@ -58,7 +70,7 @@ public class Country extends Observable{
 		
 		/**
 		 * Getter for owner of Country
-		 * @return
+		 * @return Player Object
 		 */
 		public Player getOwner() {
 			return this.owner;
@@ -67,7 +79,7 @@ public class Country extends Observable{
 		/**
 		 * Setter for owned player
 		 * Alerts observer to change color to that of the new player
-		 * @param p
+		 * @param p Player as owner
 		 */
 		public void setOwner(Player p) {
 			owner = p;	
@@ -80,7 +92,7 @@ public class Country extends Observable{
 		/**
 		 * Adds Country object in argument to linkedCountries Vector as a neighbor
 		 * does't need to add this to neighbour's linkedCountries the same function will be called for them too
-		 * @param nbour
+		 * @param nbour Neighbor country 
 		 */
 		public void addNeighbour(Country nbour) {
 			for (Country c: this.linked_countries) {
@@ -104,7 +116,7 @@ public class Country extends Observable{
 			return false;
 		}
 		
-
+		
 		public boolean hasEnemyNeighbour() {
 			for (Country c: this.linked_countries) {
 				if (!c.getOwner().getID().equals(this.owner.getID())) {
@@ -136,8 +148,8 @@ public class Country extends Observable{
 		}
 		
 		/**
-		 * Only used in phase 1 and phase 3
-		 * @param playerID
+		 * Add a certain army count to this country
+		 * @param amount Amount of army to be added as int
 		 */
 		public void addArmy(int amount) {
 			armyNum += amount;
@@ -146,7 +158,7 @@ public class Country extends Observable{
 		
 		/**
 		 * Whenever there is a subtraction of army number
-		 * @param amount
+		 * @param amount of army to remove
 		 */
 		public void removeArmy(int amount) {
 			armyNum -= amount;
@@ -192,7 +204,7 @@ public class Country extends Observable{
 		
 		/**
 		 * Getter of armyNum
-		 * @return
+		 * @return army number of the country
 		 */
 		public int getArmyNum() {
 			return this.armyNum;
@@ -204,7 +216,7 @@ public class Country extends Observable{
 		
 		/**
 		 * Getter of countryName
-		 * @return
+		 * @return Name of the country as String
 		 */
 		public String getName() {
 			return this.countryName;
@@ -220,7 +232,7 @@ public class Country extends Observable{
 		
 		/**
 		 * Set Continent that this Country belongs to
-		 * @param c
+		 * @param c Continent to be set 
 		 */
 		public void setContinent(Continent c) {
 			belong_to_continent = c;
@@ -230,7 +242,7 @@ public class Country extends Observable{
 		
 		/**
 		 * Getter of surrounding Country Vector
-		 * @return
+		 * @return List of neighboring countries
 		 */
 		public Vector<Country> getLinkCountries() {
 			return linked_countries;
@@ -238,7 +250,7 @@ public class Country extends Observable{
 		
 		/**
 		 * Getter of CountryObsLabel l
-		 * @return
+		 * @return ObserverLabel of this country
 		 */
 		public CountryObsLabel getLabel() {
 			return label;
