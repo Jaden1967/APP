@@ -36,6 +36,7 @@ public class test extends Observable{
 			System.out.print(countries.get(i).getArmyNum()+ " ");
 		}
 		System.out.println();
+		
 		//need to create public Country comparator to test this 
 		
 		// Collections.sort(countries,new CountryComparator());
