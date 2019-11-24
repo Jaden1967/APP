@@ -66,12 +66,14 @@ public class Player {
 		this.g = g;
 		this.is_ai = true;
 		switch (strat) {
-			case "a": this.strategy = new StrategyAggresive(g); break;
-			case "b": this.strategy = new StrategyBenevolent(g); break;
-			case "c": this.strategy = new StrategyCheater(g); break;
-			case "r": this.strategy = new StrategyRandom(g); break;
+			case "a": this.strategy = new StrategyAggresive(g,this); break;
+			case "b": this.strategy = new StrategyBenevolent(g,this); break;
+			case "c": this.strategy = new StrategyCheater(g,this); break;
+			case "r": this.strategy = new StrategyRandom(g,this); break;
 		}
+		System.out.println("AI player "+id+" is created");
 	}
+	
 	
 	/**
 	 * If the player is an AI, use the defined specific Strategy object to automatically complete player actions
@@ -294,6 +296,14 @@ public class Player {
 	 */
 	public Vector<Country> getOwnCountries(){
 		return this.ownedCountries;
+	}
+	
+	/**
+	 * Allows intake of own country vector for the strategy to use if player is AI
+	 */
+	public void setOwnCountriesInStrategy() {
+		System.out.println("Player "+this.id+" set owncountries in strategy "+" with size "+ownedCountries.size());
+		this.strategy.setOwnedCountries(this.ownedCountries);
 	}
 	
 	/**

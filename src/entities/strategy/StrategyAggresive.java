@@ -29,9 +29,10 @@ public class StrategyAggresive extends Strategy {
 	 * Default constructor containing the GamePlay entity 
 	 * @param game GamePlay 
 	 */
-	public StrategyAggresive (GamePlay g) {
+	public StrategyAggresive (GamePlay g,Player p) {
 		this.game = g;
-		this.player = game.getPlayer();
+		this.player = p;
+		this.type = "a";
 	}
 	
 	/**
@@ -43,7 +44,7 @@ public class StrategyAggresive extends Strategy {
 	}
 
 	private void aggressivelyDeployArmy(Player player) {
-		 StrategyAggresive Aggresive = new StrategyAggresive(game);
+		 StrategyAggresive Aggresive = new StrategyAggresive(game, player);
 		 Aggresive.game.phaseRecruit();
 		 Vector<Country> countries = playerOwnedCountries(player);
  	     MapUI mapUi = new MapUI();

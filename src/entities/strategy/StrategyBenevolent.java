@@ -5,6 +5,7 @@ import java.util.Vector;
 
 import entities.Country;
 import entities.GamePlay;
+import entities.Player;
 
 /**
  * An benevolent computer player strategy that focuses on protecting its weak countries (reinforces its weakest countries,
@@ -25,15 +26,15 @@ public class StrategyBenevolent extends Strategy{
 	 * Default constructor containing the GamePlay entity 
 	 * @param game GamePlay 
 	 */
-	public StrategyBenevolent (GamePlay g) {
+	public StrategyBenevolent (GamePlay g, Player p) {
 		this.game = g;
-		this.player =g.getPlayer();
-		this.ownedCountries = player.getOwnCountries();
+		this.player = p;
+		this.type = "b";
 	}
 	
 	@Override
 	public void reinforce() {
-		Collections.sort(player.getOwnCountries(),new CountryComparator());
+		Collections.sort(ownedCountries,new CountryComparator());
 		int curr = 0;
 		int next = 1;
 		while (next < player.getOwnCountries().size() && player.getArmyToPlace()>0) {
@@ -53,17 +54,20 @@ public class StrategyBenevolent extends Strategy{
 			}
 			
 		}
-		
-		
 	}
 	
 	@Override
 	public void attack() {
-		
+		//Do nothing
 	}
 	
 	@Override
 	public void fortify() {
+		//TODO yechao you do it
 		
+		
+		
+		
+		game.nextPlayer();
 	}
 }

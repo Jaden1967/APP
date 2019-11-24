@@ -21,9 +21,11 @@ import entities.Player;
 
 public class StrategyCheater extends Strategy {
 	
-	public StrategyCheater(GamePlay game) {
+	public StrategyCheater(GamePlay game, Player p) {
 		this.game = game;
-		this.player = game.getPlayer();		
+		this.player = p;		
+		this.type = "c";
+
 	}
 	
 	@Override

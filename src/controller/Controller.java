@@ -70,6 +70,7 @@ public class Controller {
 		Vector<Player> player_list = new Vector<>();
 		for(String [] s: list) {
 			if(s.length >2) {
+				System.out.println("ai player with strategy "+s[2]+" in control");
 				player_list.add(new Player(s[0],getColor(s[1]), this.game, s[2]));
 			}else {
 				player_list.add(new Player(s[0],getColor(s[1]), this.game));

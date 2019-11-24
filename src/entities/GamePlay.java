@@ -101,6 +101,12 @@ public class GamePlay extends Observable{
 		for(int i = 0;i<continents_list.size();i++) {
 			continents_list.get(i).checkIfConquered();
 		}
+		for (Player p: player_list) {
+			if(p.isAI()) {
+				p.setOwnCountriesInStrategy();
+			}
+		}
+		
 		phaseZero();
 	}
 	
@@ -125,6 +131,7 @@ public class GamePlay extends Observable{
      * @param c Country to play an army
 	 */
 	public void placeArmy(Country c) {
+		outcome+= "Player "+player.getID()+" placed army on "+c.getName()+"\n";
 		c.addArmy(1);
 		player.deployArmy(1);
 		startUpNext();
@@ -175,7 +182,7 @@ public class GamePlay extends Observable{
 		}
 		player = player_list.get(player_index);
 		army_to_place = player.getArmyToPlace();
-		outcome += "Next player's turn";
+		outcome += "Next player's turn\n";
 		alertObservers();
 		if(army_to_place==0) {
 			player.rewardInitialArmy();
@@ -208,10 +215,11 @@ public class GamePlay extends Observable{
 		player.reSetArmy();
 		player.rewardInitialArmy();
 		army_to_place = player.getArmyToPlace();
-		alertObservers();
 		if(player.isAI()) {
 			player.doStrategy();
 		}
+		alertObservers();
+
 	}
 	
 	/**
@@ -223,7 +231,7 @@ public class GamePlay extends Observable{
 	public void reinforceArmy (Country c, int num) {
 		c.addArmy(num);
 		player.deployArmy(num);
-		outcome = "Reinforced "+c.getName()+" with "+num+" armies";
+		outcome += "Player "+player.getID()+ " Reinforced "+c.getName()+" with "+num+" armies\n";
 		alertObservers();
 		if(army_to_place==0) {
 			player.phaseAttack();
@@ -529,7 +537,7 @@ public class GamePlay extends Observable{
 		player = player_list.get(player_index);
 		player.rewardInitialArmy();
 		army_to_place = player.getArmyToPlace();
-		outcome += "\tNext player's turn";
+		outcome += "Next player's turn\n";
 		alertObservers();
 		player.phaseRecruit();
 	}
@@ -666,7 +674,9 @@ public class GamePlay extends Observable{
 
 		setChanged();
 		notifyObservers(this);
-		outcome = "";
+		if(!player.isAI()) {
+			outcome = "";
+		}
 		alert_type = 0;
 	}
 	

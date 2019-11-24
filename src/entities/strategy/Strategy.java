@@ -14,9 +14,16 @@ public abstract class Strategy{
 	protected String type;
 	
 	public void action() {
-		reinforce();
-		attack();
-		fortify();
+		
+		try {
+			Thread.sleep(400);
+			reinforce();
+			Thread.sleep(400);
+			attack();
+			Thread.sleep(400);
+			fortify();
+		}catch(InterruptedException e) {}
+		
 	}
 	
 	public void reinforce() {}
@@ -32,6 +39,10 @@ public abstract class Strategy{
 			return o1.getArmyNum() - o2.getArmyNum();
 		}
 		
+	}
+	
+	public void setOwnedCountries(Vector<Country> countries) {
+		this.ownedCountries = countries;
 	}
 	
 	/**

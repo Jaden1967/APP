@@ -36,7 +36,7 @@ public class Initial extends JFrame {
 	private JPanel contentPane;
 	Vector<String[]> player_str_list = new Vector<>();
 	private Vector<String> colorList = new Vector<String>();
-	private String isCommandPattern = "(gameplayer -(add|remove) ( (aggressive|benevolent|random|cheater) )?\\w*|loadmap \\w*\\.map|populatecountries)";
+	String isCommandPattern = "(gameplayer -(add|remove) \\w*( (aggressive|benevolent|random|cheater))?|loadmap \\w*\\.map|populatecountries)";
 	GamePlay game;
 	Controller control;
 	
@@ -118,7 +118,7 @@ public class Initial extends JFrame {
 							player_str_list.add(new String[] {name,c});
 						}
 						input_text.setText("");
-						output_text.append("Successfully add player "+name+"\n");
+						output_text.append("Successfully added player "+name+"\n");
 					}
 				}
 				else if(type.equals("-remove")) {
