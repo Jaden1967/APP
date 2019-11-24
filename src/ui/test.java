@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.Observable;
 import java.util.Random;
 import java.util.Vector;
+import java.util.regex.Pattern;
 
 import entities.Country;
 import entities.GamePlay;
@@ -26,25 +27,10 @@ public class test extends Observable{
 	
 	
 	public static void main (String args[] ) {
-		Vector<Country> countries = new Vector<>();
-		for (int i=0;i<9;i++) {
-			countries.add(new Country());
-		}
-		Random rand = new Random();
-		for (int i=0;i<9;i++) {
-			countries.get(i).setArmy(rand.nextInt(50));
-			System.out.print(countries.get(i).getArmyNum()+ " ");
-		}
-		System.out.println();
+		String isCommandPattern = "(gameplayer -(add|remove) \\w*( (aggressive|benevolent|random|cheater))?|loadmap \\w*\\.map|populatecountries)";
 		
-		//need to create public Country comparator to test this 
+		System.out.println(Pattern.matches(isCommandPattern, "gameplayer -add a"));
 		
-		// Collections.sort(countries,new CountryComparator());
-		
-		for (Country c: countries) {
-			System.out.print(c.getArmyNum()+ " ");
-
-		}
-		
+		System.out.println("aggressive".substring(0,1));
 	}
 }

@@ -11,6 +11,13 @@ public abstract class Strategy{
 	public GamePlay game;
 	public Player player;
 	public Vector <Country> ownedCountries;
+	protected String type;
+	
+	public void action() {
+		reinforce();
+		attack();
+		fortify();
+	}
 	
 	public void reinforce() {}
 	
@@ -25,5 +32,14 @@ public abstract class Strategy{
 			return o1.getArmyNum() - o2.getArmyNum();
 		}
 		
+	}
+	
+	/**
+	 * get type of strategy
+	 * a, b, c , r
+	 * @return
+	 */
+	public String getType() {
+		return this.type;
 	}
 }

@@ -181,6 +181,11 @@ public class GamePlay extends Observable{
 			player.rewardInitialArmy();
 			player.phaseRecruit();
 		}
+		if(player.isAI()) {
+			//if the player is an ai, randomly placearmy on one of its owned Countries, go to the next player's startup phase
+			Random rand = new Random();
+			placeArmy(player.getOwnCountries().get(rand.nextInt(player.getTotalCountriesNumber())));
+		}
 	}
 	
 	
@@ -193,6 +198,7 @@ public class GamePlay extends Observable{
 	public void phaseRecruit() {
 		showDialog("Reinforcement Phase for player "+player.getID());
 		add_flag = 0;
+		//TODO add AI automatic trade
 		if(player.getOwnCard().size()==5) {
 			showDialog("You have reached the maximum number of cards, please trade!");
 			Trade t = new Trade(this);
@@ -203,6 +209,9 @@ public class GamePlay extends Observable{
 		player.rewardInitialArmy();
 		army_to_place = player.getArmyToPlace();
 		alertObservers();
+		if(player.isAI()) {
+			player.doStrategy();
+		}
 	}
 	
 	/**
@@ -739,7 +748,7 @@ public class GamePlay extends Observable{
 	 * @param s Message to be shown in the Message Dialogue
 	 */
 	private void showDialog(String s) {
-		if(!is_test) {
+		if(!is_test && !player.isAI()) {
 			JOptionPane.showMessageDialog(null, s, "Information", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}

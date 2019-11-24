@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.Vector;
 
 import controller.Controller;
+import entities.strategy.*;
 
 /**
  * Player object for the game play
@@ -25,6 +26,8 @@ public class Player {
 	private int army_to_place;
 	private int trade_times;
 	private GamePlay g;
+	private boolean is_ai = false;
+	private Strategy strategy;
 	
 	/**
 	 * Empty constructor for Player
@@ -36,7 +39,7 @@ public class Player {
 	
 	
 	/**
-	 * Proper constructor for Player
+	 * Constructor for human Player
 	 * Initializes player with input id and Color
 	 * @param id name of Player
 	 * @param color Color of player
@@ -47,6 +50,34 @@ public class Player {
 		this.army_to_place = 0;
 		this.trade_times = 0;
 		this.g = g;
+	}
+	
+	/**
+	 * Constructor for AI Player
+	 * Initializes ai with input id, Color and Strategy
+	 * @param id name of Player
+	 * @param color Color of player
+	 */
+	public Player(String id, Color color, GamePlay g,String strat) {
+		this.id = id;
+		this.color = color;
+		this.army_to_place = 0;
+		this.trade_times = 0;
+		this.g = g;
+		this.is_ai = true;
+		switch (strat) {
+			case "a": this.strategy = new StrategyAggresive(g); break;
+			case "b": this.strategy = new StrategyBenevolent(g); break;
+			case "c": this.strategy = new StrategyCheater(g); break;
+			case "r": this.strategy = new StrategyRandom(g); break;
+		}
+	}
+	
+	/**
+	 * If the player is an AI, use the defined specific Strategy object to automatically complete player actions
+	 */
+	public void doStrategy() {
+		strategy.action();
 	}
 	
 	/**
@@ -78,14 +109,14 @@ public class Player {
 	public void initializeStartupArmy(int playersize) {
 		int reward;
 		switch (playersize) {
-		case 8: reward = 10; break;
-		case 7: reward = 15; break;
-		case 6: reward = 20; break;
-		case 5: reward = 25; break;
-		case 4: reward = 30; break;
-		case 3: reward = 35; break;
-		case 2: reward = 40; break;
-		default: reward = 0; 
+			case 8: reward = 10; break;
+			case 7: reward = 15; break;
+			case 6: reward = 20; break;
+			case 5: reward = 25; break;
+			case 4: reward = 30; break;
+			case 3: reward = 35; break;
+			case 2: reward = 40; break;
+			default: reward = 0; 
 		}
 		rewardArmy(reward);
 	}
@@ -324,4 +355,14 @@ public class Player {
 	public void phaseFortify() {
 		g.phaseFortify();
 	}
+	
+	/**
+	 * Return whether or not this player object is an AI player
+	 * @return is_ai boolean that determines if the player is AI
+	 */
+	public boolean isAI() {
+		return this.is_ai;
+	}
+	
+	
 }

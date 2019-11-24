@@ -69,7 +69,11 @@ public class Controller {
 	public void addPlayers(Vector<String[]> list) {
 		Vector<Player> player_list = new Vector<>();
 		for(String [] s: list) {
-			player_list.add(new Player(s[0],getColor(s[1]), this.game));
+			if(s.length >2) {
+				player_list.add(new Player(s[0],getColor(s[1]), this.game, s[2]));
+			}else {
+				player_list.add(new Player(s[0],getColor(s[1]), this.game));
+			}
 		}
 		game.setPlayers(player_list);
 	}
