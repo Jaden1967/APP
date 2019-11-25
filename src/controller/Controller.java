@@ -612,8 +612,7 @@ public class Controller {
 				int numToSend = Integer.parseInt(splitted[1]);
 				if(numToSend < game.getAttacker().getArmyNum()) {
 					if(numToSend >= game.getAttackDice()||numToSend==game.getAttacker().getArmyNum()-1) {
-						game.moveArmyTo(numToSend);
-						game.reSetOwner();
+						game.attackMove(numToSend);
 					}
 					else {
 						return new String[] {"F","Number of the army to send must not be less than number of dice rolled"};

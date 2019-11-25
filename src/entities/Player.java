@@ -71,7 +71,7 @@ public class Player {
 			case "c": this.strategy = new StrategyCheater(g,this); break;
 			case "r": this.strategy = new StrategyRandom(g,this); break;
 		}
-		System.out.println("AI player "+id+" is created");
+		// System.out.println("AI player "+id+" is created");
 	}
 	
 	
@@ -302,7 +302,7 @@ public class Player {
 	 * Allows intake of own country vector for the strategy to use if player is AI
 	 */
 	public void setOwnCountriesInStrategy() {
-		System.out.println("Player "+this.id+" set owncountries in strategy "+" with size "+ownedCountries.size());
+		// System.out.println("Player "+this.id+" set owncountries in strategy "+" with size "+ownedCountries.size());
 		this.strategy.setOwnedCountries(this.ownedCountries);
 	}
 	
@@ -346,26 +346,8 @@ public class Player {
 		trade_times = t;
 	}
 	
-	/**
-	 * Getter for game
-	 * @return game
-	 */
-	public GamePlay getGame() {
-		return this.g;
-	}
 	
-	public void phaseRecruit() {
-		g.phaseRecruit();
-	}
-	
-	public void phaseAttack() {
-		g.phaseAttack();
-	}
-	
-	public void phaseFortify() {
-		g.phaseFortify();
-	}
-	
+
 	/**
 	 * Return whether or not this player object is an AI player
 	 * @return is_ai boolean that determines if the player is AI

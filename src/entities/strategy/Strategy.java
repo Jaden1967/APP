@@ -14,15 +14,9 @@ public abstract class Strategy{
 	protected String type;
 	
 	public void action() {
-		
-		try {
-			Thread.sleep(400);
-			reinforce();
-			Thread.sleep(400);
-			attack();
-			Thread.sleep(400);
-			fortify();
-		}catch(InterruptedException e) {}
+		reinforce();
+		attack();
+		fortify();
 		
 	}
 	

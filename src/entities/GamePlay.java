@@ -186,7 +186,7 @@ public class GamePlay extends Observable{
 		alertObservers();
 		if(army_to_place==0) {
 			player.rewardInitialArmy();
-			player.phaseRecruit();
+			phaseRecruit();
 		}
 		if(player.isAI()) {
 			//if the player is an ai, randomly placearmy on one of its owned Countries, go to the next player's startup phase
@@ -199,7 +199,7 @@ public class GamePlay extends Observable{
 	
 	/**
      * Reinforcement Phase
-     * Set phase to "Fortification Phase"
+     * Set phase to "Reinforcement Phase"
      * Alerts InfoObsLabel
      */
 	public void phaseRecruit() {
@@ -211,6 +211,7 @@ public class GamePlay extends Observable{
 			Trade t = new Trade(this);
 			t.setVisible(true);
 		}
+		// System.out.println("It is now player "+player.getID()+"'s turn, ai: "+player.isAI());
 		phase = "Reinforcement Phase";
 		player.reSetArmy();
 		player.rewardInitialArmy();
@@ -234,7 +235,7 @@ public class GamePlay extends Observable{
 		outcome += "Player "+player.getID()+ " Reinforced "+c.getName()+" with "+num+" armies\n";
 		alertObservers();
 		if(army_to_place==0) {
-			player.phaseAttack();
+			phaseAttack();
 		}
 	}
 	
@@ -248,8 +249,7 @@ public class GamePlay extends Observable{
 	 */
 	public boolean checkIfCanAttack(Player p) {
 		for (Country c:countries_list) {
-			if (!c.getOwner().getID().equals(p.getID()) || c.getArmyNum()<2 || !c.hasEnemyNeighbour()) continue;
-			return true;
+			if(c.getOwner().getID().equals(p.getID()) && c.getArmyNum()>=2 && c.hasEnemyNeighbour()) return true;
 		}
 		return false;
 	}
@@ -265,7 +265,7 @@ public class GamePlay extends Observable{
 			phase = "Attack Phase 1";
 			alertObservers();
 		}else {
-			player.phaseFortify();
+			phaseFortify();
 		}
 		
 	}
@@ -276,7 +276,7 @@ public class GamePlay extends Observable{
 	 * Goes directly into Fortification Phase
 	 */
 	public void noAttack() {
-		player.phaseFortify();
+		phaseFortify();
 	}
 	
 	/**
@@ -305,6 +305,7 @@ public class GamePlay extends Observable{
 	 * @return true if the Country is successfully conquered during the all out attack
 	 */
 	public boolean allOutAttack (Country from, Country to) {
+		outcome += "All-out Attacking from "+from.getName()+" ("+from.getArmyNum()+") to "+ to.getName();
 		attacker = from;
 		defender = to;
 		boolean conquered = false;
@@ -321,7 +322,9 @@ public class GamePlay extends Observable{
 				alertObservers();
 			}
 			else {
-				player.phaseFortify();
+				if(!player.isAI()) {
+					phaseFortify();
+				}
 			}
 		}
 		return conquered;
@@ -397,7 +400,7 @@ public class GamePlay extends Observable{
 			}
 			else {
 				outcome += "No more countries is able to attack";
-				player.phaseFortify();
+				phaseFortify();
 			}
 			alertObservers();
 		}
@@ -438,7 +441,7 @@ public class GamePlay extends Observable{
 	 * Moves phase to attack phase 1 or fortification depending on if the current player still can perform an attack
 	 * @param number Number of army to move
 	 */
-	public void moveArmyTo(int number) {
+	public void attackMove(int number) {
 		attacker.removeArmy(number);
 		defender.addArmy(number);
 		outcome = "Moved "+number+" to "+defender.getName()+"\n";
@@ -458,8 +461,11 @@ public class GamePlay extends Observable{
 			outcome += "Continue Attacking.\n";
 		}
 		else {
-			player.phaseFortify();
+			if(!player.isAI()) {
+				phaseFortify();
+			}
 		}
+		reSetOwner();
 		alertObservers();
 	}
 	
@@ -539,7 +545,7 @@ public class GamePlay extends Observable{
 		army_to_place = player.getArmyToPlace();
 		outcome += "Next player's turn\n";
 		alertObservers();
-		player.phaseRecruit();
+		phaseRecruit();
 	}
 	
     /**

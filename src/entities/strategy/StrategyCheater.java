@@ -45,7 +45,7 @@ public class StrategyCheater extends Strategy {
 		Vector<Country> countries = playerOwnedCountries(player);
 		for(int i = 0; i < countries.size(); i++) {
 			Country c = countries.elementAt(i);
-			Vector<Country> neighbour = c.getLinkCountries(); 
+			Vector<Country> neighbour = c.getNeighbors(); 
 			for(int j = 0; j<neighbour.size();j++) {
 				Country currentCountry = neighbour.elementAt(j);
 				if(!currentCountry.getOwner().getID().equals(player)) {

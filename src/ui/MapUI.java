@@ -91,7 +91,7 @@ public class MapUI extends JFrame {
 			g2.setStroke(stroke);
 			for(Country c:countries_list) {
 				int[] from = c.getXY();
-				for(Country linkc:c.getLinkCountries()) {
+				for(Country linkc:c.getNeighbors()) {
 					int[] to = linkc.getXY();
 					if(Math.abs(from[0]-to[0])>600) {
 						int[] tmpXL;
