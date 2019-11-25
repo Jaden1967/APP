@@ -31,9 +31,8 @@ public class StrategyCheater extends Strategy {
 	@Override
 	//doubles the armies on all its countries
 	public void reinforce() {
-		Vector<Country> countries = playerOwnedCountries(player);
-		for(int i = 0; i < countries.size(); i++) {
-			Country c = countries.elementAt(i);
+		for(int i = 0; i < ownedCountries.size(); i++) {
+			Country c = ownedCountries.get(i);
 			int temp = c.getArmyNum();
 			c.addArmy(temp);
 		}
@@ -41,10 +40,10 @@ public class StrategyCheater extends Strategy {
 	}
 	
 	// automatically conquers all the neighbors of all its countries
+	@Override
 	public void attack() {
-		Vector<Country> countries = playerOwnedCountries(player);
-		for(int i = 0; i < countries.size(); i++) {
-			Country c = countries.elementAt(i);
+		for(int i = 0; i < ownedCountries.size(); i++) {
+			Country c = ownedCountries.get(i);
 			Vector<Country> neighbour = c.getNeighbors(); 
 			for(int j = 0; j<neighbour.size();j++) {
 				Country currentCountry = neighbour.elementAt(j);
@@ -57,10 +56,10 @@ public class StrategyCheater extends Strategy {
 	}
 	
 	//doubles the number of armies on its countries that have neighbors that belong to other players. 
+	@Override
 	public void fortify() {
-		Vector<Country> countries = playerOwnedCountries(player);
-		for(int i = 0; i < countries.size(); i++) {
-			Country c = countries.elementAt(i);
+		for(int i = 0; i < ownedCountries.size(); i++) {
+			Country c = ownedCountries.get(i);
 			if(c.hasEnemyNeighbour()) {
 				int temp = c.getArmyNum();
 				c.addArmy(temp);
@@ -70,15 +69,5 @@ public class StrategyCheater extends Strategy {
 		
 	}
 	
-	private Vector<Country> playerOwnedCountries(Player player){
-		Vector<Continent> continents = player.getOwnContinent();
-		Vector<Country> countries = new Vector<>();
-		for(int i=0; i<continents.capacity();i++) {
-			Vector<Country> c = continents.elementAt(i).getContinentsCountries();
-			countries.addAll(c);
-		}
-		return countries;
-	}
-
 
 }
