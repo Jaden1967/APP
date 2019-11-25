@@ -374,5 +374,9 @@ public class Player {
 		return this.is_ai;
 	}
 	
+	public String getAiType() {
+		return (this.is_ai)?this.strategy.getType():"h";
+	}
+	
 	
 }

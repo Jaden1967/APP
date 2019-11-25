@@ -27,6 +27,7 @@ public class StrategyBenevolent extends Strategy{
 	 * @param game GamePlay 
 	 */
 	public StrategyBenevolent (GamePlay g, Player p) {
+		System.out.println("Benevolent strategy ctor called");
 		this.game = g;
 		this.player = p;
 		this.type = "b";

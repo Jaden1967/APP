@@ -210,18 +210,23 @@ public class Controller {
 			out.write("\r\n[map]\r\n");
 			out.write(map_file_name+"\r\n");
 			out.write("\r\n[players]\r\n");
+			//save players
+			//a 15 h -9728477 {I} 0 0
+			//name countriesnum aiType colorstr cardlist armytoplace tradetimes
 			for(Player p:game.getPlayers()) {
-				out.write(p.getID()+" "+p.getTotalCountriesNumber()+" "+p.getColorStr()+" ");
+				out.write(p.getID()+" "+p.getTotalCountriesNumber()+" "+p.getAiType()+" "+p.getColorStr()+" ");
 				out.write("{");
 				for(int i = 0;i<p.getOwnCard().size();i++) {
 					out.write(p.getOwnCard().get(i).getType().substring(0,1));	
 				}
 				out.write("} "+p.getArmyToPlace()+" "+p.getTradeTimes()+"\r\n");
 			}
+			//save countries
 			out.write("\r\n[countries]\r\n");
 			for(Country c:game.getCountries()) {
 				out.write(c.getID()+" "+c.getOwner().getID()+" "+c.getArmyNum()+"\r\n");
 			}
+			//save status
 			out.write("\r\n[status]\r\n");
 			out.write(game.getPlayerIndex()+" ");
 			if(game.getPhase().equals("Startup Phase")) {
@@ -277,21 +282,27 @@ public class Controller {
 			loadMap(line);
 
 			//load players
+			//name countriesnum aiType colorstr cardlist armytoplace tradetimes
 			do {
 				line = br.readLine();
 			}while(!line.trim().equals("[players]"));
 			line = br.readLine();
 			while(!line.trim().isEmpty()) {
 				String[] split = line.split("\\s+");
-				Player p = new Player(split[0],new Color(Integer.parseInt(split[2]),true), this.game);
+				Player p;
+				if(split[2].equals("h")) {
+					p = new Player(split[0],new Color(Integer.parseInt(split[3]),true), this.game);
+				}else {
+					p = new Player(split[0],new Color(Integer.parseInt(split[3]),true), this.game, split[2]);
+				}
 				players.add(p);
-				for (int i=0;i<split[3].length();i++) {
-					if (String.valueOf(split[3].charAt(i)).equals("{")) continue;
-					if (String.valueOf(split[3].charAt(i)).equals("}")) break;
+				for (int i=0;i<split[4].length();i++) {
+					if (String.valueOf(split[4].charAt(i)).equals("{")) continue;
+					if (String.valueOf(split[4].charAt(i)).equals("}")) break;
 					p.addCard(cardType(String.valueOf(split[3].charAt(i))));
 				}
-				p.setArmyToPlace(Integer.parseInt(split[4]));
-				p.setTradeTimes(Integer.parseInt(split[5]));
+				p.setArmyToPlace(Integer.parseInt(split[5]));
+				p.setTradeTimes(Integer.parseInt(split[6]));
 				line = br.readLine();
 			}
 			game.setPlayers(players);
@@ -308,6 +319,11 @@ public class Controller {
 				game.getCountries().get(index).setArmy(Integer.parseInt(split[2]));
 				game.getPlayer(split[1]).addCountry(game.getCountries().get(index));
 				line = br.readLine();
+			}
+			for (Player p: game.getPlayers()) {
+				if(p.isAI()) {
+					p.setOwnCountriesInStrategy();
+				}
 			}
 			
 			//load status
