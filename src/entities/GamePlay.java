@@ -279,6 +279,7 @@ public class GamePlay extends Observable{
 	 * Goes directly into Fortification Phase
 	 */
 	public void noAttack() {
+		outcome += "Player "+player.getID()+" chose not to attack";
 		phaseFortify();
 	}
 	
@@ -293,9 +294,13 @@ public class GamePlay extends Observable{
 		attacker = from;
 		defender = to;
 		att_dice = dicenum;
-		phase = "Attack Phase 2";
 		outcome += "Attacking from "+from.getName()+" to "+to.getName()+" \nChoose defender's number of dice to be rolled\n";
-		player = defender.getOwner();
+		if(defender.getOwner().isAI()){
+			player = defender.getOwner();
+			phase = "Attack Phase 2";
+		}else {
+			commenceAttack(Math.min(2, defender.getArmyNum()));
+		}
 		alertObservers();
 	}
 	
@@ -308,7 +313,7 @@ public class GamePlay extends Observable{
 	 * @return true if the Country is successfully conquered during the all out attack
 	 */
 	public boolean allOutAttack (Country from, Country to) {
-		outcome += "All-out Attacking from "+from.getName()+" ("+from.getArmyNum()+") to "+ to.getName();
+		outcome += "All-out Attacking from "+from.getName()+" ("+from.getArmyNum()+") to "+ to.getName()+"\n";
 		attacker = from;
 		defender = to;
 		boolean conquered = false;
@@ -341,6 +346,7 @@ public class GamePlay extends Observable{
 	public boolean commenceAttack(int defenderDice) {
 		def_dice = defenderDice;
 		player = attacker.getOwner();
+		outcome+= "defender chose "+defenderDice+" dice\n";
 		return attackRound(false);
 	}
 	
@@ -354,7 +360,7 @@ public class GamePlay extends Observable{
 	 * When one side loses a comparison, 1 army number is subtracted from the losing side's country
 	 * Set game phase back to attack phase 1 after the attack is performed and the defender still has armies
 	 * Set game phase to attack phase 3 if the defender loses all armies after the attack
-	 * @param allout If the call comes from an all out attack
+	 * @param allout If the call comes from an all out attack, used to determine if observer should be alerted
 	 * @return true if the defender no longer has any more armies to defend the attack
 	 */
 	private boolean attackRound(boolean allout) {
@@ -447,7 +453,7 @@ public class GamePlay extends Observable{
 	public void attackMove(int number) {
 		attacker.removeArmy(number);
 		defender.addArmy(number);
-		outcome = "Moved "+number+" to "+defender.getName()+"\n";
+		outcome += "Moved "+number+" to "+defender.getName()+"\n";
 		phase = "Attack Phase 1";
 		attacker.getOwner().addCountry(defender);
 		defender.getOwner().removeCountry(defender);
@@ -778,7 +784,7 @@ public class GamePlay extends Observable{
 	 * @param s Message to be shown in the Message Dialogue
 	 */
 	private void showDialog(String s) {
-		if(!is_test && !(player.isAI() && game_ended)) {
+		if(!is_test && (!player.isAI()||game_ended)) {
 			JOptionPane.showMessageDialog(null, s, "Information", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}

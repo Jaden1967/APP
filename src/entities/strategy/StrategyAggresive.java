@@ -53,18 +53,35 @@ public class StrategyAggresive extends Strategy {
 	 */
 	@Override
 	public void attack() {
-		while (game.checkIfCanAttack(player)) {
-			// System.out.println("AI Player "+player.getID()+" can still attack");
-			f: for (Country c: game.getCountries()) {
-				//use whole country list to avoid concurrent modification exception
-				if (!c.getOwner().getID().equals(player.getID())) continue f;
-				if (c.getArmyNum() > 1 && c.hasEnemyNeighbour()) {
-					if(game.allOutAttack(c, c.getOneEnemyNeighbor())) {
-						game.attackMove(c.getArmyNum()- 1);
+		if (game.checkIfCanAttack(player)) {
+			Collections.sort(ownedCountries, new CountryComparator());
+			int i = ownedCountries.size();
+			while(!ownedCountries.get(i-1).hasEnemyNeighbour()) {
+				i--;
+			}
+			//Choose owned country with highest army count to attack
+			Country attacker = ownedCountries.get(i-1);
+			//All out attack on all its neighbors until army count on that attacking country reduces to 1 or no more enemy neighbors
+			f: for(Country defender: attacker.getNeighbors()) {
+				if(defender.getOwner().getID() == attacker.getOwner().getID()) continue f;
+				if (attacker.getArmyNum() > 1){
+					if(game.allOutAttack(attacker, defender)){
+						game.attackMove(game.getAttackDice());
 					}
+				}else {
+					break;
 				}
 			}
 		}
+		/*
+		 * while (game.checkIfCanAttack(player)) { //
+		 * System.out.println("AI Player "+player.getID()+" can still attack"); f: for
+		 * (Country c: game.getCountries()) { //use whole country list to avoid
+		 * concurrent modification exception if
+		 * (!c.getOwner().getID().equals(player.getID())) continue f; if (c.getArmyNum()
+		 * > 1 && c.hasEnemyNeighbour()) { if(game.allOutAttack(c,
+		 * c.getOneEnemyNeighbor())) { game.attackMove(c.getArmyNum()- 1); } } } }
+		 */
 	}
 	
 	/**
