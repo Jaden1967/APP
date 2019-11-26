@@ -17,7 +17,6 @@ public abstract class Strategy{
 		reinforce();
 		attack();
 		fortify();
-		
 	}
 	
 	public void reinforce() {}

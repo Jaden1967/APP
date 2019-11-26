@@ -110,7 +110,8 @@ public class Initial extends JFrame {
 							}
 						}
 	
-						String c = getRandColor();//If there's a designated strategy (to create ai)
+						String c = getRandColor();
+						//If there's a designated strategy (to create ai)
 						if(command.length > 3) {
 							String strategy = command[3];
 							player_str_list.add(new String[] {name,c,strategy.substring(0,1)});
@@ -166,7 +167,7 @@ public class Initial extends JFrame {
 			}
 			player_text.setText("");
 			for(String [] s:player_str_list) {
-				player_text.append("Name: "+s[0]+"    Color: "+s[1]+"\n");
+				player_text.append("Name: "+s[0]+" Color: "+s[1]+"   "+ (s.length==3?"AI: "+s[2]:"") +"\n");
 			}
 		}
 		else {

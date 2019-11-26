@@ -183,16 +183,19 @@ public class GamePlay extends Observable{
 		player = player_list.get(player_index);
 		army_to_place = player.getArmyToPlace();
 		outcome += "Next player's turn\n";
-		alertObservers();
 		if(army_to_place==0) {
 			player.rewardInitialArmy();
 			phaseRecruit();
 		}
+		alertObservers();
+
 		if(player.isAI()) {
+			System.out.println("player "+player.getID()+" is placing random army");
 			//if the player is an ai, randomly placearmy on one of its owned Countries, go to the next player's startup phase
 			Random rand = new Random();
 			placeArmy(player.getOwnCountries().get(rand.nextInt(player.getTotalCountriesNumber())));
 		}
+
 	}
 	
 	
@@ -450,11 +453,7 @@ public class GamePlay extends Observable{
 		defender.getOwner().removeCountry(defender);
 		defender.getOwner().getOwnContinent().remove(defender.getContinent());
 		if(defender.getOwner().getTotalCountriesNumber()==0) {
-			player_list.remove(defender.getOwner());
-			showDialog("Player "+defender.getOwner().getID()+" is out!");
-			if(player_index>=player_list.size()) {
-				player_index--;
-			}
+			removePlayer(defender.getOwner());
 		}
 		if (checkIfCanAttack(player)) {
 			phase = "Attack Phase 1";
@@ -475,10 +474,15 @@ public class GamePlay extends Observable{
 	public void reSetOwner() {
 		defender.setOwner(player);
 		defender.getContinent().checkIfConquered();
-		if(defender.getOwner().checkWin(continents_list.size())) {
-			showDialog("Player "+attacker.getOwner().getID()+", you win!");
+		checkWin();
+	}
+	
+	public void checkWin() {
+		if(player.checkWin(continents_list.size())) {
 			game_ended = true;
+			showDialog("Player "+player.getID()+", you win!");
 			if(!is_test) {
+				
 				mapui.dispose();
 				Menu m = new Menu();
 				m.setVisible(true);
@@ -529,7 +533,7 @@ public class GamePlay extends Observable{
 	public void fortify(Country from, Country to, int num) {
 		from.removeArmy(num);
 		to.addArmy(num);
-		outcome = "Sucessfully mobilized from "+ from.getName()+" to "+to.getName()+" "+num+" armies";
+		outcome += "Sucessfully mobilized from "+ from.getName()+" to "+to.getName()+" "+num+" armies\n";
 		nextPlayer();
 		
 	}
@@ -758,13 +762,23 @@ public class GamePlay extends Observable{
 		is_test = true;
 	}
 	
+	public void removePlayer(Player p) {
+		player_list.remove(defender.getOwner());
+		if(!is_test) {
+			JOptionPane.showMessageDialog(null, "Player "+defender.getOwner().getID()+" is out!", "Information", JOptionPane.INFORMATION_MESSAGE);
+		}
+		if(player_index>=player_list.size()) {
+			player_index--;
+		}
+	}
+	
 	/**
 	 * Prompts a message dialogue showing an important message in game
 	 * Will only show the dialogue if the game is not a test being run in JUnit
 	 * @param s Message to be shown in the Message Dialogue
 	 */
 	private void showDialog(String s) {
-		if(!is_test && !player.isAI()) {
+		if(!is_test && !(player.isAI() && game_ended)) {
 			JOptionPane.showMessageDialog(null, s, "Information", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}

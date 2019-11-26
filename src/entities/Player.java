@@ -59,6 +59,7 @@ public class Player {
 	 * @param color Color of player
 	 */
 	public Player(String id, Color color, GamePlay g,String strat) {
+		
 		this.id = id;
 		this.color = color;
 		this.army_to_place = 0;
@@ -71,7 +72,7 @@ public class Player {
 			case "c": this.strategy = new StrategyCheater(g,this); break;
 			case "r": this.strategy = new StrategyRandom(g,this); break;
 		}
-		// System.out.println("AI player "+id+" is created");
+		//System.out.println("AI player "+id+" is created");
 	}
 	
 	
