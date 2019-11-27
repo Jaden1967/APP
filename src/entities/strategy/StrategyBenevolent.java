@@ -86,6 +86,7 @@ public class StrategyBenevolent extends Strategy{
 					break;
 				}
 			}
+			game.nextPlayer();
 		}
 		else {
 			game.nextPlayer();
