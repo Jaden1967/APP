@@ -16,9 +16,20 @@ public class InfoObsLabel extends JLabel implements Observer{
 	}
 	
 	public void update(Observable obs, Object x) {
-		String s = "Phase: " +((GamePlay)obs).getPhase() +"      "+
+		String phase = ((GamePlay)obs).getPhase();
+		String phase_info;
+		switch (phase) {
+			case "Startup Phase": phase_info = "Army: "+ ((GamePlay)obs).getArmyToPlace(); break;
+			case "Reinforcement Phase": phase_info = "Army: "+ ((GamePlay)obs).getArmyToPlace(); break;
+			case "Attack Phase 1": phase_info = "Owned Countries: "+ ((GamePlay)obs).getPlayerCountryNum(); break;
+			case "Attack Phase 2": phase_info = "Owned Countries: "+ ((GamePlay)obs).getPlayerCountryNum(); break;
+			default: phase_info = ""; break;
+		}
+		
+		
+		String s = "Phase: " +phase +"      "+
 				"Player: "+ ((GamePlay)obs).getPlayerID() + "      "+
-				"Army: "+ ((GamePlay)obs).getArmyToPlace();
+				phase_info;
 		this.setText(s);
 		
 	}

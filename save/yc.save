@@ -1,0 +1,56 @@
+yc.save
+Save at 2019-11-26 22:44:05
+
+[map]
+luca.map
+
+[players]
+yc 21 h -1 {} 0 0
+bai 21 b -8388480 {} 0 0
+
+[countries]
+1 yc 2
+2 bai 2
+3 yc 2
+4 yc 1
+5 bai 2
+6 bai 2
+7 yc 2
+8 yc 2
+9 bai 1
+10 bai 1
+11 yc 8
+12 bai 2
+13 bai 2
+14 bai 1
+15 yc 1
+16 bai 3
+17 yc 1
+18 yc 1
+19 bai 2
+20 yc 1
+21 bai 7
+22 yc 2
+23 yc 2
+24 bai 1
+25 yc 2
+26 bai 1
+27 bai 3
+28 bai 1
+29 bai 1
+30 yc 2
+31 bai 2
+32 bai 1
+33 bai 4
+34 bai 2
+35 yc 3
+36 bai 3
+37 yc 3
+38 yc 5
+39 yc 2
+40 yc 2
+41 yc 1
+42 bai 3
+
+[status]
+0 5 0

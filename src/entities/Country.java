@@ -22,7 +22,7 @@ public class Country extends Observable{
 		private String countryName;
 		private Player owner;
 		private int countryId;
-		private Vector <Country> linked_countries = new Vector<Country>();
+		private Vector <Country> neighbor_countries = new Vector<Country>();
 		private int armyNum = 0;
 		private Continent belong_to_continent;
 		private int x;
@@ -95,11 +95,11 @@ public class Country extends Observable{
 		 * @param nbour Neighbor country 
 		 */
 		public void addNeighbour(Country nbour) {
-			for (Country c: this.linked_countries) {
+			for (Country c: this.neighbor_countries) {
 				if (c.getID() == nbour.getID())
 					return;
 			}
-			this.linked_countries.add(nbour);
+			this.neighbor_countries.add(nbour);
 		}
 		
 		/**
@@ -108,7 +108,7 @@ public class Country extends Observable{
 		 * @return true if country is connected, false if not
 		 */
 		public boolean hasNeighbour (String countryId) {
-			for (Country c: this.linked_countries) {
+			for (Country c: this.neighbor_countries) {
 				if (c.getName().equals(countryId)) {
 					return true;
 				}
@@ -118,12 +118,25 @@ public class Country extends Observable{
 		
 		
 		public boolean hasEnemyNeighbour() {
-			for (Country c: this.linked_countries) {
+			for (Country c: this.neighbor_countries) {
 				if (!c.getOwner().getID().equals(this.owner.getID())) {
 					return true;
 				}
 			}
 			return false;
+		}
+		
+		/**
+		 * Returns the first enemy neighbor that the Country can attack
+		 * @return
+		 */
+		public Country getOneEnemyNeighbor() {
+			for(Country c: this.neighbor_countries) {
+				if (!c.getOwner().getID().equals(this.owner.getID())) {
+					return c;
+				}
+			}
+			return null;
 		}
 		
 
@@ -139,12 +152,28 @@ public class Country extends Observable{
 			visited.add(this.getName());
 			if(!this.getOwner().getID().equals(ownerId)) return false;
 			if(this.getName().equals(countryId)) return true;
-			for (Country c: this.linked_countries) {
+			for (Country c: this.neighbor_countries) {
 				if(visited.contains(c.getName())) continue;
 				if(c.hasPathTo(countryId,ownerId,visited)) return true;
 			}
 			return false;
 			
+		}
+		
+		/**
+		 * Depth-first recursive get all the countries which has path to the given country
+		 * @param countryID
+		 * @param ownerId
+		 * @param visited
+		 * @return
+		 */
+		public HashSet<Country> getLinkCountries(String countryId, String ownerId, HashSet<Country>visited){
+			visited.add(this);
+			for (Country c: this.neighbor_countries) {
+				if(visited.contains(c) || !c.getOwner().getID().equals(ownerId)) continue;
+				visited = c.getLinkCountries(countryId, ownerId, visited);
+			}
+			return visited;
 		}
 		
 		/**
@@ -176,14 +205,14 @@ public class Country extends Observable{
 		public boolean moveArmy(int toID, int armyNum) {
 			if (this.armyNum < armyNum+1) return false;
 			boolean neighBourExists = false;
-			for(Country c: this.linked_countries) {
+			for(Country c: this.neighbor_countries) {
 				if (c.getID() == toID) {
 					neighBourExists = true;
 				}
 			}
 			if(!neighBourExists) return false;
 			Country temp = new Country();
-			for (Country c: linked_countries) {
+			for (Country c: neighbor_countries) {
 				temp = c;
 				if (c.getID() == toID) break;
 			}
@@ -244,8 +273,8 @@ public class Country extends Observable{
 		 * Getter of surrounding Country Vector
 		 * @return List of neighboring countries
 		 */
-		public Vector<Country> getLinkCountries() {
-			return linked_countries;
+		public Vector<Country> getNeighbors() {
+			return neighbor_countries;
 		}
 		
 		/**
@@ -260,7 +289,7 @@ public class Country extends Observable{
 		 * Print all neighbors' name
 		 */
 		public void printLinkedCountries() {
-			for(Country c:linked_countries) {
+			for(Country c:neighbor_countries) {
 				System.out.println(c.getName());
 			}
 		}
@@ -269,7 +298,7 @@ public class Country extends Observable{
 		 * Print number of neighbors this Country has 
 		 */
 		public void printLinkedCountriesNum() {
-			System.out.println(linked_countries.size());
+			System.out.println(neighbor_countries.size());
 		}
 		
 		/**

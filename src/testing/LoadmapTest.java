@@ -148,7 +148,7 @@ public class LoadmapTest {
 	public void visit (Country curr,HashSet<String> visited) {
 		if(visited.contains(curr.getName())) return;
 		visited.add(curr.getName());
-		for(Country c: curr.getLinkCountries()) {
+		for(Country c: curr.getNeighbors()) {
 			visit(c,visited);
 		}
 	}
@@ -156,7 +156,7 @@ public class LoadmapTest {
 	public void visitInContinent(Country curr,HashSet<String> visited) {
 		if(visited.contains(curr.getName())) return;
 		visited.add(curr.getName());
-		for (Country c: curr.getLinkCountries()) {
+		for (Country c: curr.getNeighbors()) {
 			if(c.getContinent().getName().equals(curr.getContinent().getName())) {
 				visitInContinent(c,visited);
 			}	
@@ -196,8 +196,8 @@ public class LoadmapTest {
 	
 	@Test
 	public void setNeighbours() {
-		assertEquals(3, countriesList.get(0).getLinkCountries().size());
-		assertEquals("North-West-Territory",countriesList.get(0).getLinkCountries().get(0).getName());
+		assertEquals(3, countriesList.get(0).getNeighbors().size());
+		assertEquals("North-West-Territory",countriesList.get(0).getNeighbors().get(0).getName());
 	}
 	
 	@Test

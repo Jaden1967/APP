@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.Vector;
 
 import controller.Controller;
+import entities.strategy.*;
 
 /**
  * Player object for the game play
@@ -20,10 +21,13 @@ public class Player {
 	private int total_country_number;
 	private Vector<Continent> ownedContinent = new Vector<Continent>();
 	private Vector<Card> ownedCard = new Vector<Card>(); 
+	private Vector<Country> ownedCountries = new Vector<>();
 	private Color color;
 	private int army_to_place;
 	private int trade_times;
 	private GamePlay g;
+	private boolean is_ai = false;
+	private Strategy strategy;
 	
 	/**
 	 * Empty constructor for Player
@@ -35,7 +39,7 @@ public class Player {
 	
 	
 	/**
-	 * Proper constructor for Player
+	 * Constructor for human Player
 	 * Initializes player with input id and Color
 	 * @param id name of Player
 	 * @param color Color of player
@@ -43,10 +47,40 @@ public class Player {
 	public Player(String id, Color color, GamePlay g) {
 		this.id = id;
 		this.color = color;
-		this.ownedContinent = new Vector<>();
 		this.army_to_place = 0;
 		this.trade_times = 0;
 		this.g = g;
+	}
+	
+	/**
+	 * Constructor for AI Player
+	 * Initializes ai with input id, Color and Strategy
+	 * @param id name of Player
+	 * @param color Color of player
+	 */
+	public Player(String id, Color color, GamePlay g,String strat) {
+		
+		this.id = id;
+		this.color = color;
+		this.army_to_place = 0;
+		this.trade_times = 0;
+		this.g = g;
+		this.is_ai = true;
+		switch (strat) {
+			case "a": this.strategy = new StrategyAggresive(g,this); break;
+			case "b": this.strategy = new StrategyBenevolent(g,this); break;
+			case "c": this.strategy = new StrategyCheater(g,this); break;
+			case "r": this.strategy = new StrategyRandom(g,this); break;
+		}
+		//System.out.println("AI player "+id+" is created");
+	}
+	
+	
+	/**
+	 * If the player is an AI, use the defined specific Strategy object to automatically complete player actions
+	 */
+	public void doStrategy() {
+		strategy.action();
 	}
 	
 	/**
@@ -78,14 +112,14 @@ public class Player {
 	public void initializeStartupArmy(int playersize) {
 		int reward;
 		switch (playersize) {
-		case 8: reward = 10; break;
-		case 7: reward = 15; break;
-		case 6: reward = 20; break;
-		case 5: reward = 25; break;
-		case 4: reward = 30; break;
-		case 3: reward = 35; break;
-		case 2: reward = 40; break;
-		default: reward = 0; 
+			case 8: reward = 10; break;
+			case 7: reward = 15; break;
+			case 6: reward = 20; break;
+			case 5: reward = 25; break;
+			case 4: reward = 30; break;
+			case 3: reward = 35; break;
+			case 2: reward = 40; break;
+			default: reward = 0; 
 		}
 		rewardArmy(reward);
 	}
@@ -110,12 +144,7 @@ public class Player {
 		this.army_to_place -= i;
 	}
 	
-	/**
-	 * When the player successfully conquers a new country, increment the totalaCountryNum this player has
-	 */
-	public void increaseCountry () {
-		total_country_number++;
-	}
+
 	
 	/**
 	 * Increments the number of countries that the player owns
@@ -126,15 +155,37 @@ public class Player {
 	}
 	
 	/**
+	 * Add a country to the player's owned country vecter
+	 * @param c Country object to be added
+	 */
+	public void addCountry(Country c) {
+		this.ownedCountries.add(c);
+		total_country_number++;
+	}
+	
+	/**
 	 * When a player loses ownership of a country, the totalCountryNum is decreased. 
 	 * When the player no longer have at least 1 country, the player loses, this function returns true
+	 * @param c Country object to be removed
 	 * @return true if player lost, false if player still has at least 1 country remaining
 	 */
-	public boolean decreaseCountry()  {
-		total_country_number--;
-		if (total_country_number >0 ) return false;
+	public boolean removeCountry(Country c) {
+		int index = -1;
+		for (int i=0;i<ownedCountries.size();i++) {
+			if(ownedCountries.get(i).getID()==(c.getID())) {
+				index = i;
+				break;
+			}
+		}
+		if(index >= 0) {
+			ownedCountries.remove(index);
+			total_country_number--;
+		}
+		if (total_country_number>0) return false;
+		
 		return true;
 	}
+	
 	
 	/**
 	 * During phase one, when a player owns all countries in this Continent, player will be rewarded
@@ -241,6 +292,22 @@ public class Player {
 	}
 	
 	/**
+	 * Getter for vector of owned countries
+	 * @return owned country vector
+	 */
+	public Vector<Country> getOwnCountries(){
+		return this.ownedCountries;
+	}
+	
+	/**
+	 * Allows intake of own country vector for the strategy to use if player is AI
+	 */
+	public void setOwnCountriesInStrategy() {
+		// System.out.println("Player "+this.id+" set owncountries in strategy "+" with size "+ownedCountries.size());
+		this.strategy.setOwnedCountries(this.ownedCountries);
+	}
+	
+	/**
 	 * Setter for army to place
 	 * @param i Value to set
 	 */
@@ -280,23 +347,19 @@ public class Player {
 		trade_times = t;
 	}
 	
+	
+
 	/**
-	 * Getter for game
-	 * @return game
+	 * Return whether or not this player object is an AI player
+	 * @return is_ai boolean that determines if the player is AI
 	 */
-	public GamePlay getGame() {
-		return this.g;
+	public boolean isAI() {
+		return this.is_ai;
 	}
 	
-	public void phaseRecruit() {
-		g.phaseRecruit();
+	public String getAiType() {
+		return (this.is_ai)?this.strategy.getType():"h";
 	}
 	
-	public void phaseAttack() {
-		g.phaseAttack();
-	}
 	
-	public void phaseFortify() {
-		g.phaseFortify();
-	}
 }
