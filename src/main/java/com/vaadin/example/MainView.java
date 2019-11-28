@@ -44,6 +44,8 @@ import com.vaadin.flow.component.notification.Notification.Position;
 import org.vaadin.pekkam.Canvas;
 import org.vaadin.pekkam.CanvasRenderingContext2D;
 
+import com.vaadin.example.UpdateContinents;
+
 @Route
 public class MainView extends VerticalLayout {
 
@@ -54,22 +56,22 @@ public class MainView extends VerticalLayout {
     // TODO:
     // private static ArrayList<String> continentColourList = new ArrayList<>();
     // 存储大陆和国家的数据
-    private ArrayList<ArrayList<String>> continentsData = new ArrayList<>();
-    private ArrayList<ArrayList<String>> countriesData = new ArrayList<>();
-    private ArrayList<ArrayList<String>> neighborsData = new ArrayList<>();
+    public ArrayList<ArrayList<String>> continentsData = new ArrayList<>();
+    public ArrayList<ArrayList<String>> countriesData = new ArrayList<>();
+    public ArrayList<ArrayList<String>> neighborsData = new ArrayList<>();
 
     // 存储是否包含这个大陆或者国家
-    private HashMap<String, Integer> continentsMap = new HashMap<>();
-    private HashMap<String, String> countriesMap = new HashMap<>();
-    private HashMap<String, Integer> neighborsMap = new HashMap<>();
+    public HashMap<String, Integer> continentsMap = new HashMap<>();
+    public HashMap<String, String> countriesMap = new HashMap<>();
+    public HashMap<String, Integer> neighborsMap = new HashMap<>();
 
-    private TextArea continents = new TextArea(); // (2)
-    private TextArea countries = new TextArea(); // (2)
-    private TextArea neighbors = new TextArea();
-    private TextArea outputLog = new TextArea(); // (2)
-    private TextField commandLine = new TextField(); // (2)
+    public TextArea continents = new TextArea(); // (2)
+    public TextArea countries = new TextArea(); // (2)
+    public TextArea neighbors = new TextArea();
+    public TextArea outputLog = new TextArea(); // (2)
+    public TextField commandLine = new TextField(); // (2)
 
-    private TextArea mapSize = new TextArea();
+    public TextArea mapSize = new TextArea();
 
     private Tab tab1 = new Tab("Output Log");
     private Tab tab2 = new Tab(new Icon(VaadinIcon.GLOBE));
@@ -635,7 +637,9 @@ public class MainView extends VerticalLayout {
             dialog.open();
         }
 
-        updateContinents();
+        // TODO:
+        UpdateContinents update_continents = new UpdateContinents();
+        update_continents.updateContinents(continentsData, continents);
     }
 
     private void removeContinent(String continentname) {
