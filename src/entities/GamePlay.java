@@ -45,7 +45,9 @@ public class GamePlay extends Observable{
 	private int def_dice=0;
 	private int add_flag = 0;
 	private JFrame mapui = null;
-	private String[][] result = new String [1][1];
+	private String[][] result;
+	private int result_row;
+	private int result_col;
 	boolean is_test = false;
 	public boolean game_ended = false;
 	private boolean is_tournament = false;
@@ -487,11 +489,10 @@ public class GamePlay extends Observable{
 	
 	public void checkWin() {
 		if(player.checkWin(continents_list.size())) {
-			this.result.add(player.getID());
+			this.result [result_row][result_col] = player.getID();
 			game_ended = true;
 			showDialog("Player "+player.getID()+", you win!");
-			if(!is_test) {
-				
+			if(!is_test || !is_tournament) {
 				mapui.dispose();
 				Menu m = new Menu();
 				m.setVisible(true);
