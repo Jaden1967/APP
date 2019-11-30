@@ -45,8 +45,10 @@ public class GamePlay extends Observable{
 	private int def_dice=0;
 	private int add_flag = 0;
 	private JFrame mapui = null;
+	private String[][] result = new String [1][1];
 	boolean is_test = false;
 	public boolean game_ended = false;
+	private boolean is_tournament = false;
 	
 	/**
 	 * Empty default ctor
@@ -485,6 +487,7 @@ public class GamePlay extends Observable{
 	
 	public void checkWin() {
 		if(player.checkWin(continents_list.size())) {
+			this.result.add(player.getID());
 			game_ended = true;
 			showDialog("Player "+player.getID()+", you win!");
 			if(!is_test) {
@@ -761,12 +764,20 @@ public class GamePlay extends Observable{
 		return add_flag;
 	}
 	
+	public void parseResultArray(String [][] result, int row, int col) {
+		this.result=result;
+	}
+	
 	/**
 	 * Used to determine the current running game is a part of a JUnit test
 	 * Will disable Message Dialogues from popping up during the test runs by checking the is_test boolean
 	 */
 	public void isTest() {
 		is_test = true;
+	}
+	
+	public void isTournament() {
+		is_tournament = true;
 	}
 	
 	public void removePlayer(Player p) {
@@ -785,6 +796,7 @@ public class GamePlay extends Observable{
 	 * @param s Message to be shown in the Message Dialogue
 	 */
 	private void showDialog(String s) {
+		if(is_tournament) return;
 		if(!is_test && (!player.isAI()||game_ended)) {
 			JOptionPane.showMessageDialog(null, s, "Information", JOptionPane.INFORMATION_MESSAGE);
 		}

@@ -1,0 +1,70 @@
+package entities;
+
+import java.util.Random;
+import java.util.Vector;
+
+import controller.Controller;
+
+public class Tournament {
+	private String [][] result;
+	private Vector<String> colorList = new Vector<String>();
+
+	
+	public Tournament(Vector<String> mapList, Vector<String> strategyList, int numGames, int numTurnsMax) {
+		Vector<String[]> player_str_list = new Vector<>();
+		result = new String [mapList.size()][numGames];
+		int r = 0, c = 0;
+		initializeColors();
+		//initialize player list for all strategies
+		for (String s: strategyList) {
+			//String [] format: name, color(string), strategy-substring(1 letter)
+			//use ai strategy as its name
+			player_str_list.add(new String[] {s,getRandColor(),s.substring(0,1)});
+		}
+		
+		//for each map in map List
+		for (String m: mapList) {
+			String map = m;
+			for (int i=0; i<numGames;i++) {
+				GamePlay game = new GamePlay();
+				Controller control = new Controller (game);
+				control.loadMap(map);
+				control.addPlayers(player_str_list);
+				game.isTournament();
+				control.startGame(result,r,c);
+				c++;
+			}
+			r++;
+		}
+		
+
+	}
+	
+	
+	
+	
+	/**
+	 * Initial list of colors (string)
+	 */
+	private void initializeColors() {
+		colorList.add("pink");
+		colorList.add("cyan");
+		colorList.add("DeepPink");
+		colorList.add("skyblue");
+		colorList.add("lightyellow");
+		colorList.add("grey");
+		colorList.add("white");
+		colorList.add("purple");
+	}
+	
+	/**
+	 * Get random color from List colorList
+	 * @return color as Color object
+	 */
+	private String getRandColor () {
+        int c = new Random().nextInt(colorList.size());
+        String color = colorList.get(c);
+        colorList.remove(c);
+        return color;
+    }
+}

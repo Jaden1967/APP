@@ -63,6 +63,18 @@ public class Controller {
 	}
 	
 	/**
+	 * Called by Tournament object in tournament mode
+	 * Assign result String vector in the gameplay to the parsed result string vector in tournament object
+	 * to append name of the winner at the end of the game
+	 * Start the gameplayer by randomly populating the countries for the game model
+	 * @param result
+	 */
+	public void startGame(String [][] result, int row, int col) {
+		game.parseResultArray(result, row, col);
+		game.populateCountries();
+	}
+	
+	/**
 	 * Convert string type of player list into actual object type of player list
 	 * @param list list of all player
 	 */
