@@ -237,7 +237,7 @@ public class GamePlay extends Observable{
 		player.deployArmy(num);
 		outcome += "Player "+player.getID()+ " Reinforced "+c.getName()+" with "+num+" armies\n";
 		alertObservers();
-		if(army_to_place==0) {
+		if(army_to_place==0 && !player.isAI()) {
 			phaseAttack();
 		}
 	}
@@ -295,13 +295,13 @@ public class GamePlay extends Observable{
 		defender = to;
 		att_dice = dicenum;
 		outcome += "Attacking from "+from.getName()+" to "+to.getName()+" \nChoose defender's number of dice to be rolled\n";
-		if(defender.getOwner().isAI()){
+		if(!defender.getOwner().isAI()){
 			player = defender.getOwner();
 			phase = "Attack Phase 2";
+			alertObservers();
 		}else {
 			commenceAttack(Math.min(2, defender.getArmyNum()));
 		}
-		alertObservers();
 	}
 	
 	/**
@@ -552,6 +552,7 @@ public class GamePlay extends Observable{
 		player_index = (player_index+1)% player_list.size();
 		player = player_list.get(player_index);
 		player.rewardInitialArmy();
+		System.out.println("Current player is "+player.getID()+" ai: "+player.isAI());
 		army_to_place = player.getArmyToPlace();
 		outcome += "Next player's turn\n";
 		alertObservers();
