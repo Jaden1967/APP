@@ -289,19 +289,19 @@ public class Player {
 		//add indexes to remove three-of-a-kind cards
 		if(i==3 || c == 3 || a ==3) {
 			if (i==3) {
-				for(int ind= 0;i<ownedCard.size();i++) {
+				for(int ind= 0;ind<ownedCard.size();ind++) {
 					if(ownedCard.get(ind).getType().equals("Infantry")) {
 						indexes_to_remove.add(ind);
 					}
 				}
 			}else if(c==3) {
-				for(int ind= 0;i<ownedCard.size();i++) {
+				for(int ind= 0;ind<ownedCard.size();ind++) {
 					if(ownedCard.get(ind).getType().equals("Cavalry")) {
 						indexes_to_remove.add(ind);
 					}
 				}
 			}else if(a==3) {
-				for(int ind= 0;i<ownedCard.size();i++) {
+				for(int ind= 0;ind<ownedCard.size();ind++) {
 					if(ownedCard.get(ind).getType().equals("Artillery")) {
 						indexes_to_remove.add(ind);
 					}
