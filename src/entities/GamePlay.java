@@ -226,6 +226,9 @@ public class GamePlay extends Observable{
 		player.rewardInitialArmy();
 		army_to_place = player.getArmyToPlace();
 		if(player.isAI()) {
+			if (player.getOwnCard().size() == 5) {
+				player.autoTradeCards();
+			}
 			player.doStrategy();
 		}
 		alertObservers();
