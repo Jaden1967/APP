@@ -329,6 +329,8 @@ public class Player {
 		while(!indexes_to_remove.isEmpty()) {
 			ownedCard.remove(indexes_to_remove.remove(indexes_to_remove.size()-1));
 		}
+		this.addTradeTimes();
+		this.rewardArmy(this.trade_times*5);
 	}
 	
 	/**
