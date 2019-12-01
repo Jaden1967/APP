@@ -17,9 +17,9 @@ public class Tournament {
 	 * @param numGames Number of games to be played for each map
 	 * @param numTurnsMax Number of turns before Game become a draw
 	 */
-	public Tournament(Vector<String> mapList, Vector<String> strategyList, int numGames, int numTurnsMax) {
+	public Tournament(String[] mapList, String[] strategyList, int numGames, int numTurnsMax) {
 		Vector<String[]> player_str_list = new Vector<>();
-		result = new String [mapList.size()][numGames];
+		result = new String [mapList.length][numGames];
 		int r = 0, c = 0;
 		initializeColors();
 		//initialize player list for all strategies
@@ -45,9 +45,18 @@ public class Tournament {
 			r++;
 		}
 		
-
+		int mapind=0;
+		int gameind=1;
+		for (String[] row: result) {
+			System.out.println("Map: "+mapList[mapind]);
+			for (String col:row) {
+				System.out.print("Game"+gameind+": "+col+"\t");
+				gameind++;
+			}
+			mapind++;
+			gameind=0;
+		}
 	}
-	
 	
 	
 	

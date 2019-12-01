@@ -19,11 +19,11 @@ public class test{
 				+ "cheat|trade|view|"
 				+ "attack \\w*(\\-\\w+)* \\w*(\\-\\w+)* ([1-3]|\\-allout)|"
 				+ "\\-noattack|defend [1-2]|attackmove [1-9][0-9]*|"
-				+ "tournament \\-M \\[((\\w)*\\.map)(,(\\w)*\\.map)*\\] -P \\[(aggressive|benevolent|cheater|random)(,(aggressive|benevolent|cheater|random))*\\] -G [1-9] -D ([1-9]|[1-8][0-9]|9[0-9]|100)";
-		String t = "tournament \\-M \\[((\\w)*\\.map)(,(\\w)*\\.map)*\\] -P \\[(aggressive|benevolent|cheater|random)(,(aggressive|benevolent|cheater|random))*\\] -G [1-9] -D ([1-9]|[1-8][0-9]|9[0-9]|100)";
+				+ "tournament \\-M ((\\w)*\\.map)(,(\\w)*\\.map)* -P (aggressive|benevolent|cheater|random)(,(aggressive|benevolent|cheater|random))* -G [1-9] -D ([1-9]|[1-8][0-9]|9[0-9]|100)";
 		
-		String test = "tournament -M [luca_asdf.map,test1.map] -P [aggressive,benevolent,aggressive] -G 6 -D 3";
-		System.out.println(Pattern.matches(t, test));
-		
+		String test = "tournament -M luca_asdf.map,test1.map -P aggressive,benevolent,aggressive -G 6 -D 3";
+		System.out.println(Pattern.matches(isCommandPattern, test));
+		String [] splitted = test.split("\\s+");
+		System.out.println(splitted[2]);
 	}
 }
