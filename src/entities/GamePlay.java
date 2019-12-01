@@ -51,6 +51,8 @@ public class GamePlay extends Observable{
 	boolean is_test = false;
 	public boolean game_ended = false;
 	private boolean is_tournament = false;
+	private int turn = 0;
+	private int max_turns;
 	
 	/**
 	 * Empty default ctor
@@ -554,6 +556,12 @@ public class GamePlay extends Observable{
 	 */
 	public void nextPlayer() {
 		player_index = (player_index+1)% player_list.size();
+		if (player_index == 0) this.turn ++;
+		if (this.is_tournament && this.turn == max_turns) {
+			game_ended = true;
+			result[result_row][result_col]= "draw";
+		}
+		if(game_ended) return;
 		player = player_list.get(player_index);
 		player.rewardInitialArmy();
 		System.out.println("Current player is "+player.getID()+" ai: "+player.isAI());
@@ -777,8 +785,9 @@ public class GamePlay extends Observable{
 		is_test = true;
 	}
 	
-	public void isTournament() {
+	public void isTournament(int turnsMax) {
 		is_tournament = true;
+		this.max_turns = turnsMax;
 	}
 	
 	public void removePlayer(Player p) {

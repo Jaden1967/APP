@@ -9,7 +9,14 @@ public class Tournament {
 	private String [][] result;
 	private Vector<String> colorList = new Vector<String>();
 
-	
+	/**
+	 * Contructed when the user inputs tournament -M listofmapfiles -P listofplayerstrategies -G numberofgames -D maxnumberofturns
+	 * in Initial.java UI
+	 * @param mapList Vector of maps in the form of ["map1.map","luca.map"]
+	 * @param strategyList Vector of strategies to be used in the form of ["aggressive","benevolent","random"]
+	 * @param numGames Number of games to be played for each map
+	 * @param numTurnsMax Number of turns before Game become a draw
+	 */
 	public Tournament(Vector<String> mapList, Vector<String> strategyList, int numGames, int numTurnsMax) {
 		Vector<String[]> player_str_list = new Vector<>();
 		result = new String [mapList.size()][numGames];
@@ -30,7 +37,7 @@ public class Tournament {
 				Controller control = new Controller (game);
 				control.loadMap(map);
 				control.addPlayers(player_str_list);
-				game.isTournament();
+				game.isTournament(numTurnsMax);
 				control.startGame(result,r,c);
 				c++;
 			}
