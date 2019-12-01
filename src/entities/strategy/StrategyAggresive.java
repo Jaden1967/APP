@@ -67,6 +67,8 @@ public class StrategyAggresive extends Strategy {
 				if (attacker.getArmyNum() > 1){
 					if(game.allOutAttack(attacker, defender)){
 						game.attackMove(game.getAttackDice());
+					}else {
+						return;
 					}
 				}else {
 					return;

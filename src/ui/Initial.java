@@ -165,6 +165,9 @@ public class Initial extends JFrame {
 					output_text.append("Loading map "+command[1]+" fail!\n");
 				}
 			}
+			else if(command[0].equals("tournament")) {
+				
+			}
 			player_text.setText("");
 			for(String [] s:player_str_list) {
 				player_text.append("Name: "+s[0]+" Color: "+s[1]+"   "+ (s.length==3?"AI: "+s[2]:"") +"\n");
