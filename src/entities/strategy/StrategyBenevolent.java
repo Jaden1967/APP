@@ -28,7 +28,6 @@ public class StrategyBenevolent extends Strategy{
 	 * @param game GamePlay 
 	 */
 	public StrategyBenevolent (GamePlay g, Player p) {
-		System.out.println("Benevolent strategy ctor called");
 		this.game = g;
 		this.player = p;
 		this.type = "b";
@@ -36,7 +35,6 @@ public class StrategyBenevolent extends Strategy{
 	
 	@Override
 	public void reinforce() {
-		System.out.println("reinforce is called");
 		Collections.sort(ownedCountries,new CountryComparator());
 		int ind = 0;
 		int avg = player.getArmyToPlace();
@@ -52,7 +50,6 @@ public class StrategyBenevolent extends Strategy{
 				game.reinforceArmy(curr, 1);
 			}
 			ind = (ind+1) % ownedCountries.size();
-			System.out.println("army to place == "+player.getArmyToPlace());
 		}
 		
 	}

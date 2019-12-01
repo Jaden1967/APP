@@ -15,7 +15,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.sun.tools.javac.util.List;
 
 import controller.Controller;
 import entities.Continent;

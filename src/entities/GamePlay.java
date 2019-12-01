@@ -45,9 +45,9 @@ public class GamePlay extends Observable{
 	private int def_dice=0;
 	private int add_flag = 0;
 	private JFrame mapui = null;
-	private String[][] result;
-	private int result_row;
-	private int result_col;
+	private String[][] result = new String [1][1];
+	private int result_row=0;
+	private int result_col=0;
 	boolean is_test = false;
 	public boolean game_ended = false;
 	private boolean is_tournament = false;
@@ -129,6 +129,10 @@ public class GamePlay extends Observable{
 		player = player_list.get(player_index);
 		army_to_place = player.getArmyToPlace();
 		alertObservers();
+		if(player.isAI()) {
+			Random rand = new Random();
+			placeArmy(player.getOwnCountries().get(rand.nextInt(player.getTotalCountriesNumber())));
+		}
 	}
 	
 	/**
@@ -196,7 +200,7 @@ public class GamePlay extends Observable{
 		alertObservers();
 
 		if(player.isAI()) {
-			System.out.println("player "+player.getID()+" is placing random army");
+			//System.out.println("player "+player.getID()+" is placing random army");
 			//if the player is an ai, randomly placearmy on one of its owned Countries, go to the next player's startup phase
 			Random rand = new Random();
 			placeArmy(player.getOwnCountries().get(rand.nextInt(player.getTotalCountriesNumber())));
@@ -215,7 +219,7 @@ public class GamePlay extends Observable{
 		showDialog("Reinforcement Phase for player "+player.getID());
 		add_flag = 0;
 		//TODO add AI automatic trade
-		if(player.getOwnCard().size()==5) {
+		if(player.getOwnCard().size()==5 && !player.isAI()) {
 			showDialog("You have reached the maximum number of cards, please trade!");
 			Trade t = new Trade(this);
 			t.setVisible(true);
