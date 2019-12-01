@@ -311,7 +311,7 @@ public class Player {
 		//add indexes to remove three all different cards
 		else if(i>0 && c >0 && a >0) {
 			i=1;c=1;a=1;
-			for(int ind= 0;i<ownedCard.size();i++) {
+			for(int ind= 0;ind<ownedCard.size();ind++) {
 				if(i==1 && ownedCard.get(ind).getType().equals("Infantry")) {
 					indexes_to_remove.add(ind);
 					i--;
