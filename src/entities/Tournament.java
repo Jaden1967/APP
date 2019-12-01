@@ -31,6 +31,7 @@ public class Tournament {
 		
 		//for each map in map List
 		for (String m: mapList) {
+			c = 0;
 			String map = m;
 			for (int i=0; i<numGames;i++) {
 				GamePlay game = new GamePlay();
