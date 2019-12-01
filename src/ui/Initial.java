@@ -36,7 +36,8 @@ public class Initial extends JFrame {
 	private JPanel contentPane;
 	Vector<String[]> player_str_list = new Vector<>();
 	private Vector<String> colorList = new Vector<String>();
-	String isCommandPattern = "(gameplayer -(add|remove) \\w*( (aggressive|benevolent|random|cheater))?|loadmap \\w*\\.map|populatecountries)";
+	String isCommandPattern = "(gameplayer -(add|remove) \\w*( (aggressive|benevolent|random|cheater))?|loadmap \\w*\\.map|populatecountries)|"
+			+ "tournament \\\\-M \\\\[((\\\\w)*\\\\.map)(,(\\\\w)*\\\\.map)*\\\\] -P \\\\[(aggressive|benevolent|cheater|random)(,(aggressive|benevolent|cheater|random))*\\\\] -G [1-9] -D ([1-9]|[1-8][0-9]|9[0-9]|100)";
 	GamePlay game;
 	Controller control;
 	
