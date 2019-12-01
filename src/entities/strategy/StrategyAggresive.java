@@ -69,19 +69,11 @@ public class StrategyAggresive extends Strategy {
 						game.attackMove(game.getAttackDice());
 					}
 				}else {
-					break;
+					return;
 				}
 			}
 		}
-		/*
-		 * while (game.checkIfCanAttack(player)) { //
-		 * System.out.println("AI Player "+player.getID()+" can still attack"); f: for
-		 * (Country c: game.getCountries()) { //use whole country list to avoid
-		 * concurrent modification exception if
-		 * (!c.getOwner().getID().equals(player.getID())) continue f; if (c.getArmyNum()
-		 * > 1 && c.hasEnemyNeighbour()) { if(game.allOutAttack(c,
-		 * c.getOneEnemyNeighbor())) { game.attackMove(c.getArmyNum()- 1); } } } }
-		 */
+		
 	}
 	
 	/**
@@ -99,7 +91,7 @@ public class StrategyAggresive extends Strategy {
 					if (c.hasEnemyNeighbour() && c.hasPathTo(ownedCountries.get(ownedCountries.size()-1).getName(), player.getID(), visited)) {
 						//fortify the player owned country with all - 1 of the "Strongest": enemy-less country
 						game.fortify(ownedCountries.get(ownedCountries.size()-1), c, ownedCountries.get(ownedCountries.size()-1).getArmyNum()-1);
-						break;
+						return;
 					}
 				}
 			}
