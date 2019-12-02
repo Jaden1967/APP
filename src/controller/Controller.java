@@ -69,8 +69,8 @@ public class Controller {
 	 * Start the gameplayer by randomly populating the countries for the game model
 	 * @param result
 	 */
-	public void startGame(String [][] result, int row, int col) {
-		game.parseResultArray(result, row, col);
+	public void startGame(Vector<String> result) {
+		game.parseResultArray(result);
 		game.populateCountries();
 	}
 	
@@ -82,7 +82,6 @@ public class Controller {
 		Vector<Player> player_list = new Vector<>();
 		for(String [] s: list) {
 			if(s.length >2) {
-				System.out.println("ai player with strategy "+s[2]+" in control");
 				player_list.add(new Player(s[0],getColor(s[1]), this.game, s[2]));
 			}else {
 				player_list.add(new Player(s[0],getColor(s[1]), this.game));

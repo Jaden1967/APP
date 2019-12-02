@@ -43,6 +43,7 @@ public class StrategyAggresive extends Strategy {
 	 */
 	@Override
 	public void reinforce() {
+		System.out.println("reinforce for attack ai");
 		// System.out.printf("Player %s is in reinforcement.\n", player.getID());
 		Collections.sort(ownedCountries, new CountryComparator());
 		game.reinforceArmy(ownedCountries.get(ownedCountries.size() - 1), player.getArmyToPlace());
@@ -53,6 +54,8 @@ public class StrategyAggresive extends Strategy {
 	 */
 	@Override
 	public void attack() {
+		System.out.println("attack for attack ai");
+
 		if (game.checkIfCanAttack(player)) {
 			Collections.sort(ownedCountries, new CountryComparator());
 			int i = ownedCountries.size();
@@ -83,6 +86,8 @@ public class StrategyAggresive extends Strategy {
 	 */
 	@Override
 	public void fortify() {
+		System.out.println("fortify for attack ai");
+
 		if(game.checkIfCanFortify(player)) {
 			Collections.sort(ownedCountries, new CountryComparator());
 			//if the country with the highest number of army count doesn't have any more enemy neighbors to attack
@@ -97,6 +102,7 @@ public class StrategyAggresive extends Strategy {
 					}
 				}
 			}
+			game.nextPlayer();
 		}else {
 			game.nextPlayer();
 		}

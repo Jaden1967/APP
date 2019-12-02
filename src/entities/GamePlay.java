@@ -45,9 +45,8 @@ public class GamePlay extends Observable{
 	private int def_dice=0;
 	private int add_flag = 0;
 	private JFrame mapui = null;
-	private String[][] result = new String [1][1];
-	private int result_row=0;
-	private int result_col=0;
+	private Vector<String> result = new Vector<>();
+	
 	boolean is_test = false;
 	public boolean game_ended = false;
 	private boolean is_tournament = false;
@@ -114,6 +113,7 @@ public class GamePlay extends Observable{
 		}
 		
 		phaseZero();
+		
 	}
 	
 	
@@ -129,6 +129,10 @@ public class GamePlay extends Observable{
 		player = player_list.get(player_index);
 		army_to_place = player.getArmyToPlace();
 		alertObservers();
+		if(is_tournament) {
+			placeAll();
+			return;
+		}
 		if(player.isAI()) {
 			Random rand = new Random();
 			placeArmy(player.getOwnCountries().get(rand.nextInt(player.getTotalCountriesNumber())));
@@ -165,7 +169,8 @@ public class GamePlay extends Observable{
             }
             int ind = 0;
             Random rand = new Random();
-            while (player.getArmyToPlace()!=0) {
+
+            while (player.getArmyToPlace()>0) {
                 ind = rand.nextInt(toAdd.size());
                 toAdd.get(ind).addArmy(1);
                 player.deployArmy(1);
@@ -198,7 +203,6 @@ public class GamePlay extends Observable{
 			phaseRecruit();
 		}
 		alertObservers();
-
 		if(player.isAI()) {
 			//System.out.println("player "+player.getID()+" is placing random army");
 			//if the player is an ai, randomly placearmy on one of its owned Countries, go to the next player's startup phase
@@ -216,6 +220,7 @@ public class GamePlay extends Observable{
      * Alerts InfoObsLabel
      */
 	public void phaseRecruit() {
+		if(game_ended) return;
 		showDialog("Reinforcement Phase for player "+player.getID());
 		add_flag = 0;
 		//TODO add AI automatic trade
@@ -229,6 +234,8 @@ public class GamePlay extends Observable{
 		player.reSetArmy();
 		player.rewardInitialArmy();
 		army_to_place = player.getArmyToPlace();
+		System.out.println("turn "+turn+" player: "+player.getID());
+
 		if(player.isAI()) {
 			if (player.getOwnCard().size() == 5) {
 				player.autoTradeCards();
@@ -498,10 +505,12 @@ public class GamePlay extends Observable{
 	
 	public void checkWin() {
 		if(player.checkWin(continents_list.size())) {
-			this.result [result_row][result_col] = player.getID();
+			this.result.add(player.getID());
 			game_ended = true;
+			System.out.println("Game results in win for "+player.getID()+"\n");
+
 			showDialog("Player "+player.getID()+", you win!");
-			if(!is_test || !is_tournament) {
+			if(!is_test && !is_tournament) {
 				mapui.dispose();
 				Menu m = new Menu();
 				m.setVisible(true);
@@ -566,12 +575,12 @@ public class GamePlay extends Observable{
 		if (player_index == 0) this.turn ++;
 		if (this.is_tournament && this.turn == max_turns) {
 			game_ended = true;
-			result[result_row][result_col]= "draw";
+			result.add("draw");
+			System.out.println("Game results in draw");
 		}
 		if(game_ended) return;
 		player = player_list.get(player_index);
 		player.rewardInitialArmy();
-		System.out.println("Current player is "+player.getID()+" ai: "+player.isAI());
 		army_to_place = player.getArmyToPlace();
 		outcome += "Next player's turn\n";
 		alertObservers();
@@ -706,14 +715,16 @@ public class GamePlay extends Observable{
 	 * After change of game state, alert concerned Observers
 	 */
 	public void alertObservers() {
-		army_to_place = player.getArmyToPlace();
-
-		setChanged();
-		notifyObservers(this);
-		if(!player.isAI()) {
-			outcome = "";
+		if (!is_test && !is_tournament) {
+			army_to_place = player.getArmyToPlace();
+	
+			setChanged();
+			notifyObservers(this);
+			if(!player.isAI()) {
+				outcome = "";
+			}
+			alert_type = 0;
 		}
-		alert_type = 0;
 	}
 	
 	/**
@@ -780,8 +791,9 @@ public class GamePlay extends Observable{
 		return add_flag;
 	}
 	
-	public void parseResultArray(String [][] result, int row, int col) {
+	public void parseResultArray(Vector<String>result) {
 		this.result=result;
+		System.out.println("parsed result array of size"+result.size() );
 	}
 	
 	/**
@@ -794,12 +806,15 @@ public class GamePlay extends Observable{
 	
 	public void isTournament(int turnsMax) {
 		is_tournament = true;
+		for(Country c: countries_list) {
+			c.isTournament();
+		}
 		this.max_turns = turnsMax;
 	}
 	
 	public void removePlayer(Player p) {
 		player_list.remove(defender.getOwner());
-		if(!is_test) {
+		if(!is_test && !is_tournament) {
 			JOptionPane.showMessageDialog(null, "Player "+defender.getOwner().getID()+" is out!", "Information", JOptionPane.INFORMATION_MESSAGE);
 		}
 		if(player_index>=player_list.size()) {

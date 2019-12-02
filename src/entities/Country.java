@@ -29,6 +29,7 @@ public class Country extends Observable{
 		private int y;
 		private CountryObsLabel label;
 		private Border border; //Continent's border, constant throughout the game
+		private boolean is_tournament = false;
 
 		/**
 		 * Empty constructor for country
@@ -38,6 +39,10 @@ public class Country extends Observable{
 		public Country() {
 			this.countryName = "DNE";
 			this.owner = new Player();
+		}
+		
+		public void isTournament() {
+			is_tournament = true;
 		}
 	
 
@@ -314,7 +319,9 @@ public class Country extends Observable{
 		 * After change of state, alerts attached CountryObsLabel 
 		 */
 		public void alertObservers() {
-			setChanged();
-			notifyObservers(this);
+			if(!is_tournament) {
+				setChanged();
+				notifyObservers(this);
+			}
 		}
 }

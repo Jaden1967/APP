@@ -6,20 +6,19 @@ import java.util.Vector;
 import controller.Controller;
 
 public class Tournament {
-	private String [][] result;
+	private Vector<String> result = new Vector<>();
 	private Vector<String> colorList = new Vector<String>();
 
 	/**
 	 * Contructed when the user inputs tournament -M listofmapfiles -P listofplayerstrategies -G numberofgames -D maxnumberofturns
 	 * in Initial.java UI
-	 * @param mapList Vector of maps in the form of ["map1.map","luca.map"]
+	 * @param mapList String array of maps in the form of "map1.map","luca.map"]
 	 * @param strategyList Vector of strategies to be used in the form of ["aggressive","benevolent","random"]
 	 * @param numGames Number of games to be played for each map
 	 * @param numTurnsMax Number of turns before Game become a draw
 	 */
 	public Tournament(String[] mapList, String[] strategyList, int numGames, int numTurnsMax) {
 		Vector<String[]> player_str_list = new Vector<>();
-		result = new String [mapList.length][numGames];
 		int r = 0, c = 0;
 		initializeColors();
 		//initialize player list for all strategies
@@ -28,33 +27,33 @@ public class Tournament {
 			//use ai strategy as its name
 			player_str_list.add(new String[] {s,getRandColor(),s.substring(0,1)});
 		}
-		
+		Vector<String> printedResult = new Vector<>();
+
 		//for each map in map List
 		for (String m: mapList) {
-			c = 0;
 			String map = m;
 			for (int i=0; i<numGames;i++) {
+				result = new Vector<>();
+				System.out.println("On map "+m+", Game: "+(i+1));
 				GamePlay game = new GamePlay();
 				Controller control = new Controller (game);
 				control.loadMap(map);
 				control.addPlayers(player_str_list);
 				game.isTournament(numTurnsMax);
-				control.startGame(result,r,c);
-				c++;
+				control.startGame(result);
+				System.out.println("result size "+result.size());
+				printedResult.add(result.get(0));
 			}
-			r++;
 		}
+		System.out.println("result size: "+result.size());
 		
-		int mapind=0;
-		int gameind=1;
-		for (String[] row: result) {
-			System.out.println("Map: "+mapList[mapind]);
-			for (String col:row) {
-				System.out.print("Game"+gameind+": "+col+"\t");
-				gameind++;
+		int result_index=0;
+		for (String m: mapList) {
+			System.out.println("\nMap: "+m);
+			for (int g=0;g<numGames;g++) {
+				System.out.print("Game"+g+": "+printedResult.get(result_index)+"\t");
+				result_index++;
 			}
-			mapind++;
-			gameind=0;
 		}
 	}
 	
