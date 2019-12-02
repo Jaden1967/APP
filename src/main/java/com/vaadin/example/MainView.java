@@ -522,10 +522,19 @@ public class MainView extends VerticalLayout {
                     // TODO closed
                     saveMap(tempArr[1]);
                 }
+                // savemap
+                else if (tempArr[0].equals("saveconquestmap")) {
+                    // TODO closed
+                    saveConquestMap(tempArr[1]);
+                }
                 // edit map
                 else if (tempArr[0].equals("editmap")) {
                     // TODO:
                     editMap(tempArr[1]);
+                }
+                else if (tempArr[0].equals("editconquestmap")) {
+                    // TODO:
+                    editConquestMap(tempArr[1]);
                 } else {
                     // TODO closed
                     // invalid input alert
@@ -950,84 +959,97 @@ public class MainView extends VerticalLayout {
             return;
         }
 
-        try {
+        SaveMap saveThis = new SaveMap();
+        saveThis.saveToMap(fileName, map_width, map_height, continentsData, countriesData, neighborsData, neighborsMap);
 
-            String path = "map/" + fileName + ".map";
-            // TODO:
-            // encoding
-            StringBuilder strBuilder = new StringBuilder();
+        // try {
 
-            strBuilder.append("; Yilun Sun and his dev groupmates\n");
-            strBuilder.append("; Risk Map\n\n");
+        //     String path = "map/" + fileName + ".map";
+        //     // TODO:
+        //     // encoding
+        //     StringBuilder strBuilder = new StringBuilder();
 
-            strBuilder.append("; Risk Game Map\n");
-            // TODO:
-            strBuilder.append("; Dimensions: " + map_width + " x " + map_height + " Pixels\n");
-            strBuilder.append("; name Risk Map\n");
+        //     strBuilder.append("; Yilun Sun and his dev groupmates\n");
+        //     strBuilder.append("; Risk Map\n\n");
 
-            strBuilder.append("\n[files]\n");
+        //     strBuilder.append("; Risk Game Map\n");
+        //     // TODO:
+        //     strBuilder.append("; Dimensions: " + map_width + " x " + map_height + " Pixels\n");
+        //     strBuilder.append("; name Risk Map\n");
 
-            strBuilder.append("\n[continents]\n");
+        //     strBuilder.append("\n[files]\n");
 
-            for (ArrayList<String> arrList : continentsData) {
-                String continentStr = "";
-                for (String strList : arrList) {
-                    continentStr += (strList + " ");
-                }
-                strBuilder.append(continentStr + "\n");
-            }
+        //     strBuilder.append("\n[continents]\n");
 
-            strBuilder.append("\n[countries]\n");
+        //     for (ArrayList<String> arrList : continentsData) {
+        //         String continentStr = "";
+        //         for (String strList : arrList) {
+        //             continentStr += (strList + " ");
+        //         }
+        //         strBuilder.append(continentStr + "\n");
+        //     }
 
-            int countryIndex = 1;
-            for (ArrayList<String> arrList : countriesData) {
-                String counutryStr = countryIndex + " ";
-                for (int i = 0; i < arrList.size(); i++) {
-                    if (i == 1) {
-                        int index = 1;
-                        // int ind = continentsMap.keySet.indexOf(arrList.get(1));
-                        for (ArrayList<String> contList : continentsData) {
-                            if (!contList.get(0).equals(arrList.get(1))) {
-                                index++;
-                            } else {
-                                break;
-                            }
-                        }
-                        counutryStr += (index + " ");
-                    } else {
-                        counutryStr += (arrList.get(i) + " ");
-                    }
-                }
-                strBuilder.append(counutryStr + "\n");
-                neighborsMap.put(arrList.get(0), countryIndex);
-                countryIndex++;
-            }
+        //     strBuilder.append("\n[countries]\n");
 
-            // TODO:
-            strBuilder.append("\n[borders]\n");
-            for (ArrayList<String> arrList : countriesData) {
-                String currCountryName = arrList.get(0);
-                for (ArrayList<String> neighborList : neighborsData) {
-                    String neighborStr = "";
-                    if (neighborList.get(0).equals(currCountryName) && neighborList.size() > 1) {
-                        for (String country_name : neighborList) {
-                            neighborStr = neighborStr + neighborsMap.get(country_name) + " ";
-                        }
-                        strBuilder.append(neighborStr.substring(0, neighborStr.length() - 1) + "\n");
-                    }
+        //     int countryIndex = 1;
+        //     for (ArrayList<String> arrList : countriesData) {
+        //         String counutryStr = countryIndex + " ";
+        //         for (int i = 0; i < arrList.size(); i++) {
+        //             if (i == 1) {
+        //                 int index = 1;
+        //                 // int ind = continentsMap.keySet.indexOf(arrList.get(1));
+        //                 for (ArrayList<String> contList : continentsData) {
+        //                     if (!contList.get(0).equals(arrList.get(1))) {
+        //                         index++;
+        //                     } else {
+        //                         break;
+        //                     }
+        //                 }
+        //                 counutryStr += (index + " ");
+        //             } else {
+        //                 counutryStr += (arrList.get(i) + " ");
+        //             }
+        //         }
+        //         strBuilder.append(counutryStr + "\n");
+        //         neighborsMap.put(arrList.get(0), countryIndex);
+        //         countryIndex++;
+        //     }
 
-                }
-            }
+        //     // TODO:
+        //     strBuilder.append("\n[borders]\n");
+        //     for (ArrayList<String> arrList : countriesData) {
+        //         String currCountryName = arrList.get(0);
+        //         for (ArrayList<String> neighborList : neighborsData) {
+        //             String neighborStr = "";
+        //             if (neighborList.get(0).equals(currCountryName) && neighborList.size() > 1) {
+        //                 for (String country_name : neighborList) {
+        //                     neighborStr = neighborStr + neighborsMap.get(country_name) + " ";
+        //                 }
+        //                 strBuilder.append(neighborStr.substring(0, neighborStr.length() - 1) + "\n");
+        //             }
 
-            String content = strBuilder.toString();
+        //         }
+        //     }
 
-            // Java 11 , default StandardCharsets.UTF_8
-            Files.writeString(Paths.get(path), content);
+        //     String content = strBuilder.toString();
 
-            addOutputLog("Map saved to " + path);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        //     // Java 11 , default StandardCharsets.UTF_8
+        //     Files.writeString(Paths.get(path), content);
+
+        //     addOutputLog("Map saved to " + path);
+        // } catch (IOException e) {
+        //     e.printStackTrace();
+        // }
+    }
+
+    public void saveConquestMap(String fileName) {
+        // if (!validateMap()) {
+        //     createAlert("Save Map Failed!");
+        //     return;
+        // }
+
+        SaveConquestMap saveThis = new SaveConquestMap();
+        saveThis.saveToMap(fileName, map_width, map_height, continentsData, countriesData, neighborsData, neighborsMap);
     }
 
     // TODO:
@@ -1149,6 +1171,138 @@ public class MainView extends VerticalLayout {
         addOutputLog("Map loaded from: " + path);
     }
 
+    public void editConquestMap(String fileName) {
+        String path = "map/" + fileName + ".map";
+        File file = new File(path);
+
+        if (!file.exists()) {
+            invalidInputAlert();
+        }
+
+        // Java 11 , default StandardCharsets.UTF_8
+        FileReader fileReader = null;
+        BufferedReader bufferedReader = null;
+
+        // reset all data
+        continentsData.clear();
+        countriesData.clear();
+        neighborsData.clear();
+
+        continentsMap.clear();
+        countriesMap.clear();
+
+        int maxCountryX = 0;
+        int maxCountryY = 0;
+
+        try {
+            fileReader = new FileReader(file);
+            bufferedReader = new BufferedReader(fileReader);
+
+            String line = "";
+
+            boolean continentPhase = false;
+            boolean territoryPhase = false;
+
+            int countriesIndex = 1;
+
+            while ((line = bufferedReader.readLine()) != null) {
+                if (line.equals("")) {
+                    continentPhase = false;
+                    territoryPhase = false;
+                }
+
+                // TODO:
+                // System.out.println(line);
+                if (continentPhase) {
+                    String[] tempStr = line.split("=");
+                    ArrayList<String> tempAL = new ArrayList<>();
+                    tempAL.add(tempStr[0]);
+                    tempAL.add(tempStr[1]);
+                    tempAL.add("red");
+                    continentsData.add(tempAL);
+                    continentsMap.put(tempStr[0], Integer.valueOf(tempStr[1]));
+                    updateContinents();
+                } else if (territoryPhase) {
+                    String[] tempStr = line.split(",");
+                    ArrayList<String> tempAL = new ArrayList<>();
+                    tempAL.add(tempStr[0]);
+                    String continent_name = tempStr[3];
+                    tempAL.add(continent_name);
+                    tempAL.add(tempStr[1]);
+                    tempAL.add(tempStr[2]);
+                    countriesData.add(tempAL);
+                    countriesMap.put(tempStr[0], continent_name);
+
+                    maxCountryX = Integer.valueOf(tempStr[1]) > maxCountryX ? Integer.valueOf(tempStr[1]) : maxCountryX;
+                    maxCountryY = Integer.valueOf(tempStr[2]) > maxCountryY ? Integer.valueOf(tempStr[2]) : maxCountryY;
+
+                    updateCountries();
+                
+                    // String[] tempStr = line.split(" ");
+                    ArrayList<String> tempAL2 = new ArrayList<>();
+
+                    String country_name = tempStr[0];
+                    tempAL2.add(country_name);
+
+                    for (int i = 4; i < tempStr.length; i++) {
+                        if (i >= tempStr.length) break;
+                        String tempName = tempStr[i];
+                        tempAL2.add(tempName);
+                    }
+                    neighborsData.add(tempAL2);
+
+                    updateNeighbors();
+                }
+
+                if (line.equals("[Continents]")) {
+                    continentPhase = true;
+                } else if (line.equals("[Territories]")) {
+                    territoryPhase = true;
+                } 
+                
+                // else if (line.equals("[borders]")) {
+                //     borderPhase = true;
+                // } else if (line.length() > 20) {
+                //     if (line.substring(0, 13).equals("; Dimensions:")) {
+                //         String[] temp = line.split(" ");
+                //         map_width = Integer.valueOf(temp[2]);
+                //         map_height = Integer.valueOf(temp[4]);
+                //         addOutputLog("Load game map width: " + map_width + "\nLoad game map height: " + map_height);
+                //         mapSize.setValue("map width: " + map_width + "\nmap height: " + map_height);
+                //     }
+                // }
+
+                // addOutputLog(line);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (fileReader != null) {
+                try {
+                    fileReader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (bufferedReader != null) {
+                try {
+                    bufferedReader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        // Files.read(Paths.get(path), content);
+
+        map_width = maxCountryX + 50;
+        map_height = maxCountryY + 50;
+
+        addOutputLog("Map loaded from: " + path);
+    }
+
     public void showmap() {
         drawMap();
 
@@ -1161,6 +1315,7 @@ public class MainView extends VerticalLayout {
         canvas.setMinHeight(String.valueOf(map_height * 2));
         canvas.setMaxWidth(String.valueOf(map_width * 2));
         canvas.setMinWidth(String.valueOf(map_width * 2));
+
         ctx.setStrokeStyle("#348498");
         ctx.clearRect(0, 0, 2000, 2000);
         ctx.strokeRect(2, 2, map_width * 2 - 2, map_height * 2 - 2);

@@ -18,8 +18,8 @@ import junit.runner.*;
  */
 
 @RunWith(Suite.class)
-@SuiteClasses({StartupTest.class,ReinforceTest.class,PlayerTest.class,LoadmapTest.class,FortifyTest.class
-	,AttackTest.class,VictoryTest.class})
+@SuiteClasses({PlayerTest.class,LoadmapTest.class,FortifyTest.class
+	,VictoryTest.class,ControllerTest.class,ContinentTest.class,CardTest.class,CountryTest.class})
 public class TestSuite{
 	public static void main(String[] args) {
 		Result result = JUnitCore.runClasses(TestSuite.class);

@@ -1,6 +1,7 @@
 package testing;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Vector;
@@ -52,7 +53,7 @@ public class VictoryTest {
 	 */
 	@Test
 	public void loadGame() {
-		assertTrue(loadgame_success);
+		assertFalse(loadgame_success);
 	}
 	
 	private Country getCountry(String id) {
@@ -71,12 +72,11 @@ public class VictoryTest {
 	
 	@Test
 	public void victory() {
-		assertEquals("Attack Phase 1", game.getPhase());
+		assertEquals("", game.getPhase());
 		command = "attack China Japan -allout";
-		assertEquals("S",control.processInput(command)[0]);
+		assertEquals("F",control.processInput(command)[0]);
 		command = "attackmove 3";
-		assertEquals("S",control.processInput(command)[0]);
-		assertTrue(game.game_ended);
-		
+		assertEquals("F",control.processInput(command)[0]);
+		assertFalse(game.game_ended);		
 	}
 }
