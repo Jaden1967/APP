@@ -67,7 +67,7 @@ public class Country extends Observable{
 			label = new CountryObsLabel(String.valueOf(armyNum),name);
 			x = (int)((float)plotX/imageX*x);
 			y = (int)((float)plotY/imageY*y);
-			label.setBounds(x-15, y-15, 30, 30);
+			label.setBounds(x-17, y-17, 34, 34);
 			label.setFont(new Font("SimSun", Font.BOLD, 15));
 			label.setHorizontalAlignment(SwingConstants.CENTER);
 			this.addObserver(label);

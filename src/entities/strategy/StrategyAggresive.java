@@ -56,7 +56,7 @@ public class StrategyAggresive extends Strategy {
 	public void attack() {
 		System.out.println("attack for attack ai");
 
-		if (game.checkIfCanAttack(player)) {
+		while (game.checkIfCanAttack(player)) {
 			Collections.sort(ownedCountries, new CountryComparator());
 			int i = ownedCountries.size();
 			while(!ownedCountries.get(i-1).hasEnemyNeighbour()) {
@@ -69,7 +69,12 @@ public class StrategyAggresive extends Strategy {
 				if(defender.getOwner().getID() == attacker.getOwner().getID()) continue f;
 				if (attacker.getArmyNum() > 1){
 					if(game.allOutAttack(attacker, defender)){
-						game.attackMove(game.getAttackDice());
+						if(attacker.getArmyNum()-game.getAttackDice()>=1) {
+							game.attackMove(game.getAttackDice());
+						}
+						else {
+							game.attackMove(attacker.getArmyNum()-1);
+						}
 					}else {
 						return;
 					}

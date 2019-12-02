@@ -45,7 +45,12 @@ public class StrategyRandom extends Strategy{
 				if(defender.getOwner().getID() == attacker.getOwner().getID()) continue f;
 				if (attacker.getArmyNum() > 1){
 					if(defender.getArmyNum() == 0){
-						game.attackMove(game.getAttackDice());
+						if(attacker.getArmyNum()-game.getAttackDice()>=1) {
+							game.attackMove(game.getAttackDice());
+						}
+						else {
+							game.attackMove(attacker.getArmyNum()-1);
+						}
 					}
 					boolean randomCondition = true;
 					while(randomCondition) {
@@ -75,7 +80,7 @@ public class StrategyRandom extends Strategy{
 				HashSet<String> visited = new HashSet<>();
 				if (c.hasPathTo(ownedCountries.get(ownedCountries.size() - 1).getName(), player.getID(), visited)) {
 					//fortify the player owned country with all - 1 of the "Strongest": enemy-less country
-					game.fortify(ownedCountries.get(ownedCountries.size()-1), c, (int)(Math.random() * ownedCountries.get(ownedCountries.size()-1).getArmyNum()));
+					game.fortify(ownedCountries.get(ownedCountries.size()-1), c, (int)(Math.random() * (ownedCountries.get(ownedCountries.size()-1).getArmyNum()-1)));
 					break;
 				}
 			}

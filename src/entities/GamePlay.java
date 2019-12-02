@@ -571,14 +571,19 @@ public class GamePlay extends Observable{
 	 * Initiate reinforcement phase for that player
 	 */
 	public void nextPlayer() {
+		if(game_ended) return;
 		player_index = (player_index+1)% player_list.size();
-		if (player_index == 0) this.turn ++;
+		if (player_index == 0) {
+			this.turn ++;
+			if(!is_test && !is_tournament) {
+				JOptionPane.showMessageDialog(null, "Turn "+turn, "Information", JOptionPane.INFORMATION_MESSAGE);
+			}
+		}
 		if (this.is_tournament && this.turn == max_turns) {
 			game_ended = true;
 			result.add("draw");
 			System.out.println("Game results in draw");
 		}
-		if(game_ended) return;
 		player = player_list.get(player_index);
 		player.rewardInitialArmy();
 		army_to_place = player.getArmyToPlace();

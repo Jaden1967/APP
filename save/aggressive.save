@@ -1,0 +1,57 @@
+aggressive.save
+Save at 2019-12-01 20:08:35
+
+[map]
+luca.map
+
+[players]
+pc 14 h -1 {} 4 0
+A 13 a -8388480 {I} 0 0
+B 15 a -60269 {A} 0 0
+
+[countries]
+1 B 1
+2 B 2
+3 B 333
+4 pc 2
+5 pc 1
+6 A 2
+7 pc 4
+8 pc 3
+9 A 4
+10 B 2
+11 pc 2
+12 pc 6
+13 B 3
+14 A 2
+15 B 2
+16 B 1
+17 B 3
+18 A 1
+19 pc 2
+20 pc 3
+21 B 3
+22 A 2
+23 A 1
+24 A 4
+25 pc 2
+26 B 1
+27 B 3
+28 B 2
+29 A 2
+30 pc 3
+31 A 2
+32 pc 2
+33 A 1
+34 A 3
+35 B 1
+36 A 3
+37 pc 2
+38 B 2
+39 pc 3
+40 B 4
+41 A 3
+42 pc 4
+
+[status]
+0 1 0

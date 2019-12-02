@@ -46,7 +46,7 @@ public class MapUI extends JFrame {
 			+ "fortify (\\w*(\\-\\w+)* \\w*(\\-\\w+)* [1-9][0-9]*|\\-none))|"
 			+ "cheat|trade|view|"
 			+ "attack \\w*(\\-\\w+)* \\w*(\\-\\w+)* ([1-3]|\\-allout)|"
-			+ "\\-noattack|defend [1-2]|attackmove [1-9][0-9]*";
+			+ "\\-noattack|defend [1-2]|attackmove [1-9][0-9]*|donothing";
 	private Controller control;
 	
 	public static void main(String[] args) {

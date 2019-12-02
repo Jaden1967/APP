@@ -427,9 +427,11 @@ public class Controller {
 	 */
 	public String [] processInput(String input) {
 		String [] splitted = input.split("\\s+");
-		
+		if(input.equals("donothing")) {
+			game.nextPlayer();
+		}
 		// Command placeall
-		if(splitted[0].equals("placeall")) {
+		else if(splitted[0].equals("placeall")) {
 	        if(game.getPhase().equals("Startup Phase")) {
 	            //place all armies randomly for current player
 	            game.placeAll();
