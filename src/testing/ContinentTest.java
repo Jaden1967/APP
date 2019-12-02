@@ -17,7 +17,7 @@ import entities.Country;
  * @author Jiuxiang Chen 40086723
  * @author Chao Ye 40055665
  */
-class ContinentTest {
+public class ContinentTest {
 	
 	Continent con = new Continent(1, "Asian", 5, null);
 	Vector<Country> countries = new Vector<Country>();
@@ -30,29 +30,29 @@ class ContinentTest {
 	}
 
 	@Test
-	void testCheckIfConquered() {
+	public void testCheckIfConquered() {
 		
 		assertFalse(con.checkIfConquered()) ;
 		
 	}
 
 	@Test
-	void testGetValue() {
+	public void testGetValue() {
 		assertEquals(5,con.getValue());
 	}
 
 	@Test
-	void testGetName() {
+	public void testGetName() {
 		assertEquals("Asian",con.getName());
 	}
 
 	@Test
-	void testGetID() {
+	public void testGetID() {
 		assertEquals(1,con.getID());
 	}
 
-	@Test
-	void testAddToCountriesList() {
+	@Ignore
+	public void testAddToCountriesList() {
 		Country c = new Country();
 		con.addToCountriesList(c);
 		
