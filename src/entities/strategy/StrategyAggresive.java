@@ -56,14 +56,15 @@ public class StrategyAggresive extends Strategy {
 	public void attack() {
 		System.out.println("attack for attack ai");
 
-		while (game.checkIfCanAttack(player)) {
+		if (game.checkIfCanAttack(player)) {
 			Collections.sort(ownedCountries, new CountryComparator());
-			int i = ownedCountries.size();
-			while(!ownedCountries.get(i-1).hasEnemyNeighbour()) {
+			int i = ownedCountries.size()-1;
+			while(!ownedCountries.get(i).hasEnemyNeighbour()) {
 				i--;
 			}
+			System.out.println("chose index: "+i+" country: "+ownedCountries.get(i).getName());
 			//Choose owned country with highest army count to attack
-			Country attacker = ownedCountries.get(i-1);
+			Country attacker = ownedCountries.get(i);
 			//All out attack on all its neighbors until army count on that attacking country reduces to 1 or no more enemy neighbors
 			f: for(Country defender: attacker.getNeighbors()) {
 				if(defender.getOwner().getID() == attacker.getOwner().getID()) continue f;
@@ -83,6 +84,7 @@ public class StrategyAggresive extends Strategy {
 				}
 			}
 		}
+		
 		
 	}
 	

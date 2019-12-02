@@ -22,11 +22,13 @@ import entities.Player;
 
 public class StrategyCheater extends Strategy {
 	
+	String outcome;
+	
 	public StrategyCheater(GamePlay game, Player p) {
 		this.game = game;
 		this.player = p;		
 		this.type = "c";
-
+		this.outcome = new String();
 	}
 	
 	@Override
@@ -36,6 +38,7 @@ public class StrategyCheater extends Strategy {
 			Country c = ownedCountries.get(i);
 			int temp = c.getArmyNum();
 			c.addArmy(temp);
+			outcome+= "Reinforcement doubled army on "+c.getName()+"\n";
 		}
 		
 	}
@@ -72,6 +75,7 @@ public class StrategyCheater extends Strategy {
 				c.getContinent().checkIfConquered();
 				player.addCountry(c);
 				c.setArmy(1);
+				outcome+="Conquered "+c.getName()+"\n";
 			}
 		}
 		game.checkWin();
@@ -85,9 +89,10 @@ public class StrategyCheater extends Strategy {
 			if(c.hasEnemyNeighbour()) {
 				int temp = c.getArmyNum();
 				c.addArmy(temp);
+				outcome+= "Fortification doubled army on "+c.getName()+"\n";
 			}
-			
 		}
+		game.appendOutcome(outcome);
 		game.nextPlayer();
 	}
 	

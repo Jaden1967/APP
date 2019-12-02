@@ -333,7 +333,7 @@ public class GamePlay extends Observable{
 	 * @return true if the Country is successfully conquered during the all out attack
 	 */
 	public boolean allOutAttack (Country from, Country to) {
-		outcome += "All-out Attacking from "+from.getName()+" ("+from.getArmyNum()+") to "+ to.getName()+"\n";
+		outcome += "All-out Attacking from "+from.getName()+" ("+from.getArmyNum()+") to "+ to.getName()+"("+to.getArmyNum()+")\n";
 		attacker = from;
 		defender = to;
 		boolean conquered = false;
@@ -417,7 +417,7 @@ public class GamePlay extends Observable{
 				addCard();
 				add_flag++;
 			}
-			outcome += "Choose the number of army to be moved to "+defender.getName()+"\n";
+			outcome += "Choose army to be moved from "+attacker.getName()+" to "+defender.getName()+"\n";
 			phase = "Attack Phase 3";
 			alertObservers();
 			return true;
@@ -561,7 +561,7 @@ public class GamePlay extends Observable{
 	public void fortify(Country from, Country to, int num) {
 		from.removeArmy(num);
 		to.addArmy(num);
-		outcome += "Sucessfully mobilized from "+ from.getName()+" to "+to.getName()+" "+num+" armies\n";
+		outcome += "Sucessfully fortified from "+ from.getName()+" to "+to.getName()+" "+num+" armies\n";
 		nextPlayer();
 		
 	}
@@ -743,7 +743,7 @@ public class GamePlay extends Observable{
 			player.getOwnCard().remove(0);
 		}
 		player.addCard(tmp[r]);
-		outcome += "Added "+tmp[r]+" card to current player\n";
+		outcome += "Added "+tmp[r]+" card to player"+player.getID()+"\n";
 	}
 	
 	/**
@@ -837,5 +837,13 @@ public class GamePlay extends Observable{
 		if(!is_test && (!player.isAI()||game_ended)) {
 			JOptionPane.showMessageDialog(null, s, "Information", JOptionPane.INFORMATION_MESSAGE);
 		}
+	}
+	
+	/**
+	 * Append an outcome from an AI strategy that could not be appended inside the GamePlay
+	 * @param o Outcome String to be appended and shown
+	 */
+	public void appendOutcome(String o) {
+		this.outcome +=o;
 	}
 }
