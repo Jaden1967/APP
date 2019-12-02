@@ -28,7 +28,6 @@ public class StrategyBenevolent extends Strategy{
 	 * @param game GamePlay 
 	 */
 	public StrategyBenevolent (GamePlay g, Player p) {
-		System.out.println("Benevolent strategy ctor called");
 		this.game = g;
 		this.player = p;
 		this.type = "b";
@@ -37,25 +36,22 @@ public class StrategyBenevolent extends Strategy{
 	@Override
 	public void reinforce() {
 		Collections.sort(ownedCountries,new CountryComparator());
-		int curr = 0;
-		int next = 1;
-		while (next < player.getOwnCountries().size() && player.getArmyToPlace()>0) {
-			if(ownedCountries.get(curr).getArmyNum() < ownedCountries.get(next).getArmyNum()) {
-				int amt = Math.min(player.getArmyToPlace(), ownedCountries.get(next).getArmyNum()-ownedCountries.get(curr).getArmyNum());
-				game.reinforceArmy(ownedCountries.get(curr), amt);
-				curr = 0;
-				next = 1;
-				continue;
-			}else {
-				curr++;
-				next++;
-				if (next == player.getOwnCountries().size() && player.getArmyToPlace()>0) {
-					curr = 0;
-					next = 1;
-				}
-			}
-			
+		int ind = 0;
+		int avg = player.getArmyToPlace();
+		for(Country c: ownedCountries) {
+			avg += c.getArmyNum();
 		}
+		avg /= ownedCountries.size();
+		
+		//reinforce small amounts of army to each country to balance out
+		while (player.getArmyToPlace() > 0) {
+			Country curr = ownedCountries.get(ind);
+			if (curr.getArmyNum() < avg+1) {
+				game.reinforceArmy(curr, 1);
+			}
+			ind = (ind+1) % ownedCountries.size();
+		}
+		
 	}
 	
 	@Override
@@ -83,13 +79,13 @@ public class StrategyBenevolent extends Strategy{
 				}
 				else {
 					game.fortify(tmpC.get(tmpC.size()-1), tmpC.get(0), tmpC.get(tmpC.size()-1).getArmyNum()-avg);
-					break;
+					return;
 				}
 			}
 			game.nextPlayer();
 		}
 		else {
-			game.nextPlayer();
+			game.nextPlayer(); 
 		}
 	}
 }

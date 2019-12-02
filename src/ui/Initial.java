@@ -36,7 +36,8 @@ public class Initial extends JFrame {
 	private JPanel contentPane;
 	Vector<String[]> player_str_list = new Vector<>();
 	private Vector<String> colorList = new Vector<String>();
-	String isCommandPattern = "(gameplayer -(add|remove) \\w*( (aggressive|benevolent|random|cheater))?|loadmap \\w*\\.map|populatecountries)";
+	String isCommandPattern = "(gameplayer -(add|remove) \\w*( (aggressive|benevolent|random|cheater))?|loadmap \\w*\\.map|populatecountries)|"
+			+ "tournament \\-M ((\\w)*\\.map)(,(\\w)*\\.map)* -P (aggressive|benevolent|cheater|random)(,(aggressive|benevolent|cheater|random))* -G [1-9] -D ([1-9]|[1-8][0-9]|9[0-9]|100)";
 	GamePlay game;
 	Controller control;
 	
@@ -164,6 +165,14 @@ public class Initial extends JFrame {
 				else {
 					output_text.append("Loading map "+command[1]+" fail!\n");
 				}
+			}
+			//tournament -M listofmapfiles -P listofplayerstrategies -G numberofgames -D maxnumberofturns
+			else if(command[0].equals("tournament")) {
+				String [] maps = command[2].split(",");
+				String [] strategies = command[4].split(",");
+				int games = Integer.parseInt(command[6]);
+				int max_turns = Integer.parseInt(command[8]);
+				Tournament tournament = new Tournament(maps,strategies,games,max_turns);
 			}
 			player_text.setText("");
 			for(String [] s:player_str_list) {

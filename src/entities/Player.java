@@ -276,6 +276,64 @@ public class Player {
 	}
 	
 	/**
+	 * When the player is AI and has 5 cards to trade in, automatically trade in 3 of the same or 3 different cards
+	 */
+	public void autoTradeCards() {
+		int i = 0, c = 0, a = 0;
+		for (Card card: ownedCard) {
+			if (card.getType().equals("Infantry")) i++;
+			else if(card.getType().equals("Cavalry")) c++;
+			else a++;
+		}
+		Vector<Integer> indexes_to_remove = new Vector<>();
+		//add indexes to remove three-of-a-kind cards
+		if(i==3 || c == 3 || a ==3) {
+			if (i==3) {
+				for(int ind= 0;ind<ownedCard.size();ind++) {
+					if(ownedCard.get(ind).getType().equals("Infantry")) {
+						indexes_to_remove.add(ind);
+					}
+				}
+			}else if(c==3) {
+				for(int ind= 0;ind<ownedCard.size();ind++) {
+					if(ownedCard.get(ind).getType().equals("Cavalry")) {
+						indexes_to_remove.add(ind);
+					}
+				}
+			}else if(a==3) {
+				for(int ind= 0;ind<ownedCard.size();ind++) {
+					if(ownedCard.get(ind).getType().equals("Artillery")) {
+						indexes_to_remove.add(ind);
+					}
+				}
+			}
+		}
+		//add indexes to remove three all different cards
+		else if(i>0 && c >0 && a >0) {
+			i=1;c=1;a=1;
+			for(int ind= 0;ind<ownedCard.size();ind++) {
+				if(i==1 && ownedCard.get(ind).getType().equals("Infantry")) {
+					indexes_to_remove.add(ind);
+					i--;
+				}
+				if(c ==1 && ownedCard.get(ind).getType().equals("Cavalry")) {
+					indexes_to_remove.add(ind);
+					c--;
+				}
+				if(a ==1 && ownedCard.get(ind).getType().equals("Artillery")) {
+					indexes_to_remove.add(ind);
+					a--;
+				}
+			}
+		}
+		while(!indexes_to_remove.isEmpty()) {
+			ownedCard.remove(indexes_to_remove.remove(indexes_to_remove.size()-1));
+		}
+		this.addTradeTimes();
+		this.rewardArmy(this.trade_times*5);
+	}
+	
+	/**
 	 * Adds a card to the player's arsenal
 	 * @param type Type of the card (Infantry, Calvary, Artillery)
 	 */

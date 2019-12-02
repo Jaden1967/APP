@@ -43,6 +43,7 @@ public class StrategyAggresive extends Strategy {
 	 */
 	@Override
 	public void reinforce() {
+		System.out.println("reinforce for attack ai");
 		// System.out.printf("Player %s is in reinforcement.\n", player.getID());
 		Collections.sort(ownedCountries, new CountryComparator());
 		game.reinforceArmy(ownedCountries.get(ownedCountries.size() - 1), player.getArmyToPlace());
@@ -53,6 +54,8 @@ public class StrategyAggresive extends Strategy {
 	 */
 	@Override
 	public void attack() {
+		System.out.println("attack for attack ai");
+
 		if (game.checkIfCanAttack(player)) {
 			Collections.sort(ownedCountries, new CountryComparator());
 			int i = ownedCountries.size();
@@ -67,21 +70,15 @@ public class StrategyAggresive extends Strategy {
 				if (attacker.getArmyNum() > 1){
 					if(game.allOutAttack(attacker, defender)){
 						game.attackMove(game.getAttackDice());
+					}else {
+						return;
 					}
 				}else {
-					break;
+					return;
 				}
 			}
 		}
-		/*
-		 * while (game.checkIfCanAttack(player)) { //
-		 * System.out.println("AI Player "+player.getID()+" can still attack"); f: for
-		 * (Country c: game.getCountries()) { //use whole country list to avoid
-		 * concurrent modification exception if
-		 * (!c.getOwner().getID().equals(player.getID())) continue f; if (c.getArmyNum()
-		 * > 1 && c.hasEnemyNeighbour()) { if(game.allOutAttack(c,
-		 * c.getOneEnemyNeighbor())) { game.attackMove(c.getArmyNum()- 1); } } } }
-		 */
+		
 	}
 	
 	/**
@@ -89,6 +86,8 @@ public class StrategyAggresive extends Strategy {
 	 */
 	@Override
 	public void fortify() {
+		System.out.println("fortify for attack ai");
+
 		if(game.checkIfCanFortify(player)) {
 			Collections.sort(ownedCountries, new CountryComparator());
 			//if the country with the highest number of army count doesn't have any more enemy neighbors to attack
@@ -99,10 +98,11 @@ public class StrategyAggresive extends Strategy {
 					if (c.hasEnemyNeighbour() && c.hasPathTo(ownedCountries.get(ownedCountries.size()-1).getName(), player.getID(), visited)) {
 						//fortify the player owned country with all - 1 of the "Strongest": enemy-less country
 						game.fortify(ownedCountries.get(ownedCountries.size()-1), c, ownedCountries.get(ownedCountries.size()-1).getArmyNum()-1);
-						break;
+						return;
 					}
 				}
 			}
+			game.nextPlayer();
 		}else {
 			game.nextPlayer();
 		}

@@ -45,8 +45,13 @@ public class GamePlay extends Observable{
 	private int def_dice=0;
 	private int add_flag = 0;
 	private JFrame mapui = null;
+	private Vector<String> result = new Vector<>();
+	
 	boolean is_test = false;
 	public boolean game_ended = false;
+	private boolean is_tournament = false;
+	private int turn = 0;
+	private int max_turns;
 	
 	/**
 	 * Empty default ctor
@@ -108,6 +113,7 @@ public class GamePlay extends Observable{
 		}
 		
 		phaseZero();
+		
 	}
 	
 	
@@ -123,6 +129,14 @@ public class GamePlay extends Observable{
 		player = player_list.get(player_index);
 		army_to_place = player.getArmyToPlace();
 		alertObservers();
+		if(is_tournament) {
+			placeAll();
+			return;
+		}
+		if(player.isAI()) {
+			Random rand = new Random();
+			placeArmy(player.getOwnCountries().get(rand.nextInt(player.getTotalCountriesNumber())));
+		}
 	}
 	
 	/**
@@ -155,7 +169,8 @@ public class GamePlay extends Observable{
             }
             int ind = 0;
             Random rand = new Random();
-            while (player.getArmyToPlace()!=0) {
+
+            while (player.getArmyToPlace()>0) {
                 ind = rand.nextInt(toAdd.size());
                 toAdd.get(ind).addArmy(1);
                 player.deployArmy(1);
@@ -188,9 +203,8 @@ public class GamePlay extends Observable{
 			phaseRecruit();
 		}
 		alertObservers();
-
 		if(player.isAI()) {
-			System.out.println("player "+player.getID()+" is placing random army");
+			//System.out.println("player "+player.getID()+" is placing random army");
 			//if the player is an ai, randomly placearmy on one of its owned Countries, go to the next player's startup phase
 			Random rand = new Random();
 			placeArmy(player.getOwnCountries().get(rand.nextInt(player.getTotalCountriesNumber())));
@@ -206,10 +220,11 @@ public class GamePlay extends Observable{
      * Alerts InfoObsLabel
      */
 	public void phaseRecruit() {
+		if(game_ended) return;
 		showDialog("Reinforcement Phase for player "+player.getID());
 		add_flag = 0;
 		//TODO add AI automatic trade
-		if(player.getOwnCard().size()==5) {
+		if(player.getOwnCard().size()==5 && !player.isAI()) {
 			showDialog("You have reached the maximum number of cards, please trade!");
 			Trade t = new Trade(this);
 			t.setVisible(true);
@@ -219,7 +234,12 @@ public class GamePlay extends Observable{
 		player.reSetArmy();
 		player.rewardInitialArmy();
 		army_to_place = player.getArmyToPlace();
+		System.out.println("turn "+turn+" player: "+player.getID());
+
 		if(player.isAI()) {
+			if (player.getOwnCard().size() == 5) {
+				player.autoTradeCards();
+			}
 			player.doStrategy();
 		}
 		alertObservers();
@@ -237,7 +257,7 @@ public class GamePlay extends Observable{
 		player.deployArmy(num);
 		outcome += "Player "+player.getID()+ " Reinforced "+c.getName()+" with "+num+" armies\n";
 		alertObservers();
-		if(army_to_place==0) {
+		if(army_to_place==0 && !player.isAI()) {
 			phaseAttack();
 		}
 	}
@@ -295,13 +315,13 @@ public class GamePlay extends Observable{
 		defender = to;
 		att_dice = dicenum;
 		outcome += "Attacking from "+from.getName()+" to "+to.getName()+" \nChoose defender's number of dice to be rolled\n";
-		if(defender.getOwner().isAI()){
+		if(!defender.getOwner().isAI()){
 			player = defender.getOwner();
 			phase = "Attack Phase 2";
+			alertObservers();
 		}else {
 			commenceAttack(Math.min(2, defender.getArmyNum()));
 		}
-		alertObservers();
 	}
 	
 	/**
@@ -485,10 +505,12 @@ public class GamePlay extends Observable{
 	
 	public void checkWin() {
 		if(player.checkWin(continents_list.size())) {
+			this.result.add(player.getID());
 			game_ended = true;
+			System.out.println("Game results in win for "+player.getID()+"\n");
+
 			showDialog("Player "+player.getID()+", you win!");
-			if(!is_test) {
-				
+			if(!is_test && !is_tournament) {
 				mapui.dispose();
 				Menu m = new Menu();
 				m.setVisible(true);
@@ -550,6 +572,13 @@ public class GamePlay extends Observable{
 	 */
 	public void nextPlayer() {
 		player_index = (player_index+1)% player_list.size();
+		if (player_index == 0) this.turn ++;
+		if (this.is_tournament && this.turn == max_turns) {
+			game_ended = true;
+			result.add("draw");
+			System.out.println("Game results in draw");
+		}
+		if(game_ended) return;
 		player = player_list.get(player_index);
 		player.rewardInitialArmy();
 		army_to_place = player.getArmyToPlace();
@@ -686,14 +715,16 @@ public class GamePlay extends Observable{
 	 * After change of game state, alert concerned Observers
 	 */
 	public void alertObservers() {
-		army_to_place = player.getArmyToPlace();
-
-		setChanged();
-		notifyObservers(this);
-		if(!player.isAI()) {
-			outcome = "";
+		if (!is_test && !is_tournament) {
+			army_to_place = player.getArmyToPlace();
+	
+			setChanged();
+			notifyObservers(this);
+			if(!player.isAI()) {
+				outcome = "";
+			}
+			alert_type = 0;
 		}
-		alert_type = 0;
 	}
 	
 	/**
@@ -760,6 +791,11 @@ public class GamePlay extends Observable{
 		return add_flag;
 	}
 	
+	public void parseResultArray(Vector<String>result) {
+		this.result=result;
+		System.out.println("parsed result array of size"+result.size() );
+	}
+	
 	/**
 	 * Used to determine the current running game is a part of a JUnit test
 	 * Will disable Message Dialogues from popping up during the test runs by checking the is_test boolean
@@ -768,9 +804,17 @@ public class GamePlay extends Observable{
 		is_test = true;
 	}
 	
+	public void isTournament(int turnsMax) {
+		is_tournament = true;
+		for(Country c: countries_list) {
+			c.isTournament();
+		}
+		this.max_turns = turnsMax;
+	}
+	
 	public void removePlayer(Player p) {
 		player_list.remove(defender.getOwner());
-		if(!is_test) {
+		if(!is_test && !is_tournament) {
 			JOptionPane.showMessageDialog(null, "Player "+defender.getOwner().getID()+" is out!", "Information", JOptionPane.INFORMATION_MESSAGE);
 		}
 		if(player_index>=player_list.size()) {
@@ -784,6 +828,7 @@ public class GamePlay extends Observable{
 	 * @param s Message to be shown in the Message Dialogue
 	 */
 	private void showDialog(String s) {
+		if(is_tournament) return;
 		if(!is_test && (!player.isAI()||game_ended)) {
 			JOptionPane.showMessageDialog(null, s, "Information", JOptionPane.INFORMATION_MESSAGE);
 		}
