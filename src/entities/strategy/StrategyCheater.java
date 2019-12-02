@@ -34,11 +34,13 @@ public class StrategyCheater extends Strategy {
 	@Override
 	//doubles the armies on all its countries
 	public void reinforce() {
+		outcome+= "Reinforcement doubled army on \n";
+
 		for(int i = 0; i < ownedCountries.size(); i++) {
 			Country c = ownedCountries.get(i);
 			int temp = c.getArmyNum();
 			c.addArmy(temp);
-			outcome+= "Reinforcement doubled army on "+c.getName()+"\n";
+			outcome += c.getName()+(i==ownedCountries.size()-1?"\n":",");
 		}
 		
 	}
@@ -66,7 +68,7 @@ public class StrategyCheater extends Strategy {
 				}
 			}
 		}
-		
+		outcome+="Attacks Conquered :\n";
 		for(Country c: game.getCountries()) {
 			if(visited.contains(c.getName())) {
 				c.getOwner().removeCountry(c);
@@ -75,23 +77,27 @@ public class StrategyCheater extends Strategy {
 				c.getContinent().checkIfConquered();
 				player.addCountry(c);
 				c.setArmy(1);
-				outcome+="Conquered "+c.getName()+"\n";
+				outcome+=c.getName()+",";
 			}
 		}
+		outcome+="\n";
 		game.checkWin();
 	}
 	
 	//doubles the number of armies on its countries that have neighbors that belong to other players. 
 	@Override
 	public void fortify() {
+		outcome+= "Fortification doubled army on :\n";
+
 		for(int i = 0; i < ownedCountries.size(); i++) {
 			Country c = ownedCountries.get(i);
 			if(c.hasEnemyNeighbour()) {
 				int temp = c.getArmyNum();
 				c.addArmy(temp);
-				outcome+= "Fortification doubled army on "+c.getName()+"\n";
+				outcome+= c.getName()+",";
 			}
 		}
+		outcome+="\n";
 		game.appendOutcome(outcome);
 		game.nextPlayer();
 	}
