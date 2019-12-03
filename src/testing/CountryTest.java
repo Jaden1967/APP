@@ -2,6 +2,7 @@ package testing;
 import static org.junit.Assert.*;
 import java.awt.Color;
 import java.awt.Font;
+import java.util.HashSet;
 import java.util.Vector;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
@@ -11,234 +12,175 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import controller.Controller;
 import entities.Continent;
 import entities.Country;
 import entities.GamePlay;
 import entities.Player;
 import ui.labels.CountryObsLabel;
 
+/**
+ * One to one test class for Country class object
+ * Choose one country, Alberta, to test all class functions
+ * Relevant information:
+ * Alberta currently has 1 army and belongs to Player a
+ * Alaska,North-West-Territory,Ontario,Western-United-States  all neighbor Alberta, North-West-Territory belongs to enemy Player c
+ * Alberta belongs to the continent North-America
+ * Alberta has id 2,  Ontario has id 6
+ * 
+ * @author Yuhua Jiang 40083453
+ * @author Boxiao Yu 40070128
+ *
+ */
 public class CountryTest {
-	Country country = new Country();
-	Player pla = new Player();
-	private String countryName;
-	private Player owner = pla;
-	private int countryId;
-	private int armyNum = 0;
-	private Continent belong_to_continent;
-	private int x;
-	private int y;
-//	private CountryObsLabel label;
-	private Border border;
-	Vector <Country> neighbor_countries = new Vector<Country>();
-
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-//		owner = pla;
-	}
-
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
+	Controller control;
+	String address;
+	String command;
+	boolean loadgame_success;
+	Vector<Country> countries_list;
+	Vector<Player> players_list;
+	GamePlay game;
+	Country alberta;
 
 	@Before
 	public void setUp() throws Exception {
-		countryId = 1;
-		countryName = "Korean";
-		x = 20;
-		y = 20;
-		this.owner = new Player();
-		neighbor_countries.add(null);
-		
-//		label = new CountryObsLabel(String.valueOf(armyNum),countryName);
-////		x = (int)((float)plotX/imageX*x);
-////		y = (int)((float)plotY/imageY*y);
-//		label.setBounds(x-15, y-15, 30, 30);
-//		label.setFont(new Font("SimSun", Font.BOLD, 15));
-//		label.setHorizontalAlignment(SwingConstants.CENTER);
-//		this.addObserver(label);
+		address = "junit_attack";
+		game = new GamePlay();
+		control = new Controller(game);
+		loadgame_success = control.loadFile(address);
+		countries_list = game.getCountries();
+		players_list = game.getPlayers();
+		alberta = game.getCountries().get(2); //Alberta is country index 10
+		game.isTest();
 	}
 
 	@After
 	public void tearDown() throws Exception {
 	}
 
-	@Ignore
-	public void testCountry() {
-		fail("Not yet implemented");
-	}
 
 	@Test
-	public void testGetOwner() {
-		assertEquals(owner.getID(),country.getOwner().getID());
-	}
-
-	@Ignore
 	public void testSetOwner() {
-		
-		GamePlay play = new GamePlay();
-		Color co = new Color(2);
-		Player plann = new Player("newone",co,play);
+		Color co = Color.red;
+		Player plann = new Player("newone",co,game);
 //		System.out.print(plann.getID());
 //		System.out.print(country.getOwner().getColor());
-		country.setOwner(plann);
-		assertEquals(plann.getID(),country.getOwner().getID());
+		alberta.setOwner(plann);
+		assertEquals(plann.getID(),alberta.getOwner().getID());
 	}
 
 	@Test
 	public void testAddNeighbour() {
 		Country neighbour1 = new Country();
-		country.addNeighbour(neighbour1);
-		assertEquals(neighbour1.getID(),country.getNeighbors().firstElement().getID());
+		int neighbornum = alberta.getNeighbors().size();
+		alberta.addNeighbour(neighbour1);
+		assertEquals(neighbornum+1,alberta.getNeighbors().size());
 	}
 
 	@Test
 	public void testHasNeighbour() {
-		assertFalse(country.hasNeighbour("Korean"));
+		assertTrue(alberta.hasNeighbour("Ontario"));
+		assertFalse(alberta.hasNeighbour("Quebec"));
 	}
 
 	@Test
 	public void testHasEnemyNeighbour() {
-		assertFalse(country.hasEnemyNeighbour());
+		assertTrue(alberta.hasEnemyNeighbour());
 	}
 
-	@Ignore
+	@Test
 	public void testGetOneEnemyNeighbor() {
-		fail("Not yet implemented");
+		assertEquals("North-West-Territory",alberta.getOneEnemyNeighbor().getName());
 	}
 
-	@Ignore
+	@Test
 	public void testHasPathTo() {
-		fail("Not yet implemented");
+		assertTrue(alberta.hasPathTo("Quebec", "a", new HashSet<String>()));
+		assertFalse(alberta.hasPathTo("China", "a", new HashSet<String>()));
 	}
 
-	@Ignore
+	@Test
 	public void testGetLinkCountries() {
-		fail("Not yet implemented");
+		HashSet<String> linked = new HashSet<>();
+		linked.add("Alaska");
+		linked.add("Ontario");
+		linked.add("Quebec");
+		linked.add("Western-United-States");
+		linked.add("Alberta");
+		HashSet<Country> visited = alberta.getLinkCountries(alberta.getName(), alberta.getOwner().getID(), new HashSet<>());
+		for(Country c: visited) {
+			assertTrue(linked.contains(c.getName()));
+		}
 	}
 
-	@Ignore
+	@Test
 	public void testAddArmy() {
-		fail("Not yet implemented");
+		alberta.addArmy(10);
+		assertEquals(11,alberta.getArmyNum());
 	}
 
-	@Ignore
+	@Test
 	public void testRemoveArmy() {
-		fail("Not yet implemented");
+		alberta.addArmy(30);
+		alberta.removeArmy(15);
+		assertEquals(16,alberta.getArmyNum());
 	}
 
-	@Ignore
+	@Test
 	public void testMoveArmy() {
-		fail("Not yet implemented");
+		alberta.addArmy(10);
+		//moving 5 army to Ontario
+		alberta.moveArmy(7, 5);
+		assertEquals(6,alberta.getArmyNum());
+		assertEquals(9,game.getCountries().get(6).getArmyNum());
 	}
 
-	@Ignore
+	@Test
 	public void testGetID() {
-		fail("Not yet implemented");
+		assertEquals(3,alberta.getID());
 	}
 
-	@Ignore
+	@Test
 	public void testGetArmyNum() {
-		fail("Not yet implemented");
+		assertEquals(1,alberta.getArmyNum());
 	}
 
-	@Ignore
+	@Test
 	public void testSetArmy() {
-		fail("Not yet implemented");
+		alberta.setArmy(30);
+		assertEquals(30,alberta.getArmyNum());
 	}
 
-	@Ignore
+	@Test
 	public void testGetName() {
-		fail("Not yet implemented");
+		assertEquals("Alberta",alberta.getName());
 	}
 
-	@Ignore
+	@Test
 	public void testGetContinent() {
-		fail("Not yet implemented");
+		assertEquals("North-America",alberta.getContinent().getName());
 	}
 
-	@Ignore
+	@Test
 	public void testSetContinent() {
-		fail("Not yet implemented");
+		Continent newCont = new Continent(7,"newCont",10,Color.red);
+		alberta.setContinent(newCont);
+		assertEquals("newCont",alberta.getContinent().getName());
 	}
 
-	@Ignore
+	@Test
 	public void testGetNeighbors() {
-		fail("Not yet implemented");
+		HashSet<String> neighbors = new HashSet<>();
+		neighbors.add("Alaska");
+		neighbors.add("North-West-Territory");
+		neighbors.add("Ontario");
+		neighbors.add("Western-United-States");
+		for(Country c: alberta.getNeighbors()) {
+			assertTrue(neighbors.contains(c.getName()));
+		}
+
 	}
 
-	@Ignore
-	public void testGetLabel() {
-		fail("Not yet implemented");
-	}
-
-	@Ignore
-	public void testPrintLinkedCountries() {
-		fail("Not yet implemented");
-	}
-
-	@Ignore
-	public void testPrintLinkedCountriesNum() {
-		fail("Not yet implemented");
-	}
-
-	@Ignore
-	public void testGetXY() {
-		fail("Not yet implemented");
-	}
-
-	@Ignore
-	public void testAlertObservers() {
-		fail("Not yet implemented");
-	}
-
-	@Ignore
-	public void testObservable() {
-		fail("Not yet implemented");
-	}
-
-	@Ignore
-	public void testAddObserver() {
-		fail("Not yet implemented");
-	}
-
-	@Ignore
-	public void testDeleteObserver() {
-		fail("Not yet implemented");
-	}
-
-	@Ignore
-	public void testNotifyObservers() {
-		fail("Not yet implemented");
-	}
-
-	@Ignore
-	public void testNotifyObserversObject() {
-		fail("Not yet implemented");
-	}
-
-	@Ignore
-	public void testDeleteObservers() {
-		fail("Not yet implemented");
-	}
-
-	@Ignore
-	public void testSetChanged() {
-		fail("Not yet implemented");
-	}
-
-	@Ignore
-	public void testClearChanged() {
-		fail("Not yet implemented");
-	}
-
-	@Ignore
-	public void testHasChanged() {
-		fail("Not yet implemented");
-	}
-
-	@Ignore
-	public void testCountObservers() {
-		fail("Not yet implemented");
-	}
 
 }
