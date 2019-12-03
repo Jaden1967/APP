@@ -47,6 +47,7 @@ public class StrategyBenevolent extends Strategy{
 		while (player.getArmyToPlace() > 0) {
 			Country curr = ownedCountries.get(ind);
 			if (curr.getArmyNum() < avg+1) {
+				System.out.println(player.getID()+" reinforce "+ownedCountries.get(ownedCountries.size() - 1).getName()+" 1 armies");
 				game.reinforceArmy(curr, 1);
 			}
 			ind = (ind+1) % ownedCountries.size();
@@ -78,6 +79,7 @@ public class StrategyBenevolent extends Strategy{
 					continue;
 				}
 				else {
+					System.out.println("Fority from "+tmpC.get(tmpC.size()-1).getName()+" to "+tmpC.get(0).getName()+" with "+Integer.toString(tmpC.get(tmpC.size()-1).getArmyNum()-avg));
 					game.fortify(tmpC.get(tmpC.size()-1), tmpC.get(0), tmpC.get(tmpC.size()-1).getArmyNum()-avg);
 					return;
 				}

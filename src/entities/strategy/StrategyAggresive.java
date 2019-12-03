@@ -59,6 +59,9 @@ public class StrategyAggresive extends Strategy {
 			int i = ownedCountries.size()-1;
 			while(!ownedCountries.get(i).hasEnemyNeighbour()||ownedCountries.get(i).getArmyNum()==1) {
 				i--;
+				if(i<0) {
+					return;
+				}
 			}
 			System.out.println("chose index: "+i+" country: "+ownedCountries.get(i).getName());
 			//Choose owned country with highest army count to attack
@@ -109,27 +112,4 @@ public class StrategyAggresive extends Strategy {
 			game.nextPlayer();
 		}
 	}
-
-	/**
-	 * then fortifies in order to maximize aggregation of forces in one country
-	 *//*
-		 * public void doFortification(Player player) {
-		 * System.out.printf("Player %sin fortification.\n", player.getID());
-		 * aggressivelyFortify(player); }
-		 * 
-		 * private void aggressivelyFortify(Player player) { Country
-		 * ownedStrongestCountry = getOwnedStrongestCountry(player); int i =
-		 * player.getArmyToPlace(); ownedStrongestCountry.addArmy(i); for(int m=0;
-		 * m<ownedCountries.size(); m++) {
-		 * if(!(ownedCountries(player).get(m)==ownedStrongestCountry)) { int n =
-		 * ownedCountries(player).get(m).getArmyNum();
-		 * ownedCountries(player).get(m).removeArmy(n); } } }
-		 * 
-		 * 
-		 * private Vector<Country> getEnemyNeighbour(Player player,Country c){
-		 * Vector<Country> enemyCountries = new Vector<Country>(); for (Country a:
-		 * c.getNeighbors()) { if (!a.getOwner().getID().equals(c.getOwner().getID())) {
-		 * enemyCountries.add(a); } } return enemyCountries; }
-		 */
-
 }
