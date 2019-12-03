@@ -45,7 +45,6 @@ public class Tournament {
 				printedResult.add(result.get(0));
 			}
 		}
-		System.out.println("result size: "+result.size());
 		
 		int result_index=0;
 		for (String m: mapList) {
