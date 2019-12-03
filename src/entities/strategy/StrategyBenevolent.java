@@ -52,6 +52,10 @@ public class StrategyBenevolent extends Strategy{
 			}
 			ind = (ind+1) % ownedCountries.size();
 		}
+		//enhancement
+		for(Country c:player.getOwnCountries()) {
+			c.addArmy(1);
+		}
 		
 	}
 	
@@ -67,7 +71,7 @@ public class StrategyBenevolent extends Strategy{
 			int curr = 0;
 			while(curr<ownedCountries.size()) {
 			HashSet<Country> visited = new HashSet<Country>();
-			visited = ownedCountries.get(curr).getLinkCountries(ownedCountries.get(0).getName(), ownedCountries.get(0).getOwner().getID(), visited);
+			visited = ownedCountries.get(curr).getLinkCountries(ownedCountries.get(0).getOwner().getID(), visited);
 			curr++;
 				Vector<Country> tmpC = new Vector<Country>();
 				for(Country c:visited) {

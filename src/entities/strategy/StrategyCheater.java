@@ -1,6 +1,9 @@
 package entities.strategy;
 import java.util.HashSet;
 import java.util.Vector;
+
+import javax.swing.JOptionPane;
+
 import entities.Continent;
 import entities.Country;
 import entities.GamePlay;
@@ -71,12 +74,21 @@ public class StrategyCheater extends Strategy {
 		outcome+="Attacks Conquered :\n";
 		for(Country c: game.getCountries()) {
 			if(visited.contains(c.getName())) {
+				c.setArmy(1);
+				player.addCountry(c);
 				c.getOwner().removeCountry(c);
-				c.getOwner().getOwnContinent().remove(c.getContinent());	
+				c.getOwner().getOwnContinent().remove(c.getContinent());
+				if(c.getOwner().getTotalCountriesNumber()==0) {
+					game.getPlayerList().remove(c.getOwner());
+					if(!game.is_test && !game.is_tournament) {
+						JOptionPane.showMessageDialog(null, "Player "+c.getOwner().getID()+" is out!", "Information", JOptionPane.INFORMATION_MESSAGE);
+					}
+					if(game.getPlayerIndex()>=game.getPlayerList().size()) {
+						game.setPlayerIndex(game.getPlayerIndex()-1);
+					}
+				}
 				c.setOwner(player);
 				c.getContinent().checkIfConquered();
-				player.addCountry(c);
-				c.setArmy(1);
 				outcome+=c.getName()+",";
 			}
 		}

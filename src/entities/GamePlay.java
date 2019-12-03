@@ -47,9 +47,9 @@ public class GamePlay extends Observable{
 	private JFrame mapui = null;
 	private Vector<String> result = new Vector<>();
 	
-	boolean is_test = false;
+	public boolean is_test = false;
 	public boolean game_ended = false;
-	private boolean is_tournament = false;
+	public boolean is_tournament = false;
 	private int turn = 0;
 	private int max_turns;
 	
@@ -845,5 +845,9 @@ public class GamePlay extends Observable{
 	 */
 	public void appendOutcome(String o) {
 		this.outcome +=o;
+	}
+	
+	public Vector<Player> getPlayerList(){
+		return player_list;
 	}
 }

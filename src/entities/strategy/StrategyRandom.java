@@ -23,8 +23,17 @@ public class StrategyRandom extends Strategy{
 	 */
 	@Override
 	public void reinforce() {
-		Collections.shuffle(ownedCountries);
-		game.reinforceArmy(ownedCountries.get((int)(Math.random() * ownedCountries.size())), player.getArmyToPlace());
+		while(player.getArmyToPlace()!=0) {
+			int r = (int)(Math.random()*player.getOwnCountries().size());
+			System.out.println(player.getID()+" reinforce "+player.getOwnCountries().get(r).getName()+" 1 armies");
+			game.reinforceArmy(player.getOwnCountries().get(r), 1);
+		}
+		//enhancement
+		for(Country c:player.getOwnCountries()) {
+			if(Math.random()>=0.66) {
+				c.addArmy(1);
+			}
+		}
 	}
 	
 	/**
@@ -32,40 +41,32 @@ public class StrategyRandom extends Strategy{
 	 */
 	@Override
 	public void attack() {
-		if (game.checkIfCanAttack(player)) {
-			Collections.shuffle(ownedCountries);
-			int i = ownedCountries.size() - 1;
-			while(!ownedCountries.get(i).hasEnemyNeighbour()) {
+		int chances = (int)(Math.random()*11);
+		int count = 0;
+		while (game.checkIfCanAttack(player)&&count<=chances) {
+			Collections.sort(ownedCountries, new CountryComparator());
+			int i = ownedCountries.size()-1;
+			while(!ownedCountries.get(i).hasEnemyNeighbour()||ownedCountries.get(i).getArmyNum()==1) {
 				i--;
-			}
-			// Choose a random owned country to attack
-			Country attacker = ownedCountries.get(i);
-
-			f: for(Country defender: attacker.getNeighbors()) {
-				if(defender.getOwner().getID() == attacker.getOwner().getID()) continue f;
-				if (attacker.getArmyNum() > 1){
-					if(defender.getArmyNum() == 0){
-						if(attacker.getArmyNum()-game.getAttackDice()>=1) {
-							game.attackMove(game.getAttackDice());
-						}
-						else {
-							game.attackMove(attacker.getArmyNum()-1);
-						}
-					}
-					boolean randomCondition = true;
-					while(randomCondition) {
-						if (attacker.getArmyNum() > 1 && defender.getArmyNum() > 1) {
-							randomCondition = Math.random() < 0.7;
-						}
-						else {
-							randomCondition = false;
-						}
-						game.setAttack(attacker, defender, 1);
-					}
-				}else {
-					break;
+				if(i<0) {
+					return;
 				}
 			}
+			System.out.println("chose index: "+i+" country: "+ownedCountries.get(i).getName());
+			//Choose owned country with highest army count to attack
+			Country attacker = ownedCountries.get(i);
+			//All out attack on all its neighbors until army count on that attacking country reduces to 1 or no more enemy neighbors
+			f: for(Country defender: attacker.getNeighbors()) {
+				if(defender.getOwner().getID() == attacker.getOwner().getID()) continue f;
+				if(Math.random()>=0.5) {
+					if(game.allOutAttack(attacker, defender)){
+						System.out.println("From "+attacker.getName()+" attack "+defender.getName()+" win");
+						System.out.println("Move "+Integer.toString(attacker.getArmyNum()-1)+" armies");
+						game.attackMove(attacker.getArmyNum()-1);
+					}
+				}
+			}
+			count++;
 		}
 	}
 	
@@ -74,18 +75,22 @@ public class StrategyRandom extends Strategy{
 	 */
 	@Override
 	public void fortify() {
-		if(game.checkIfCanFortify(player)) {
-			Collections.shuffle(ownedCountries);
-			for(Country c: ownedCountries) {
-				HashSet<String> visited = new HashSet<>();
-				if (c.hasPathTo(ownedCountries.get(ownedCountries.size() - 1).getName(), player.getID(), visited)) {
-					//fortify the player owned country with all - 1 of the "Strongest": enemy-less country
-					game.fortify(ownedCountries.get(ownedCountries.size()-1), c, (int)(Math.random() * (ownedCountries.get(ownedCountries.size()-1).getArmyNum()-1)));
-					break;
-				}
+		int r = (int)(Math.random()*player.getOwnCountries().size());
+		Country from = player.getOwnCountries().get(r);
+		HashSet<Country> visited = new HashSet<Country>();
+		visited = from.getLinkCountries(player.getID(), visited);
+		int i = (int)(Math.random()*visited.size());
+		int tmp = 0;
+		Country to = null;
+		for(Country c:visited) {
+			if(tmp==i) {
+				to = c;
+				break;
 			}
-		}else {
-			game.nextPlayer();
+			tmp++;
 		}
+		int num = (int)(Math.random()*(from.getArmyNum()-1));
+		System.out.println("Fority from "+from.getName()+" to "+to.getName()+" with "+num);
+		game.fortify(from, to, num);
 	}
 }

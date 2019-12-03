@@ -182,11 +182,11 @@ public class Country extends Observable{
 		 * @param visited Hashset of visited Country strings
 		 * @return HashSet of all linked countries of the same owner  
 		 */
-		public HashSet<Country> getLinkCountries(String countryId, String ownerId, HashSet<Country>visited){
+		public HashSet<Country> getLinkCountries(String ownerId, HashSet<Country> visited){
 			visited.add(this);
 			for (Country c: this.neighbor_countries) {
 				if(visited.contains(c) || !c.getOwner().getID().equals(ownerId)) continue;
-				visited = c.getLinkCountries(countryId, ownerId, visited);
+				visited = c.getLinkCountries(ownerId, visited);
 			}
 			return visited;
 		}

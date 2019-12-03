@@ -19,14 +19,16 @@ public class Tournament {
 	 */
 	public Tournament(String[] mapList, String[] strategyList, int numGames, int numTurnsMax) {
 		Vector<String[]> player_str_list = new Vector<>();
-		int r = 0, c = 0;
-		initializeColors();
-		//initialize player list for all strategies
-		for (String s: strategyList) {
-			//String [] format: name, color(string), strategy-substring(1 letter)
-			//use ai strategy as its name
-			player_str_list.add(new String[] {s,getRandColor(),s.substring(0,1)});
-		}
+		  int r = 0, c = 0;
+		  initializeColors();
+		  int pnum= 1;
+		  //initialize player list for all strategies
+		  for (String s: strategyList) {
+		   //String [] format: name, color(string), strategy-substring(1 letter)
+		   //use ai strategy as its name
+		   player_str_list.add(new String[] {s+" "+pnum,getRandColor(),s.substring(0,1)});
+		   pnum++;
+		  }
 		Vector<String> printedResult = new Vector<>();
 
 		//for each map in map List
@@ -49,8 +51,8 @@ public class Tournament {
 		int result_index=0;
 		for (String m: mapList) {
 			System.out.println("\nMap: "+m);
-			for (int g=0;g<numGames;g++) {
-				System.out.print("Game"+g+": "+printedResult.get(result_index)+"\t");
+			for (int g=1;g<=numGames;g++) {
+				System.out.print(String.format("%-6s: %-20s", "Game"+g,printedResult.get(result_index))+"");
 				result_index++;
 			}
 		}
