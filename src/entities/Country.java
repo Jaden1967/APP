@@ -131,6 +131,16 @@ public class Country extends Observable{
 			return false;
 		}
 		
+		public int getEnemyNeighbour() {
+			int count = 0;
+			for (Country c: this.neighbor_countries) {
+				if (!c.getOwner().getID().equals(this.owner.getID())) {
+					count++;
+				}
+			}
+			return count;
+		}
+		
 		/**
 		 * Returns the first enemy neighbor that the Country can attack
 		 * @return

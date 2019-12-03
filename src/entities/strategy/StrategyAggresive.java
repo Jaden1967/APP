@@ -43,9 +43,9 @@ public class StrategyAggresive extends Strategy {
 	 */
 	@Override
 	public void reinforce() {
-		System.out.println("reinforce for attack ai");
 		// System.out.printf("Player %s is in reinforcement.\n", player.getID());
 		Collections.sort(ownedCountries, new CountryComparator());
+		System.out.println(player.getID()+" reinforce "+ownedCountries.get(ownedCountries.size() - 1).getName()+" "+player.getArmyToPlace()+" armies");
 		game.reinforceArmy(ownedCountries.get(ownedCountries.size() - 1), player.getArmyToPlace());
 	}
 
@@ -54,12 +54,10 @@ public class StrategyAggresive extends Strategy {
 	 */
 	@Override
 	public void attack() {
-		System.out.println("attack for attack ai");
-
-		if (game.checkIfCanAttack(player)) {
+		while (game.checkIfCanAttack(player)) {
 			Collections.sort(ownedCountries, new CountryComparator());
 			int i = ownedCountries.size()-1;
-			while(!ownedCountries.get(i).hasEnemyNeighbour()) {
+			while(!ownedCountries.get(i).hasEnemyNeighbour()||ownedCountries.get(i).getArmyNum()==1) {
 				i--;
 			}
 			System.out.println("chose index: "+i+" country: "+ownedCountries.get(i).getName());
@@ -68,24 +66,13 @@ public class StrategyAggresive extends Strategy {
 			//All out attack on all its neighbors until army count on that attacking country reduces to 1 or no more enemy neighbors
 			f: for(Country defender: attacker.getNeighbors()) {
 				if(defender.getOwner().getID() == attacker.getOwner().getID()) continue f;
-				if (attacker.getArmyNum() > 1){
-					if(game.allOutAttack(attacker, defender)){
-						if(attacker.getArmyNum()-game.getAttackDice()>=1) {
-							game.attackMove(game.getAttackDice());
-						}
-						else {
-							game.attackMove(attacker.getArmyNum()-1);
-						}
-					}else {
-						return;
-					}
-				}else {
-					return;
+				if(game.allOutAttack(attacker, defender)){
+					System.out.println("From "+attacker.getName()+" attack "+defender.getName()+" win");
+					System.out.println("Move "+Integer.toString(attacker.getArmyNum()-1)+" armies");
+					game.attackMove(attacker.getArmyNum()-1);
 				}
 			}
 		}
-		
-		
 	}
 	
 	/**
@@ -93,20 +80,28 @@ public class StrategyAggresive extends Strategy {
 	 */
 	@Override
 	public void fortify() {
-		System.out.println("fortify for attack ai");
 
 		if(game.checkIfCanFortify(player)) {
 			Collections.sort(ownedCountries, new CountryComparator());
 			//if the country with the highest number of army count doesn't have any more enemy neighbors to attack
 			if (!ownedCountries.get(ownedCountries.size()-1).hasEnemyNeighbour()) {
+				Country tmp = null;
 				for(Country c: ownedCountries) {
+					int max = 0;
 					HashSet<String> visited = new HashSet<>();
 					//if the player owned country has path to the "Strongest" enemy-less country
 					if (c.hasEnemyNeighbour() && c.hasPathTo(ownedCountries.get(ownedCountries.size()-1).getName(), player.getID(), visited)) {
+						if(c.getEnemyNeighbour()>max) {
+							max = c.getEnemyNeighbour();
+							tmp = c;
+						}
 						//fortify the player owned country with all - 1 of the "Strongest": enemy-less country
-						game.fortify(ownedCountries.get(ownedCountries.size()-1), c, ownedCountries.get(ownedCountries.size()-1).getArmyNum()-1);
-						return;
 					}
+				}
+				if(tmp!=null) {
+					System.out.println("Fority from "+ownedCountries.get(ownedCountries.size()-1).getName()+" to "+tmp.getName()+" with "+Integer.toString(ownedCountries.get(ownedCountries.size()-1).getArmyNum()-1));
+					game.fortify(ownedCountries.get(ownedCountries.size()-1), tmp, ownedCountries.get(ownedCountries.size()-1).getArmyNum()-1);
+					return;
 				}
 			}
 			game.nextPlayer();

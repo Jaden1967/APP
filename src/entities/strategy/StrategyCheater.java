@@ -72,13 +72,9 @@ public class StrategyCheater extends Strategy {
 		for(Country c: game.getCountries()) {
 			if(visited.contains(c.getName())) {
 				c.getOwner().removeCountry(c);
-				Player def = c.getOwner();
 				c.getOwner().getOwnContinent().remove(c.getContinent());	
 				c.setOwner(player);
 				c.getContinent().checkIfConquered();
-				if(def.getTotalCountriesNumber() == 0) {
-					game.removePlayer(def);
-				}
 				player.addCountry(c);
 				c.setArmy(1);
 				outcome+=c.getName()+",";

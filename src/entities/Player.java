@@ -1,6 +1,7 @@
 package entities;
 
 import java.awt.Color;
+import java.util.Collections;
 import java.util.Vector;
 
 import controller.Controller;
@@ -279,58 +280,52 @@ public class Player {
 	 * When the player is AI and has 5 cards to trade in, automatically trade in 3 of the same or 3 different cards
 	 */
 	public void autoTradeCards() {
-		int i = 0, c = 0, a = 0;
-		for (Card card: ownedCard) {
-			if (card.getType().equals("Infantry")) i++;
-			else if(card.getType().equals("Cavalry")) c++;
-			else a++;
+		if(ownedCard.size()<=2) {
+			return;
 		}
-		Vector<Integer> indexes_to_remove = new Vector<>();
-		//add indexes to remove three-of-a-kind cards
-		if(i==3 || c == 3 || a ==3) {
-			if (i==3) {
-				for(int ind= 0;ind<ownedCard.size();ind++) {
-					if(ownedCard.get(ind).getType().equals("Infantry")) {
-						indexes_to_remove.add(ind);
-					}
+		Vector<Integer> i = new Vector<Integer>();
+		Vector<Integer> c = new Vector<Integer>();
+		Vector<Integer> a = new Vector<Integer>();
+		for(int index = 0;index<ownedCard.size();index++) {
+			if(ownedCard.get(index).getType().equals("Infantry")) {
+				i.add(index);
+			}
+			else if(ownedCard.get(index).getType().equals("Cavalry")) {
+				c.add(index);
+			}
+			else {
+				a.add(index);
+			}
+		}
+		if(i.size()==3||c.size()==3||a.size()==3||(i.size()>=1&&c.size()>=1&&a.size()>=1)) {
+			this.addTradeTimes();
+			this.rewardArmy(this.trade_times*5);
+			if(i.size()==3) {
+				for(int tmp = i.size()-1;tmp>=0;tmp--) {
+					ownedCard.remove(tmp);
 				}
-			}else if(c==3) {
-				for(int ind= 0;ind<ownedCard.size();ind++) {
-					if(ownedCard.get(ind).getType().equals("Cavalry")) {
-						indexes_to_remove.add(ind);
-					}
+			}
+			else if(c.size()==3) {
+				for(int tmp = c.size()-1;tmp>=0;tmp--) {
+					ownedCard.remove(tmp);
 				}
-			}else if(a==3) {
-				for(int ind= 0;ind<ownedCard.size();ind++) {
-					if(ownedCard.get(ind).getType().equals("Artillery")) {
-						indexes_to_remove.add(ind);
-					}
+			}
+			else if(a.size()==3) {
+				for(int tmp = a.size()-1;tmp>=0;tmp--) {
+					ownedCard.remove(tmp);
+				}
+			}
+			else {
+				Vector<Integer> t = new Vector<Integer>();
+				t.add(i.get(0));
+				t.add(c.get(0));
+				t.add(a.get(0));
+				Collections.sort(t);
+				for(int tmp = t.size()-1;tmp>=0;tmp--) {
+					ownedCard.remove(tmp);
 				}
 			}
 		}
-		//add indexes to remove three all different cards
-		else if(i>0 && c >0 && a >0) {
-			i=1;c=1;a=1;
-			for(int ind= 0;ind<ownedCard.size();ind++) {
-				if(i==1 && ownedCard.get(ind).getType().equals("Infantry")) {
-					indexes_to_remove.add(ind);
-					i--;
-				}
-				if(c ==1 && ownedCard.get(ind).getType().equals("Cavalry")) {
-					indexes_to_remove.add(ind);
-					c--;
-				}
-				if(a ==1 && ownedCard.get(ind).getType().equals("Artillery")) {
-					indexes_to_remove.add(ind);
-					a--;
-				}
-			}
-		}
-		while(!indexes_to_remove.isEmpty()) {
-			ownedCard.remove(indexes_to_remove.remove(indexes_to_remove.size()-1));
-		}
-		this.addTradeTimes();
-		this.rewardArmy(this.trade_times*5);
 	}
 	
 	/**
