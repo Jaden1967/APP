@@ -53,7 +53,7 @@ public class VictoryTest {
 	 */
 	@Test
 	public void loadGame() {
-		assertFalse(loadgame_success);
+		assertTrue(loadgame_success);
 	}
 	
 	private Country getCountry(String id) {
@@ -72,11 +72,11 @@ public class VictoryTest {
 	
 	@Test
 	public void victory() {
-		assertEquals("", game.getPhase());
+		assertEquals("Attack Phase 1", game.getPhase());
 		command = "attack China Japan -allout";
-		assertEquals("F",control.processInput(command)[0]);
+		assertEquals("S",control.processInput(command)[0]);
 		command = "attackmove 3";
-		assertEquals("F",control.processInput(command)[0]);
-		assertFalse(game.game_ended);		
+		assertEquals("S",control.processInput(command)[0]);
+		assertTrue(game.game_ended);		
 	}
 }

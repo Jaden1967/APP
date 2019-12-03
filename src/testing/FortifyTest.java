@@ -87,7 +87,7 @@ public class FortifyTest {
 	public void fortifySuccessMove() {
 		// player successfully send 1 army from Alaska to Alberta
 		command = "fortify Alaska Alberta 1";
-		assertEquals("F", control.processInput(command)[0]);
+		assertEquals("S", control.processInput(command)[0]);
 
 	}
 
