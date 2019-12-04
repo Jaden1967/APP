@@ -179,6 +179,12 @@ public class LoadmapTest {
 	}
 	
 	@Test
+	public void loadInvalidFail() {
+		//attempt to load invalid map with no continent settings leads to failure to load
+		assertFalse(readFile("map\\invalid.map"));
+	}
+	
+	@Test
 	public void initializeCountry() {
 		assertEquals("Alaska",countriesList.get(0).getName());
 		assertEquals("Eastern-Australia",countriesList.get(countriesList.size()-1).getName());
