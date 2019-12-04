@@ -108,7 +108,7 @@ public class CountryTest {
 		linked.add("Quebec");
 		linked.add("Western-United-States");
 		linked.add("Alberta");
-		HashSet<Country> visited = alberta.getLinkCountries(alberta.getName(), alberta.getOwner().getID(), new HashSet<>());
+		HashSet<Country> visited = alberta.getLinkCountries(alberta.getOwner().getID(), new HashSet<>());
 		for(Country c: visited) {
 			assertTrue(linked.contains(c.getName()));
 		}

@@ -121,7 +121,10 @@ public class Country extends Observable{
 			return false;
 		}
 		
-		
+		/**
+		 * Check is there any enemy neighbor around this country
+		 * @return boolean
+		 */
 		public boolean hasEnemyNeighbour() {
 			for (Country c: this.neighbor_countries) {
 				if (!c.getOwner().getID().equals(this.owner.getID())) {
@@ -131,6 +134,10 @@ public class Country extends Observable{
 			return false;
 		}
 		
+		/**
+		 * Calculate how many enemy neighbor does this country has
+		 * @return Integer, number of the enemy neighbor
+		 */
 		public int getEnemyNeighbour() {
 			int count = 0;
 			for (Country c: this.neighbor_countries) {
@@ -154,7 +161,6 @@ public class Country extends Observable{
 			return null;
 		}
 		
-
 		/**
 		 * Depth-first recursive search to determine if there's a linked path owned by same player to the destination Country
 		 * with countryId
@@ -254,6 +260,10 @@ public class Country extends Observable{
 			return this.armyNum;
 		}
 		
+		/**
+		 * Setter of armyNum
+		 * @param i
+		 */
 		public void setArmy(int i) {
 			this.armyNum =i;
 		}

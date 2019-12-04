@@ -33,6 +33,9 @@ public class StrategyBenevolent extends Strategy{
 		this.type = "b";
 	}
 	
+	/**
+	 * Reinforce its weakest country
+	 */
 	@Override
 	public void reinforce() {
 		Collections.sort(ownedCountries,new CountryComparator());
@@ -42,7 +45,6 @@ public class StrategyBenevolent extends Strategy{
 			avg += c.getArmyNum();
 		}
 		avg /= ownedCountries.size();
-		
 		//reinforce small amounts of army to each country to balance out
 		while (player.getArmyToPlace() > 0) {
 			Country curr = ownedCountries.get(ind);
@@ -59,11 +61,17 @@ public class StrategyBenevolent extends Strategy{
 		
 	}
 	
+	/**
+	 * No attack all the time
+	 */
 	@Override
 	public void attack() {
 		//Do nothing
 	}
 	
+	/**
+	 * Fortify to its weakest country
+	 */
 	@Override
 	public void fortify() {
 		if(game.checkIfCanFortify(player)) {

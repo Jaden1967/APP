@@ -89,9 +89,7 @@ public class GamePlay extends Observable{
 			do {
 				cInd = rand.nextInt(countries_list.size()); //generate random unassigned Country index 
 			} while (polledCountries.contains(cInd));
-			
 			polledCountries.add(cInd);
-			
 			countries_list.get(cInd).setOwner(player_list.get(pInd)); //set unassigned Country to Player in List in order
 			countries_list.get(cInd).addArmy(1);
 			player_list.get(pInd).addCountry(countries_list.get(cInd));
@@ -111,12 +109,8 @@ public class GamePlay extends Observable{
 				p.setOwnCountriesInStrategy();
 			}
 		}
-		
 		phaseZero();
-		
 	}
-	
-	
 	
 	/**
      * Startup Phase
@@ -157,7 +151,6 @@ public class GamePlay extends Observable{
      * Enters Reinforcement phase once all troops are deployed
      * Randomly places armies to current player's owned countries
      */
-
     public void placeAll() {
         for (Player p: player_list) {
             player = p;
@@ -184,8 +177,6 @@ public class GamePlay extends Observable{
         phaseRecruit();
     }
     
-	
-	
 	/**
 	 * For next player to place army during Startup Phase
 	 * Switches GamePlay context to next player's datasets
@@ -209,10 +200,7 @@ public class GamePlay extends Observable{
 			Random rand = new Random();
 			placeArmy(player.getOwnCountries().get(rand.nextInt(player.getTotalCountriesNumber())));
 		}
-
 	}
-	
-	
 	
 	/**
      * Reinforcement Phase
@@ -235,7 +223,6 @@ public class GamePlay extends Observable{
 		player.rewardInitialArmy();
 		army_to_place = player.getArmyToPlace();
 		System.out.println("turn "+turn+" player: "+player.getID());
-
 		if(player.isAI()) {
 			if (player.getOwnCard().size() == 5) {
 				player.autoTradeCards();
@@ -243,7 +230,6 @@ public class GamePlay extends Observable{
 			player.doStrategy();
 		}
 		alertObservers();
-
 	}
 	
 	/**
@@ -290,7 +276,6 @@ public class GamePlay extends Observable{
 		}else {
 			phaseFortify();
 		}
-		
 	}
 	
 	/**
@@ -398,7 +383,6 @@ public class GamePlay extends Observable{
 		Collections.sort(ddice,comparator);
 		outcome += "Player "+attacker.getOwner().getID()+" rolled "
 		+ adice.toString() + "\nPlayer "+defender.getOwner().getID() + " rolled " + ddice.toString()+"\n"; 
-		
 		int alose = 0, dlose = 0;
 		while (adice.size()!=0 && ddice.size()!=0 && attacker.getArmyNum()!=0 && defender.getArmyNum()!=0) {
 			if(adice.remove(0) > ddice.remove(0)) {
@@ -563,7 +547,6 @@ public class GamePlay extends Observable{
 		to.addArmy(num);
 		outcome += "Sucessfully fortified from "+ from.getName()+" to "+to.getName()+" "+num+" armies\n";
 		nextPlayer();
-		
 	}
 	
 	/**
@@ -817,6 +800,10 @@ public class GamePlay extends Observable{
 		this.max_turns = turnsMax;
 	}
 	
+	/**
+	 * When a player do not own any country, it will be removed
+	 * @param p
+	 */
 	public void removePlayer(Player p) {
 		player_list.remove(defender.getOwner());
 		if(!is_test && !is_tournament) {
@@ -847,6 +834,10 @@ public class GamePlay extends Observable{
 		this.outcome +=o;
 	}
 	
+	/**
+	 * Getter for current player list
+	 * @return player_list, vector of player
+	 */
 	public Vector<Player> getPlayerList(){
 		return player_list;
 	}
