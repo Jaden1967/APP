@@ -1,0 +1,102 @@
+package ui;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
+import controller.Controller;
+import entities.GamePlay;
+
+import javax.swing.JTextField;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
+import java.awt.Font;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+/**
+ * @author Boxiao Yu 40070128
+ * @author Yilun Sun 40092802
+ * @author Yuhua Jiang 40083453
+ * @author Jiuxiang Chen 40086723
+ * @author Chao Ye 40055665
+ */
+public class LoadPrompt extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JTextField textField;
+
+	/**
+	 * Load the frame
+	 * @param menuFrame the frame of the front manu
+	 */
+	public LoadPrompt(JFrame menuFrame) {
+		setTitle("Load progress");
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setBounds(350, 400, 447, 196);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setLayout(null);
+		setContentPane(contentPane);
+		
+		textField = new JTextField();
+		textField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					String address = textField.getText();
+					Controller control = new Controller(new GamePlay());
+					if(control.loadFile(address)) {
+						MapUI map_ui = new MapUI (control);
+						JOptionPane.showMessageDialog(null, "Successfully loaded!", "Load file", JOptionPane.INFORMATION_MESSAGE);
+						dispose();
+						menuFrame.dispose();
+					}
+					else {
+						JOptionPane.showMessageDialog(null, "Load fail!", "Warning", JOptionPane.ERROR_MESSAGE);
+					}
+				}
+			}
+		});
+		textField.setBounds(14, 47, 401, 24);
+		contentPane.add(textField);
+		textField.setColumns(10);
+		
+		JLabel lblPleaseInsertThe = new JLabel("Please insert the name of the file");
+		lblPleaseInsertThe.setFont(new Font("SimSun", Font.PLAIN, 18));
+		lblPleaseInsertThe.setBounds(56, 13, 315, 18);
+		contentPane.add(lblPleaseInsertThe);
+		
+		JButton btnOk = new JButton("Ok");
+		btnOk.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String address = textField.getText();
+				Controller control = new Controller(new GamePlay());
+				if(control.loadFile(address)) {
+					MapUI map_ui = new MapUI (control);
+					JOptionPane.showMessageDialog(null, "Successfully loaded!", "Load file", JOptionPane.INFORMATION_MESSAGE);
+					dispose();
+					menuFrame.dispose();
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "Load fail!", "Warning", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+		btnOk.setBounds(56, 98, 113, 27);
+		contentPane.add(btnOk);
+		
+		JButton btnCancel = new JButton("Cancel");
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		});
+		btnCancel.setBounds(258, 98, 113, 27);
+		contentPane.add(btnCancel);
+	}
+}
