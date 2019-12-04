@@ -35,7 +35,9 @@ public class StrategyCheater extends Strategy {
 	}
 	
 	@Override
-	//doubles the armies on all its countries
+	/**
+	 * Doubles the armies on all its countries
+	 */
 	public void reinforce() {
 		outcome+= "Reinforcement doubled army on \n";
 
@@ -96,7 +98,9 @@ public class StrategyCheater extends Strategy {
 		game.checkWin();
 	}
 	
-	//doubles the number of armies on its countries that have neighbors that belong to other players. 
+	/**
+	 * Doubles the number of armies on its countries that have neighbors that belong to other players. 
+	 */
 	@Override
 	public void fortify() {
 		outcome+= "Fortification doubled army on :\n";
@@ -113,6 +117,4 @@ public class StrategyCheater extends Strategy {
 		game.appendOutcome(outcome);
 		game.nextPlayer();
 	}
-	
-
 }

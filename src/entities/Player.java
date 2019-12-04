@@ -60,7 +60,6 @@ public class Player {
 	 * @param color Color of player
 	 */
 	public Player(String id, Color color, GamePlay g,String strat) {
-		
 		this.id = id;
 		this.color = color;
 		this.army_to_place = 0;
@@ -73,9 +72,7 @@ public class Player {
 			case "c": this.strategy = new StrategyCheater(g,this); break;
 			case "r": this.strategy = new StrategyRandom(g,this); break;
 		}
-		//System.out.println("AI player "+id+" is created");
 	}
-	
 	
 	/**
 	 * If the player is an AI, use the defined specific Strategy object to automatically complete player actions
@@ -132,10 +129,12 @@ public class Player {
 		this.army_to_place += calculateArmy() + extraArmyToAdd();
 	}
 	
+	/**
+	 * Reset player's army to 0 in phase 0
+	 */
 	public void reSetArmy() {
 		army_to_place = 0;
 	}
-	
 	
 	/**
 	 * Decreases army to place by a certain amount after deployment or mobilization
@@ -144,8 +143,6 @@ public class Player {
 	public void deployArmy(int i) {
 		this.army_to_place -= i;
 	}
-	
-
 	
 	/**
 	 * Increments the number of countries that the player owns
@@ -183,10 +180,8 @@ public class Player {
 			total_country_number--;
 		}
 		if (total_country_number>0) return false;
-		
 		return true;
 	}
-	
 	
 	/**
 	 * During phase one, when a player owns all countries in this Continent, player will be rewarded
@@ -400,8 +395,6 @@ public class Player {
 		trade_times = t;
 	}
 	
-	
-
 	/**
 	 * Return whether or not this player object is an AI player
 	 * @return is_ai boolean that determines if the player is AI
@@ -410,6 +403,10 @@ public class Player {
 		return this.is_ai;
 	}
 	
+	/**
+	 * Getter for AI type
+	 * @return ai_type String
+	 */
 	public String getAiType() {
 		return (this.is_ai)?this.strategy.getType():"h";
 	}
