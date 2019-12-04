@@ -8,10 +8,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Stack;
 
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
@@ -111,9 +113,17 @@ public class MainView extends VerticalLayout {
     // map_list = getFile();
     // }
 
+    private boolean isLoadConquest = false;
+
+    private String[] continentColors = {"red", "yellow", "blue", "green", 
+                                        "lightyellow", "grey", "magenta", 
+                                        "orange", "pink", "cyan", "DeepPink", 
+                                        "skyblue", "white", "purple"};
+
     private void init() {
         // add all maps in map folder to map_list
         map_list.addAll(getFile());
+
 
         String[] continent_data_list = { "Asia", "Europe", "North-America", "South-America", "Africa", "Oceania" };
         String[] country_data_list = { "Afghanistan", "Alaska", "Alberta", "Argentina", "Brazil", "Central-America",
@@ -954,10 +964,13 @@ public class MainView extends VerticalLayout {
     }
 
     public void saveMap(String fileName) {
-        if (!validateMap()) {
-            createAlert("Save Map Failed!");
-            return;
+        if (!isLoadConquest) {
+            if (!validateMap()) {
+                createAlert("Save Map Failed!");
+                return;
+            }
         }
+        
 
         SaveMap saveThis = new SaveMap();
         saveThis.saveToMap(fileName, map_width, map_height, continentsData, countriesData, neighborsData, neighborsMap);
@@ -1167,6 +1180,7 @@ public class MainView extends VerticalLayout {
             }
         }
         // Files.read(Paths.get(path), content);
+        isLoadConquest = false;
 
         addOutputLog("Map loaded from: " + path);
     }
@@ -1194,6 +1208,8 @@ public class MainView extends VerticalLayout {
         int maxCountryX = 0;
         int maxCountryY = 0;
 
+
+
         try {
             fileReader = new FileReader(file);
             bufferedReader = new BufferedReader(fileReader);
@@ -1204,6 +1220,9 @@ public class MainView extends VerticalLayout {
             boolean territoryPhase = false;
 
             int countriesIndex = 1;
+
+            Stack<String> colorStack = new Stack<>();
+            colorStack.addAll(Arrays.asList(continentColors));
 
             while ((line = bufferedReader.readLine()) != null) {
                 if (line.equals("")) {
@@ -1218,7 +1237,13 @@ public class MainView extends VerticalLayout {
                     ArrayList<String> tempAL = new ArrayList<>();
                     tempAL.add(tempStr[0]);
                     tempAL.add(tempStr[1]);
-                    tempAL.add("red");
+                    if (colorStack.size() > 0) {
+                        tempAL.add(colorStack.pop());
+                    }
+                    else {
+                        tempAL.add("red");
+                    }
+                    
                     continentsData.add(tempAL);
                     continentsMap.put(tempStr[0], Integer.valueOf(tempStr[1]));
                     updateContinents();
@@ -1299,6 +1324,8 @@ public class MainView extends VerticalLayout {
 
         map_width = maxCountryX + 50;
         map_height = maxCountryY + 50;
+
+        isLoadConquest = true;
 
         addOutputLog("Map loaded from: " + path);
     }
